@@ -216,7 +216,6 @@ class MotionPicture(models.Model):
                   'OPTIONAL]')
     year_of_release = models.IntegerField(
         choices=create_release_year_range(),
-        default=(2005, 2005),
         help_text='Choose the motion picture\'s release year')
     duration = models.IntegerField(
         default=90, help_text='Enter the duration of the motion picture in '
