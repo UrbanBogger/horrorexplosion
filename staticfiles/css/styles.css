@@ -1,0 +1,13 @@
+.sidebar-nav {
+     margin-top: 20px;
+     padding: 0;
+     list-style: none;
+}
+
+.gap-right {
+    margin-right: 10px;
+}
+
+#review_body > p {
+    text-align: justify;
+}

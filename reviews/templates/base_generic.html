@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    {% block title %}<title>The Horror Explosion</title>{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {% load static %}
+    <script type="text/javascript" src="{% static '' %}ckeditor/ckeditor-init.js"></script>
+    <script type="text/javascript" src="{% static '' %}ckeditor/ckeditor/ckeditor.js"></script>
+    <!-- Add additional CSS in static file -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+    html, body, container { height: 100%; }
+
+    body, container {
+        display: table;
+        width: 100%;
+    }
+
+    .page-row {
+           display: table-row;
+           height: 1px;
+    }
+
+    .page-row-expanded { height: 100%; }
+
+    .sidenav {
+        padding-top: 20px;
+        background-color: #D3D3D3;
+        display:table-cell;
+        height:100%;
+    }
+
+    .main {
+        height:100%;
+    }
+
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    * On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<container class="container-fluid">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-brand">The Horror Explosion</p>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                <li class="active"><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'movies' %}">Movies</a></li>
+                <li><a href="{% url 'movie_reviews' %}">Movie Reviews</a></li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-row row page-row-expanded">
+        <div class="col-sm-2 sidenav">
+            </div>
+            <div class="col-sm-8 text-left main">
+                {% block main_content %}{% endblock %}
+            </div>
+    </div>
+
+    <footer class="page-row text-center row">
+        <div class="cell">
+        Contact us at: <address class="bg-info"><a href="mailto:thehorrorexplosion@gmail.com" class="text-info">thehorrorexplosion@gmail.com</a></address>
+            <p>Copyright &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> The Horror Explosion</p>
+        </div>
+    </footer>
+
+</container>
+</body>
+</html>

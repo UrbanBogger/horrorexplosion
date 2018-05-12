@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+tar zcf /vagrant/horrorexplosion.tar.gz /vagrant/horrorexplosion
+sshpass -p 'shr@@t123' scp /vagrant/horrorexplosion.tar.gz root@10.45.224.252:/NFD_Store/emitjsu
+
