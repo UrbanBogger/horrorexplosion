@@ -29,7 +29,8 @@ SECRET_KEY = os.environ.get(
 # DEBUG = True
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = ['horrorexplosion.com', '127.0.0.1']
+ALLOWED_HOSTS = ['horrorexplosion.com', 'horrorexplosion.herokuapp.com',
+                 '127.0.0.1']
 
 # Application definition
 
@@ -144,7 +145,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 SECURE_BROWSER_XSS_FILTER = True
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 SESSION_COOKIE_SECURE = True
 
