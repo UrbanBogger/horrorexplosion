@@ -124,7 +124,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'reviews/static/')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -145,7 +144,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 SECURE_BROWSER_XSS_FILTER = True
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 SESSION_COOKIE_SECURE = True
 
