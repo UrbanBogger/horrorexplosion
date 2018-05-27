@@ -127,7 +127,7 @@ class Grade(models.Model):
     grade_description = models.CharField(
         max_length=50, help_text='Enter a short description of the grade')
     grade_depiction = models.ImageField(
-        upload_to='images/', null=True,
+        upload_to='grade_depictions/', null=True,
         help_text='Upload the image corresponding to the grade')
 
     def __str__(self):
@@ -237,7 +237,7 @@ class MotionPicture(models.Model):
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
     poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='movie_posters/', null=True, blank=True,
         help_text='Upload the poster of the movie')
 
     class Meta:

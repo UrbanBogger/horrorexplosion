@@ -7,7 +7,7 @@
     {% for movie in movie_list %}
     {% load static %}
     <li class="list-group-item">
-        <a href="{{ movie.get_absolute_url }}"><img src="{% static '' %}{{ movie.poster }}" alt="{{ movie.main_title}} poster" height="64" width="64" class="img-thumbnail">{{ movie.main_title }}</a> ({{ movie.year_of_release }})
+        <a href="{{ movie.get_absolute_url }}"><img src="{{ movie.poster.url }}" alt="{{ movie.main_title}} poster" height="64" width="64" class="img-thumbnail">{{ movie.main_title }}</a> ({{ movie.year_of_release }})
     </li>
     {% endfor %}
 </ul>
