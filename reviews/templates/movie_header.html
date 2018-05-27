@@ -1,7 +1,7 @@
 <div style="margin-bottom: 10px;" class="media">
     <div class="media-left">
     {% load static %}
-    <img class="media-object img-rounded" src="{% static '' %}{{ movie.poster }}" alt="{{ movie.main_title}} poster" height="300" width="250" />
+    <img class="media-object img-rounded" src="{{ movie.poster.url }}" alt="{{ movie.main_title}} poster" height="300" width="250" />
     </div>
     <div class="media-body">
 <h1 class="media-heading">{{ movie.main_title }}</h1>
