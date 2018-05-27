@@ -5,11 +5,21 @@
     </div>
     <div class="media-body">
 <h1 class="media-heading">{{ movie.main_title }}</h1>
-<h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% endfor %},
-    {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
-<h3 class="media-heading"><em>Dir.</em>: {% for movie_participation in movie_directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
+        <h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% endfor %}, {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
+        {% if movie.original_title %}
+        <h3 class="media-heading"><em><strong>Original Title</strong></em>: {{ movie.original_title }}</h3>
+        {% endif %}
+        {% if movie.alternative_title.all %}
+        <h3 class="media-heading"><em><strong>AKA</strong></em>: {% for alt_title in movie.alternative_title.all %}{{ alt_title }}{% if not forloop.last %};&nbsp;{% endif %}{% endfor %}</h3>
+        {% endif %}
+        {% if movie.is_direct_to_video %}
+        <p><strong>Note</strong>: Direct to video</p>
+        {% elif movie.is_made_for_tv %}
+        <p><strong>Note</strong>: Made for TV</p>
+        {% endif %}
+<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in movie_directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
     {% if movie_cast %}
-<em>Cast</em>: {% for movie_participation in movie_cast %}{{ movie_participation.person }}{% if not forloop.last %},&nbsp;{% else %}.{% endif %}{% endfor %}
+<em><strong>Cast</strong></em>: {% for movie_participation in movie_cast %}{{ movie_participation.person }}{% if not forloop.last %},&nbsp;{% else %}.{% endif %}{% endfor %}
     {% endif %}
 </h3>
 <p><b>Genre</b>: {% for genre in movie.genre.all %}{{ genre }}{% if not forloop.last %},&nbsp;{% else %}.{% endif %}{% endfor %}</p>

@@ -192,6 +192,9 @@ class Title(models.Model):
     def __str__(self):
         return '{}'.format(self.title)
 
+    class Meta:
+        ordering = ['title']
+
 
 class MovieFranchise(models.Model):
     franchise_name = models.CharField(
@@ -259,6 +262,9 @@ class Movie(MotionPicture):
     is_a_sequel = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is this movie a sequel?')
+    is_a_remake = models.NullBooleanField(
+        null=True, default=False, blank=True,
+        help_text='Is this movie a remake?')
     franchise_association = models.ManyToManyField(
         MovieFranchise, blank=True, help_text='If applicable, choose the '
                                               'franchise that the movie '

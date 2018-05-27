@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
+from django.core.paginator import Paginator
 from .models import Movie, MovieReview, WebsiteMetadescriptor,\
-    sort_titles_with_stop_word
+    sort_titles_with_stop_word, ReferencedMovie
 
 # Create your views here.
 
@@ -24,11 +25,13 @@ def about(request):
 
 class MovieListView(generic.ListView):
     model = Movie
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-        context['movie_list'] = sort_titles_with_stop_word(
-            Movie.objects.all(), 'movie')
+        sorted_movies = sort_titles_with_stop_word(Movie.objects.all(), 'movie')
+        paginator = Paginator(sorted_movies, self.paginate_by)
+        context['movie_list'] = paginator.page(context['page_obj'].number)
         return context
 
 
@@ -48,16 +51,24 @@ class MovieDetailView(generic.DetailView):
         context['associated_reviews'] = Movie.objects.get(
             pk=self.kwargs.get(
                 self.pk_url_kwarg)).moviereview_set.all()
+        referenced_in_reviews = ReferencedMovie.objects.filter(
+            referenced_movie=Movie.objects.get(pk=self.kwargs.get(
+                self.pk_url_kwarg)))
+        context['referenced_in_reviews'] = referenced_in_reviews
         return context
 
 
 class MovieReviewListView(generic.ListView):
     model = MovieReview
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super(MovieReviewListView, self).get_context_data(**kwargs)
-        context['moviereview_list'] = sort_titles_with_stop_word(
+        sorted_mov_reviews = sort_titles_with_stop_word(
             MovieReview.objects.all(), 'review')
+        paginator = Paginator(sorted_mov_reviews, self.paginate_by)
+        context['moviereview_list'] = paginator.page(
+            context['page_obj'].number)
         return context
 
 
