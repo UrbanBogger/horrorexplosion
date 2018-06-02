@@ -20,8 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 't4ug%c*kqqt#_a-9i)krzou2igqpv$jc)ryn!y1w@7#tun+p^h'
-
 SECRET_KEY = os.environ.get(
     'DJANGO_SECRET_KEY', 't4ug%c*kqqt#_a-9i)krzou2igqpv$jc)ryn!y1w@7#tun+p^h')
 
@@ -48,7 +46,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,11 +126,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-#STATICFILES_STORAGE =
-# 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 CKEDITOR_CONFIGS = {
     'default': {
         'height': 600,
@@ -145,7 +137,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 SECURE_BROWSER_XSS_FILTER = True
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 SESSION_COOKIE_SECURE = True
 
