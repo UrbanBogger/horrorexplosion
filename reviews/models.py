@@ -65,17 +65,20 @@ class Keyword(MovieMetadescriptors):
 
 class WebsiteMetadescriptor(models.Model):
     website_name = models.CharField(max_length=50)
-    contact_info = models.EmailField(max_length=50,
-                                    help_text='Enter a contact email')
+    contact_info = models.EmailField(
+        max_length=50, help_text='Enter a contact email')
     mission_statement = RichTextField(blank=True)
+    landing_page_title = models.CharField(max_length=50,
+                                          default='The Horror Explosion')
+    landing_page_description = models.CharField(
+        max_length=155,
+        default='Reviewing and analyzing post-1999 horror movies.')
 
     def __str__(self):
         return 'Website name: {website_name}\nContact Info: {' \
-               'contact_info}\nMission Statement: {' \
-               'mission_statement}\n'.format(
+               'contact_info}'.format(
                         website_name=self.website_name,
-                        contact_info=self.contact_info,
-                        mission_statement=self.mission_statement)
+                        contact_info=self.contact_info)
 
 
 class Person(models.Model):
@@ -236,6 +239,7 @@ class MotionPicture(models.Model):
                            'motion picture')
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
+
     poster = models.ImageField(
         upload_to='movie_posters/', null=True, blank=True,
         help_text='Upload the poster of the movie')
@@ -283,6 +287,9 @@ class Movie(MotionPicture):
 class MovieReview(Review):
     reviewed_movie = models.ForeignKey(
         Movie, null=True, help_text='Specify the reviewed movie')
+    mov_review_page_description = models.CharField(
+        max_length=155, default='Click on the link to see what we have to '
+                                'say about this flick.')
 
     def __str__(self):
         return '{movie_data} by {reviewer}'.format(

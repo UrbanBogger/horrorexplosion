@@ -1,5 +1,13 @@
 {% extends "base_generic.html" %}
 
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
 {% block main_content %}
 {% load static %}
 <h1>The Horror Explosion Home</h1>
@@ -9,5 +17,5 @@
 <p><strong>Current number of reviews: </strong><a href="{% url 'movie_reviews' %}">{{ number_of_reviews }}</a></p>
 <p><strong>Current number of movies in our database: </strong><a href="{% url 'movies' %}">{{ number_of_movies }}</a></p>
 <p><strong>Latest review: </strong>
-    <a href="{{ latest_review.get_absolute_url }}"><div style="margin-bottom: 10px;" class="media"><div class="media-left"><img class="media-object img-rounded" src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="45" width="45" /></div><div class="media-body"><p class="media-heading text-left">{{ latest_review }}</p></div></div></a>
+    <a href="{{ latest_review.get_absolute_url }}"><div style="margin-bottom: 10px;" class="media"><div class="media-left"><img class="media-object img-rounded" src="{% static '' %}{{ latest_review.reviewed_movie.poster }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="45" width="45" /></div><div class="media-body"><p class="media-heading text-left">{{ latest_review }}</p></div></div></a>
 {% endblock %}
