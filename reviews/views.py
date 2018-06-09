@@ -39,7 +39,7 @@ class ContributorListView (generic.ListView):
                               "our website"
 
     def get_context_data(self, **kwargs):
-        context = super(MovieListView, self).get_context_data(**kwargs)
+        context = super(ContributorListView, self).get_context_data(**kwargs)
         context['page_title'] = self.contributors_page_title
         context['meta_content_description'] = self.content_metadescription
         return context
