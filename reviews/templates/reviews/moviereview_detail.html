@@ -1,9 +1,17 @@
 {% extends "base_generic.html" %}
 
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
 {% block main_content %}
 {% include "movie_header.html" %}
 {% load static %}
-<img src="{% static '' %}{{ moviereview.grade.grade_depiction }}" alt="{{ moviereview.grade.grade_numerical }} stars" height="125" width="125" class="img-fluid img-thumbnail"/>
+<img src="{% static '' %}{{ moviereview.grade.grade_depiction }}" alt="{{ moviereview.grade.grade_numerical }} stars" height="125" width="125" class="img-fluid img-thumbnail"/>&nbsp;<span style="font-size:30px"><strong>= [{{ moviereview.grade.grade_description }}]</strong></span>
 <div id="review_body">{{ moviereview.review_text|safe }}</div>
 <p><strong>Author: </strong>{{ moviereview.review_author }}</p>
 <p><strong>Written on: </strong>{{ moviereview.date_created }}; <strong>Added to the Database: </strong>{{ moviereview.first_created }}; <strong>Last Modified: </strong>{{ moviereview.last_modified }}</p>

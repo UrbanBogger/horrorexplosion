@@ -65,24 +65,30 @@ class Keyword(MovieMetadescriptors):
 
 class WebsiteMetadescriptor(models.Model):
     website_name = models.CharField(max_length=50)
-    contact_info = models.EmailField(max_length=50,
-                                    help_text='Enter a contact email')
+    contact_info = models.EmailField(
+        max_length=50, help_text='Enter a contact email')
     mission_statement = RichTextField(blank=True)
+    landing_page_title = models.CharField(max_length=50,
+                                          default='The Horror Explosion')
+    landing_page_description = models.CharField(
+        max_length=155,
+        default='Reviewing and analyzing post-1999 horror movies.')
 
     def __str__(self):
         return 'Website name: {website_name}\nContact Info: {' \
-               'contact_info}\nMission Statement: {' \
-               'mission_statement}\n'.format(
+               'contact_info}'.format(
                         website_name=self.website_name,
-                        contact_info=self.contact_info,
-                        mission_statement=self.mission_statement)
+                        contact_info=self.contact_info)
 
 
 class Person(models.Model):
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50)
-    biography = models.TextField(max_length=1000, blank=True)
+    biography = RichTextField(max_length=1000, blank=True)
+    photograph = models.ImageField(
+        upload_to='people/', null=True,
+        help_text='Upload the person\'s photo')
 
     class Meta:
         abstract = True
@@ -106,6 +112,10 @@ class Reviewer(Person):
 
 
 class MovieCreator(Person):
+    pass
+
+
+class Contributor(Person):
     pass
 
 
@@ -192,6 +202,9 @@ class Title(models.Model):
     def __str__(self):
         return '{}'.format(self.title)
 
+    class Meta:
+        ordering = ['title']
+
 
 class MovieFranchise(models.Model):
     franchise_name = models.CharField(
@@ -259,10 +272,14 @@ class Movie(MotionPicture):
     is_a_sequel = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is this movie a sequel?')
+    is_a_remake = models.NullBooleanField(
+        null=True, default=False, blank=True,
+        help_text='Is this movie a remake?')
     franchise_association = models.ManyToManyField(
         MovieFranchise, blank=True, help_text='If applicable, choose the '
                                               'franchise that the movie '
                                               'belongs to')
+    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('movie-detail', args=[str(self.id)])
@@ -277,6 +294,9 @@ class Movie(MotionPicture):
 class MovieReview(Review):
     reviewed_movie = models.ForeignKey(
         Movie, null=True, help_text='Specify the reviewed movie')
+    mov_review_page_description = models.CharField(
+        max_length=155, default='Click on the link to see what we have to '
+                                'say about this flick.')
 
     def __str__(self):
         return '{movie_data} by {reviewer}'.format(

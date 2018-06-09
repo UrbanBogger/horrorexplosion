@@ -1,5 +1,13 @@
 {% extends "base_generic.html" %}
 
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
 {% block main_content %}
 {% load static %}
 <h1>The Horror Explosion Home</h1>

@@ -1,5 +1,14 @@
 {% extends "base_generic.html" %}
 
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
 {% block main_content %}
 <h1>Movies</h1>
 {% if movie_list %}

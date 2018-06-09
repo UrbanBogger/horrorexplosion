@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reviews',
     'ckeditor',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +141,5 @@ CKEDITOR_CONFIGS = {
         'width': 1400,
     },
 }
+
+SITE_ID = 1

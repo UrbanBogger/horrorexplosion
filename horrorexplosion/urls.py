@@ -19,6 +19,9 @@ from django.conf.urls import include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
+    HomePageSitemap, StaticPagesSitemap
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -32,4 +35,14 @@ urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/reviews/', permanent=True)),
 ]
 
+sitemaps = {
+    'movie_reviews': MovReviewSitemap,
+    'movies': MovieSitemap,
+    'landing_page': HomePageSitemap,
+    'static': StaticPagesSitemap,
+}
+
+urlpatterns += [
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
