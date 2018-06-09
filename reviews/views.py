@@ -32,6 +32,15 @@ def about(request):
                            'mission_statement': mission_statement})
 
 
+def contact(request):
+    contact_page_title = "Contact Info | The Horror Explosion"
+    content_metadescription = "The Horror Explosion website contact info"
+    return render(request, 'contact.html',
+                  context={'page_title': contact_page_title,
+                           'meta_content_description': content_metadescription}
+                  )
+
+
 class ContributorListView (generic.ListView):
     model = Contributor
     contributors_page_title = "Contributors | The Horror Explosion"
