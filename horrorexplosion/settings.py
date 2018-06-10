@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reviews',
     'ckeditor',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +164,5 @@ STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 
 MEDIAFILES_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
+SITE_ID = 1

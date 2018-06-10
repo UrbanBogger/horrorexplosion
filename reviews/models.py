@@ -246,10 +246,10 @@ class MotionPicture(models.Model):
                            'motion picture')
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
-
     poster = models.ImageField(
         upload_to='movie_posters/', null=True, blank=True,
         help_text='Upload the poster of the movie')
+    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         abstract = True
