@@ -1,13 +1,3 @@
-.sidebar-nav {
-     margin-top: 20px;
-     padding: 0;
-     list-style: none;
-}
-
-.gap-right {
-    margin-right: 10px;
-}
-
 #review_body > p {
     text-align: justify;
 }
@@ -15,3 +5,33 @@
 #about > p {
     text-align: justify;
 }
+
+body {
+    background-color: white;
+}
+
+.sidenav {
+        padding-top: 60px;
+        background-color: white;
+    }
+
+    .main {
+        padding-top: 60px;
+        padding-bottom: 100px;
+        height:100%;
+        background-color: white;
+    }
+
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    * On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+    }
