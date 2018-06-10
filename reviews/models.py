@@ -261,8 +261,8 @@ class MotionPicture(models.Model):
 
 class Movie(MotionPicture):
     movie_participation = models.ManyToManyField(
-        MovieParticipation, help_text='Add the name of the movie creator and '
-                                                           'their role')
+        MovieParticipation,
+        help_text='Add the name of the movie creator and their role')
     is_direct_to_video = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is the movie direct-to-video/DVD?')
@@ -280,9 +280,13 @@ class Movie(MotionPicture):
                                               'franchise that the movie '
                                               'belongs to')
     first_created = models.DateField(auto_now_add=True, null=True, blank=True)
+    human_readable_url = models.SlugField(
+        help_text="Enter the 'slug',i.e., the human-readable "
+                  "URL for the movie", unique=True, null=True)
 
     def get_absolute_url(self):
-        return reverse('movie-detail', args=[str(self.id)])
+        return reverse('movie-detail', args=[str(self.id),
+                                             str(self.human_readable_url)])
 
     def return_mov_participation_data(self, participation_type):
         participations = self.movie_participation.all()
@@ -297,21 +301,25 @@ class MovieReview(Review):
     mov_review_page_description = models.CharField(
         max_length=155, default='Click on the link to see what we have to '
                                 'say about this flick.')
+    human_readable_url = models.SlugField(
+        help_text="Enter the 'slug',i.e., the human-readable "
+                  "URL for the movie review", unique=True, null=True)
 
     def __str__(self):
         return '{movie_data} by {reviewer}'.format(
             movie_data=self.reviewed_movie, reviewer=self.review_author)
 
     def get_absolute_url(self):
-        return reverse('moviereview-detail', args=[str(self.id)])
+        return reverse('moviereview-detail',
+                       args=[str(self.id), str(self.human_readable_url)])
 
 
 class ReferencedMovie(models.Model):
     referenced_movie = models.ManyToManyField(
         Movie, help_text='Add the referenced movie(s)')
     review = models.ForeignKey(
-        MovieReview, null=True, help_text='Add the review where the movie '
-                                     'was referenced')
+        MovieReview, null=True,
+        help_text='Add the review where the movie was referenced')
 
     def __str__(self):
         return 'review {movie_review} references: {referenced_movie}'.format(
