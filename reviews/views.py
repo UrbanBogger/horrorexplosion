@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator
 from .models import Movie, MovieReview, WebsiteMetadescriptor,\
-    sort_titles_with_stop_word, ReferencedMovie
+    sort_titles_with_stop_word, ReferencedMovie, Contributor
 
 # Create your views here.
 
@@ -30,6 +30,19 @@ def about(request):
                   context={'page_title': about_page_title,
                            'meta_content_description': content_metadescription,
                            'mission_statement': mission_statement})
+
+
+class ContributorListView (generic.ListView):
+    model = Contributor
+    contributors_page_title = "Contributors | The Horror Explosion"
+    content_metadescription = "The list of people who contribute content to " \
+                              "our website"
+
+    def get_context_data(self, **kwargs):
+        context = super(ContributorListView, self).get_context_data(**kwargs)
+        context['page_title'] = self.contributors_page_title
+        context['meta_content_description'] = self.content_metadescription
+        return context
 
 
 class MovieListView(generic.ListView):

@@ -85,7 +85,10 @@ class Person(models.Model):
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50)
-    biography = models.TextField(max_length=1000, blank=True)
+    biography = RichTextField(max_length=1000, blank=True)
+    photograph = models.ImageField(
+        upload_to='people/', null=True, blank=True,
+        help_text='Upload the person\'s photo')
 
     class Meta:
         abstract = True
@@ -109,6 +112,10 @@ class Reviewer(Person):
 
 
 class MovieCreator(Person):
+    pass
+
+
+class Contributor(Person):
     pass
 
 

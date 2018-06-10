@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Contributors</h1>
+{% for contributor in contributor_list %}
+<div style="margin-bottom: 10px;" class="media">
+    <div class="media-left">
+    <img class="media-object img-rounded" src="{{ contributor.photograph.url }}" alt="Contributor {{ contributor }} photograph" height="300" width="250" />
+    </div>
+    <div class="media-body">
+<h2 class="media-heading">Name: {{ contributor }}</h2>
+        <p>{{ contributor.biography|safe }}</p>
+    </div>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
