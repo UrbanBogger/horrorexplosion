@@ -13,25 +13,25 @@ body {
 .sidenav {
         padding-top: 60px;
         background-color: white;
-    }
+}
 
-    .main {
+.main {
         padding-top: 60px;
-        padding-bottom: 100px;
+        padding-bottom: 80px;
         height:100%;
         background-color: white;
-    }
+}
 
-    footer {
+footer {
       background-color: #555;
       color: white;
       padding: 15px;
-    }
+}
 
-    * On small screens, set height to 'auto' for sidenav and grid */
-    @media screen and (max-width: 767px) {
-      .sidenav {
-        height: auto;
-        padding: 15px;
-      }
+* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
+    .sidenav {
+           height: auto;
+           padding: 15px;
     }
+}
