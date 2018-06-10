@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
-    HomePageSitemap, StaticPagesSitemap
+    HomePageSitemap, StaticPagesSitemap, ListViewSitemap
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -40,6 +40,7 @@ sitemaps = {
     'movies': MovieSitemap,
     'landing_page': HomePageSitemap,
     'static': StaticPagesSitemap,
+    'list_views': ListViewSitemap,
 }
 
 urlpatterns += [

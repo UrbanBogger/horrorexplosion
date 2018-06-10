@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 
 
 class MovReviewSitemap(Sitemap):
-    changefreq = 'weekly'
+    changefreq = 'monthly'
     priority = 0.9
 
     def items(self):
@@ -15,7 +15,7 @@ class MovReviewSitemap(Sitemap):
 
 
 class MovieSitemap(Sitemap):
-    changefreq = 'weekly'
+    changefreq = 'monthly'
     priority = 0.8
 
     def items(self):
@@ -23,6 +23,17 @@ class MovieSitemap(Sitemap):
 
     def lastmod(self, item):
          item.first_created
+
+
+class ListViewSitemap(Sitemap):
+    changefreq = 'weekly'
+    priority = 0.7
+
+    def items(self):
+        return ['movies', 'movie_reviews']
+
+    def location(self, item):
+        return reverse(item)
 
 
 class HomePageSitemap(Sitemap):
