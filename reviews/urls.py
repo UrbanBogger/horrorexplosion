@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^about/$', views.about, name='about'),
     url(r'^contributors/$', views.ContributorListView.as_view(),
         name='contributors'),
+    url(r'^contact/$', views.contact, name='contact'),
     url(r'^movies/$', views.MovieListView.as_view(), name='movies'),
     url(r'^movie/(?P<pk>\d+)$', views.MovieDetailView.as_view(),
         name='movie-detail'),
