@@ -1,9 +1,9 @@
 <div style="margin-bottom: 10px;" class="media">
-    <div class="media-left">
+    <div class="media-left pull-left">
     {% load static %}
     <img class="media-object img-rounded" src="{% static '' %}{{ movie.poster }}" alt="{{ movie.main_title}} poster" height="300" width="250" />
     </div>
-    <div class="media-body">
+    <div class="media-body" style="overflow: hidden;">
 <h1 class="media-heading">{{ movie.main_title }}</h1>
         <h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% endfor %}, {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
         {% if movie.original_title %}
@@ -31,4 +31,4 @@
 {% endif %}
 <p><strong>Keyword(s)</strong>: {% for keyword in movie.keyword.all %}{{ keyword }}{% if not forloop.last %},&nbsp;{% else %}.{% endif %}{% endfor %}</p>
     </div>
-</div>
+    </div>
