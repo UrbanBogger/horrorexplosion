@@ -22,12 +22,12 @@
 <em><strong>Cast</strong></em>: {% for movie_participation in movie_cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% endif %}
 </h3>
-<p><b>Genre</b>: {% for genre in movie.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+<p><strong>Genre(s)</strong>: {% for genre in movie.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% if movie.subgenre.all %}
-<p><strong>Subgenre</strong>: {% for subgenre in movie.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+<p><strong>Subgenre(s)</strong>: {% for subgenre in movie.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
 {% if movie.microgenre.all %}
-<p><strong>Microgenre</strong>: {% for microgenre in movie.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+<p><strong>Microgenre(s)</strong>: {% for microgenre in movie.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
 <p><strong>Keyword(s)</strong>: {% for keyword in movie.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
     </div>

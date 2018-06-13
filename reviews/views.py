@@ -78,7 +78,7 @@ class MovieDetailView(generic.DetailView):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
         # Create any data and add it to the context
         movie = Movie.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
-        context['page_title'] = str(movie) + ' | The horror Explosion'
+        context['page_title'] = str(movie) + ' | The Horror Explosion'
         context['meta_content_description'] = \
             'Data and metadata about ' + str(movie) + ' like genre/subgenre ' \
             'affiliation and plot keywords'
