@@ -44,8 +44,7 @@ class MovieMetadescriptors(models.Model):
 
 class Genre(MovieMetadescriptors):
     name = models.CharField(
-        max_length=50, default='Horror', help_text='Enter the name of the '
-                                                   'genre')
+        max_length=50, help_text='Enter the name of the genre')
 
 
 class Subgenre(MovieMetadescriptors):
@@ -132,8 +131,8 @@ class Grade(models.Model):
     )
 
     grade_numerical = models.CharField(
-        max_length=3, choices=GRADE_CHOICES,
-        default=('2.5', '2.5'), help_text='Choose the motion picture\'s grade')
+        max_length=3, choices=GRADE_CHOICES, help_text='Choose the motion '
+                                                       'picture\'s grade')
     grade_description = models.CharField(
         max_length=50, help_text='Enter a short description of the grade')
     grade_depiction = models.ImageField(
