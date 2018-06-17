@@ -221,9 +221,9 @@ class MotionPicture(models.Model):
         Title, on_delete=models.SET_NULL, null=True, related_name='titles',
         help_text='Enter the motion picture\'s main title')
     title_for_sorting = models.CharField(
-        null=True, help_text='Enter the title for sorting: Remove all stop '
-                             'words such as "A", "An" and "The" '
-                             'and write all numbers')
+        max_length=250, null=True,
+        help_text='Enter the title for sorting: Remove all stop words such '
+                  'as "A", "An" and "The" and word all numbers')
     original_title = models.OneToOneField(
         Title, on_delete=models.SET_NULL, null=True, blank=True,
         help_text='Enter the motion picture\'s original title [OPTIONAL]')
