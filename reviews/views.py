@@ -65,9 +65,6 @@ class MovieListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-        sorted_movies = sort_titles_with_stop_word(Movie.objects.all(), 'movie')
-        paginator = Paginator(sorted_movies, self.paginate_by)
-        context['movie_list'] = paginator.page(context['page_obj'].number)
         context['page_title'] = self.movie_list_page_title
         context['meta_content_description'] = self.content_metadescription
         return context
@@ -104,11 +101,6 @@ class MovieReviewListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieReviewListView, self).get_context_data(**kwargs)
-        sorted_mov_reviews = sort_titles_with_stop_word(
-            MovieReview.objects.all(), 'review')
-        paginator = Paginator(sorted_mov_reviews, self.paginate_by)
-        context['moviereview_list'] = paginator.page(
-            context['page_obj'].number)
         context['page_title'] = self.movie_review_list_page_title
         context['meta_content_description'] = self.content_metadescription
         return context
