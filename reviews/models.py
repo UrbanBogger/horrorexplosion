@@ -220,6 +220,10 @@ class MotionPicture(models.Model):
     main_title = models.ForeignKey(
         Title, on_delete=models.SET_NULL, null=True, related_name='titles',
         help_text='Enter the motion picture\'s main title')
+    title_for_sorting = models.CharField(
+        null=True, help_text='Enter the title for sorting: Remove all stop '
+                             'words such as "A", "An" and "The" '
+                             'and write all numbers')
     original_title = models.OneToOneField(
         Title, on_delete=models.SET_NULL, null=True, blank=True,
         help_text='Enter the motion picture\'s original title [OPTIONAL]')
@@ -252,7 +256,7 @@ class MotionPicture(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['main_title']
+        ordering = ['title_for_sorting']
 
     def __str__(self):
         return '{main_title} ({year_of_release})'.format(
@@ -304,6 +308,9 @@ class MovieReview(Review):
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the movie review", unique=True, null=True)
+
+    class Meta:
+        ordering = ['reviewed_movie']
 
     def __str__(self):
         return '{movie_data} by {reviewer}'.format(
