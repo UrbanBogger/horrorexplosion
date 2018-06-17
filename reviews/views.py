@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator
 from .models import Movie, MovieReview, WebsiteMetadescriptor,\
-    sort_titles_with_stop_word, ReferencedMovie, Contributor
+    sort_titles_with_stop_word, ReferencedMovie, Contributor, \
+    get_random_review
 
 # Create your views here.
 
@@ -11,6 +12,7 @@ def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
     latest_review = MovieReview.objects.latest('first_created')
+    random_review = get_random_review(latest_review)
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor.\
         objects.get().landing_page_description
@@ -19,7 +21,8 @@ def index(request):
                            'meta_content_description': content_metadescription,
                            'number_of_reviews': number_of_reviews,
                            'number_of_movies': number_of_movies,
-                           'latest_review': latest_review},)
+                           'latest_review': latest_review,
+                           'random_review': random_review},)
 
 
 def about(request):

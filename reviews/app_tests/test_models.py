@@ -1,10 +1,11 @@
 from django.test import TestCase
+from django.db.models import Max, Min
 from reviews.models import Genre, Subgenre, Keyword, WebsiteMetadescriptor,\
     Reviewer, MovieCreator, CreativeRole, Title, Movie, MovieReview, \
     Country, MovieParticipation, create_release_year_range, \
-    sort_titles_with_stop_word
+    sort_titles_with_stop_word, Grade, get_random_review
 import datetime
-
+import random
 
 class MovieMetadescriptorsCommonCodeTest(TestCase):
     model_id = 2
@@ -409,32 +410,6 @@ class MovieTest(TestCase):
             self.assertRegexpMatches(
                 review.review_text + ' graded with '
                 + review.grade + ' stars', r'\w+\s(\d\.\d){1}\s\w+')
-    '''
-    def test_movie_participation_rendering(self):
-        director = MovieCreator.objects.create(
-            first_name='Tobe', last_name='Hooper')
-        actor01 = MovieCreator.objects.create(
-            first_name='Gunnar', last_name='Hansen')
-        actor02 = MovieCreator.objects.create(
-            first_name='Marilyn', last_name='Burns')
-        director_role = CreativeRole.objects.create(role_name='Director')
-        actor_role = CreativeRole.objects.create(role_name='Actor')
-        movie_director = MovieParticipation.objects.create(
-            person=director, creative_role=director_role)
-        movie_actor01 = MovieParticipation.objects.create(
-            person=actor01, creative_role=actor_role)
-        test_movie = Movie.objects.get(id=1)
-        movie_actor02 = MovieParticipation.objects.create(
-            person=actor02, creative_role=actor_role)
-        test_movie.movie_participation.add(movie_director)
-        test_movie.movie_participation.add(movie_actor01)
-        test_movie.movie_participation.add(movie_actor02)
-
-        expected_string = 'Director: Tobe Hooper. ' \
-                          'Cast: Marilyn Burns, Gunnar Hansen.'
-        self.assertEquals(expected_string,
-                          test_movie.format_movie_participation())
-    '''
 
 
 class ReviewerTest(TestCase):
@@ -451,19 +426,44 @@ class ReviewerTest(TestCase):
 class MovieReviewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        year_of_release = 2005
+        duration = 94
+        hostel = Title.objects.create(title='Hostel')
+        hostel_2 = Title.objects.create(title='Hostel: Part II')
+        amytiville_horror = Title.objects.create(title='The Amytiville Horror')
+        cabin_fever = Title.objects.create(title='Cabin Fever')
         test_author = Reviewer.objects.create(first_name='D.', last_name='D.')
+        grade = Grade.objects.create(grade_numerical=2.5)
         test_movie = Movie.objects.create(
             main_title=Title.objects.create(title='Hostel'),
             year_of_release=2005, duration=94)
+        test_movie02 = Movie.objects.create(
+            main_title=hostel, year_of_release=year_of_release,
+            duration=duration)
+        test_movie03 = Movie.objects.create(
+            main_title=hostel_2, year_of_release=year_of_release,
+            duration=duration)
+        test_movie04 = Movie.objects.create(
+            main_title=amytiville_horror, year_of_release=year_of_release,
+            duration=duration)
+        test_movie05 = Movie.objects.create(
+            main_title=cabin_fever, year_of_release=year_of_release,
+            duration=duration)
         test_review = MovieReview.objects.create(
             reviewed_movie=test_movie, review_text='Some review txt',
-            grade='2.5', date_created=datetime.datetime.now())
-        test_review.review_author.add(test_author)
+            date_created=datetime.datetime(2018, 6, 14))
+        test_review_02 = MovieReview.objects.create(
+            reviewed_movie=test_movie02, review_text='Review 2',
+            date_created=datetime.datetime(2018, 6, 15))
+        test_review_03 = MovieReview.objects.create(
+            reviewed_movie=test_movie03, review_text='Review 3',
+            date_created=datetime.datetime(2018, 6, 16))
+        test_review_04 = MovieReview.objects.create(
+            reviewed_movie=test_movie04, review_text='Review 3',
+            date_created=datetime.datetime(2018, 6, 17))
+        #test_review.review_author.add(test_author)
 
     def test_string_representation_of_review_correct(self):
         review_object = MovieReview.objects.get(pk=1)
         self.assertEquals('Hostel (2005) by D.D.', review_object.__str__())
-
-
-
 
