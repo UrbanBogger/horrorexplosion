@@ -57,8 +57,9 @@ class Microgenre(MovieMetadescriptors):
 
 
 class Keyword(MovieMetadescriptors):
-    name = models.CharField(max_length=100, help_text='Enter the keyword '
-                                                      '(or a keyword phrase)')
+    name = models.CharField(
+        max_length=100, unique=True,
+        help_text='Enter the keyword (or a keyword phrase)')
 
 
 class WebsiteMetadescriptor(models.Model):
