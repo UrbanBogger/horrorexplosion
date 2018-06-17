@@ -1,9 +1,8 @@
-from operator import attrgetter
 import re
+import random
 from django.db import models
 import datetime
 from ckeditor.fields import RichTextField
-from itertools import chain
 from django.core.urlresolvers import reverse
 
 
@@ -325,3 +324,20 @@ class ReferencedMovie(models.Model):
             movie_review=self.review,
             referenced_movie=', '.join(str(movie) for movie in \
                 self.referenced_movie.all()))
+
+
+def get_random_review(latest_review):
+    qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
+    max_pk = qs.aggregate(models.Max('pk'))['pk__max']
+    min_pk = qs.aggregate(models.Min('pk'))['pk__min']
+    counter = min_pk
+
+    while counter <= max_pk:
+        random_pk = random.randint(min_pk, max_pk)
+        try:
+            return qs.get(pk=random_pk)
+        except qs.model.DoesNotExist:
+            pass
+        counter += 1
+    # default return
+    return qs.get(pk=min_pk)
