@@ -6,16 +6,6 @@ from ckeditor.fields import RichTextField
 from django.core.urlresolvers import reverse
 
 
-def sort_titles_with_stop_word(movie_query_set, movie_object):
-    if movie_object == 'review':
-        return sorted(movie_query_set, key=lambda review_object:
-                      re.sub(r'^(A|An|The)\s+', r'',
-                             review_object.reviewed_movie.main_title.title))
-    return sorted(
-        movie_query_set, key=lambda movie_object:
-            re.sub(r'^(A|An|The)\s+', r'', movie_object.main_title.title))
-
-
 def create_release_year_range():
     release_year_options = []
     release_start_year = 1895
