@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Genre, Subgenre, Microgenre, Keyword, \
 WebsiteMetadescriptor, Reviewer, MovieCreator, Country, \
     CreativeRole, Movie, MovieParticipation, Title, MovieFranchise, \
-    MovieReview, ReferencedMovie, Grade, Contributor
+    MovieReview, ReferencedMovie, Grade, Contributor, Article
 
 # Register your models here.
 admin.site.register(Genre)
@@ -22,3 +22,4 @@ admin.site.register(Movie)
 admin.site.register(MovieFranchise)
 admin.site.register(MovieReview)
 admin.site.register(ReferencedMovie)
+admin.site.register(Article)

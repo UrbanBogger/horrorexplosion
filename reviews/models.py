@@ -135,20 +135,32 @@ class Grade(models.Model):
         return '{numerical_grade}'.format(numerical_grade=self.grade_numerical)
 
 
-class Review(models.Model):
+class PieceOfText(models.Model):
     review_author = models.ForeignKey(
         Reviewer, on_delete=models.SET_NULL, null=True,
-        help_text='Enter the author of the review')
-    review_text = RichTextField(help_text='Enter the review text')
-    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True,
-                              help_text='Choose the motion picture\'s grade')
+        verbose_name='Text Author',
+        help_text='Enter the name of the author')
+    review_text = RichTextField(help_text='Enter the text',
+                                verbose_name='Text')
     date_created = models.DateField(
-        help_text='Enter the original date of the review creation')
+        help_text='Enter the original date of the text creation')
     last_modified = models.DateField(auto_now=True)
     first_created = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         abstract = True
+
+
+class Review(PieceOfText):
+    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True,
+                              help_text='Choose the motion picture\'s grade')
+
+    class Meta:
+        abstract = True
+
+
+class Article(PieceOfText):
+    pass
 
 
 class Country(models.Model):
