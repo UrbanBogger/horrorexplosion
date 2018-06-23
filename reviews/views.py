@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator
-from .models import Movie, MovieReview, WebsiteMetadescriptor,\
-    sort_titles_with_stop_word, ReferencedMovie, Contributor, \
-    get_random_review
+from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
+    Contributor, get_random_review
 
 # Create your views here.
 
