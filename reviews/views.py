@@ -5,6 +5,10 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
 
 # Create your views here.
 
+ENGLISH_ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                    'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+                    'W', 'X', 'Y', 'Z']
+
 
 def index(request):
     number_of_reviews = MovieReview.objects.all().count()
@@ -40,6 +44,28 @@ def contact(request):
                   context={'page_title': contact_page_title,
                            'meta_content_description': content_metadescription}
                   )
+
+
+def movie_index(request, first_letter=''):
+    mov_index_page_title = "Movie Index | The Horror Explosion"
+    content_metadescription = 'An alphabetical list of the movies in our ' \
+                              'database'
+    all_movies = Movie.objects.all()
+    movies_per_letter = {}
+    letter_movies_dict = {}
+    for letter in ENGLISH_ALPHABET:
+        letter_movies_dict[letter] = all_movies.filter(
+            title_for_sorting__istartswith=letter)
+
+    if first_letter:
+        movies_per_letter[first_letter] = letter_movies_dict.get(first_letter)
+
+    return render(request, 'movie-index.html',
+                  context={
+                      'page_title': mov_index_page_title,
+                      'meta_content_description': content_metadescription,
+                      'movie_dict': letter_movies_dict,
+                      'movies_per_letter': movies_per_letter})
 
 
 class ContributorListView (generic.ListView):
