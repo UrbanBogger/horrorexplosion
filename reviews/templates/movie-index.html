@@ -1,0 +1,40 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Movie Index</h1>
+{% if movie_dict %}
+<ul class="list-inline">
+    {% for letter, movies in movie_dict.items %}
+        {% if movies %}
+    <li><a href="{% url 'movie_index' %}{{ letter }}" class="btn btn-info" role="button">{{ letter }}</a></li>
+        {% else %}
+    <li><a href="#" class="btn disabled" role="button" tabindex="-1">{{ letter }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% else %}
+<p>No movies found in the database.</p>
+{% endif %}
+{% if movies_per_letter.items %}
+    {% for letter, movies in movies_per_letter.items %}
+        {% if movies %}
+            <h2>Movies starting with the letter {{ letter }}:</h2>
+            <div class="list-group">
+                {% for movie in movies %}<a href="{{ movie.get_absolute_url }}" class="list-group-item list-group-item-action"><strong>{{ movie }}</strong></a>{% endfor %}
+            </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <strong>No movies starting with the letter {{ letter }}!</strong>
+        </div>
+        {% endif %}
+   {% endfor %}
+{% endif %}
+{% endblock %}
