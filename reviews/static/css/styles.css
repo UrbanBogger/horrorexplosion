@@ -28,8 +28,8 @@ footer {
       padding: 15px;
 }
 
-.btn-space {
-    margin-right: 5px;
+li.mov_index {
+    padding: 10px;
 }
 
 * On small screens, set height to 'auto' for sidenav and grid */
