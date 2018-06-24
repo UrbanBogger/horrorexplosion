@@ -16,8 +16,11 @@
     It's very basic at the moment but we'll aim to expand it by adding new content and features.</p>
 <p><strong>Current number of reviews: </strong><a href="{% url 'movie_reviews' %}">{{ number_of_reviews }}</a></p>
 <p><strong>Current number of movies in our database: </strong><a href="{% url 'movies' %}">{{ number_of_movies }}</a></p>
+{% if latest_review %}
 <p><strong>Latest review: </strong>
     <a href="{{ latest_review.get_absolute_url }}"><div style="margin-bottom: 10px;" class="media"><div class="media-left"><img class="media-object img-rounded" src="{% static '' %}{{ latest_review.reviewed_movie.poster }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="45" width="45" /></div><div class="media-body"><p class="media-heading text-left">{{ latest_review }}</p></div></div></a>
+{% elif random_review %}
 <p><strong>Random review:</strong></p>
     <a href="{{ random_review.get_absolute_url }}"><div style="margin-bottom: 10px;" class="media"><div class="media-left"><img class="media-object img-rounded" src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="45" width="45" /></div><div class="media-body"><p class="media-heading text-left">{{ random_review }}</p></div></div></a>
+{% endif %}
 {% endblock %}
