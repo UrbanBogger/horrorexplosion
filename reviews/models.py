@@ -338,6 +338,9 @@ class ReferencedMovie(models.Model):
 
 def get_random_review(latest_review):
     qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
+
+    if not qs:
+        return None
     max_pk = qs.aggregate(models.Max('pk'))['pk__max']
     min_pk = qs.aggregate(models.Min('pk'))['pk__min']
     counter = min_pk
