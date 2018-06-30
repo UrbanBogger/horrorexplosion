@@ -1,3 +1,6 @@
+import re
+from bs4 import BeautifulSoup
+from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views import generic
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
@@ -8,6 +11,41 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
 ENGLISH_ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                     'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
                     'W', 'X', 'Y', 'Z']
+
+
+def substitute_links_in_text(text):
+    mov_title_pattern = re.compile(r'.*imdb.*/title/')
+    mov_title_w_year_pattern = re.compile(r'.+\([0-9]{4}\).*')
+    mov_year_split_pattern = re.compile(r'\([0-9]{4}\)')
+    mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
+
+    html_to_be_modified = BeautifulSoup(text, 'html.parser')
+    links = html_to_be_modified.find_all('a')
+
+    if not links:
+        return text
+
+    for link_tag in links:
+        if mov_title_pattern.match(link_tag.attrs.get('href')):
+            if mov_title_w_year_pattern.match(link_tag.string):
+                mov_title = mov_year_split_pattern.split(
+                    link_tag.string)[0].strip()
+                mov_year = mov_year_pattern.search(
+                    link_tag.string).group(1)
+                try:
+                    mov = Movie.objects.get(main_title__title=mov_title,
+                                            year_of_release=mov_year)
+                except ObjectDoesNotExist:
+                    continue
+
+            else:
+                try:
+                    mov = Movie.objects.get(
+                        main_title__title=link_tag.string.strip())
+                except ObjectDoesNotExist:
+                    continue
+            link_tag['href'] = mov.get_absolute_url()
+    return str(html_to_be_modified)
 
 
 def index(request):
@@ -137,6 +175,8 @@ class MovieReviewDetailView(generic.DetailView):
         context = super(MovieReviewDetailView, self).get_context_data(**kwargs)
         movie_review = MovieReview.objects.get(pk=self.kwargs.get(
             self.pk_url_kwarg))
+        context['review_text'] = substitute_links_in_text(
+            movie_review.review_text)
         context['page_title'] = str(movie_review.reviewed_movie) + \
             ' | Movie Review | The Horror Explosion'
         context['meta_content_description'] = movie_review.\
