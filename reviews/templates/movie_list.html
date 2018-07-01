@@ -13,12 +13,12 @@
 <h1>Movies {{ ordering_msg }}</h1>
 <strong>Sort by:</strong>
 <form method="get">
-    <select class="custom-select" name="ordering">
+    <select class="selectpicker" data-width="50%" name="ordering">
         <option value="alphabetical" selected="selected">Alphabetical [Default Ordering]</option>
         <option value="date_added">Date Added [Oldest to Newest]</option>
         <option value="release_year">Release Year [Oldest to Newest]</option>
     </select>
-    <input type="submit" value="Sort">
+    <button type="submit" class="btn btn-primary">Sort</button>
 </form>
 {% if movie_list %}
 <ul class="list-group">
