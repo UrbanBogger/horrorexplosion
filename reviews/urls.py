@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^contributors/$', views.ContributorListView.as_view(),
         name='contributors'),
     url(r'^contact/$', views.contact, name='contact'),
-    url(r'^movies/$', views.MovieListView.as_view(), name='movies'),
+    url(r'^movies/$', views.orderable_movie_list, name='movies'),
     url(r'^movie/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
         views.MovieDetailView.as_view(), name='movie-detail'),
     url(r'^movie_reviews/$', views.MovieReviewListView.as_view(),
