@@ -1,0 +1,61 @@
+{% extends "base_generic.html" %}
+
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Movies {{ ordering_msg }}</h1>
+<strong>Sort by:</strong>
+<form method="get">
+    <select class="custom-select" name="ordering">
+        <option value="alphabetical" selected="selected">Alphabetical [Default Ordering]</option>
+        <option value="date_added">Date Added [Oldest to Newest]</option>
+        <option value="release_year">Release Year [Oldest to Newest]</option>
+    </select>
+    <input type="submit" value="Sort">
+</form>
+{% if movie_list %}
+<ul class="list-group">
+    {% for movie in movie_list %}
+    {% load static %}
+    <li class="list-group-item">
+        <a href="{{ movie.get_absolute_url }}"><img src="{% static '' %}{{ movie.poster }}" alt="{{ movie.main_title}} poster" height="64" width="64" class="img-thumbnail">{{ movie.main_title }}</a> ({{ movie.year_of_release }})
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Could not find any movies</p>
+{% endif %}
+{% endblock %}
+
+{% block pagination %}
+{% if movie_list.has_other_pages %}
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if movie_list.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ movies.previous_page_number }}&ordering={{ current_ordering }}">Previous</a>
+            {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+        {% endif %}
+        {% for i in movie_list.paginator.page_range %}
+        {% if movie_list.number == i %}
+        <li class="page-item active"><a class="page-link" href="#">{{ i }}<span class="sr-only">(current)</span></a></li>
+        {% else %}
+        <li><a class="page-link" href="?page={{ i }}&ordering={{ current_ordering }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if movie_list.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ movie_list.next_page_number }}&ordering={{ current_ordering }}">Next</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

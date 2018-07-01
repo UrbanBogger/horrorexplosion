@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views import generic
+from django.http import Http404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, get_random_review
 
@@ -124,6 +126,37 @@ def movie_index(request, first_letter=''):
                       'movies_per_letter': movies_per_letter})
 
 
+def orderable_movie_list(request):
+    movie_list_page_title = "Movie List | The Horror Explosion"
+    content_metadescription = "The list of all the movies in our database."
+    ordering_dict = {'alphabetical':
+                     ('title_for_sorting', '(by title)'),
+                     'date_added':
+                     ('first_created', '(by date of addition)'),
+                     'release_year':
+                     ('year_of_release', '(by release year)')}
+
+    mov_qs = Movie.objects.all()
+    ordering = request.GET.get('ordering')
+    page = request.GET.get('page', 1)
+    if ordering:
+        mov_qs = Movie.objects.all().order_by(ordering_dict.get(ordering)[0])
+    else:
+        ordering = 'alphabetical'
+    paginator = Paginator(mov_qs, 5)
+    try:
+        movies = paginator.page(page)
+    except PageNotAnInteger:
+        movies = paginator.page(1)
+    except EmptyPage:
+        movies = paginator.page(paginator.num_pages)
+    return render(request, 'movie_list.html',
+                  {'page_title': movie_list_page_title,
+                   'meta_content_description': content_metadescription,
+                   'movie_list': movies, 'current_ordering': ordering,
+                   'ordering_msg': ordering_dict.get(ordering)[1]})
+
+
 class ContributorListView (generic.ListView):
     model = Contributor
     contributors_page_title = "Contributors | The Horror Explosion"
@@ -133,19 +166,6 @@ class ContributorListView (generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(ContributorListView, self).get_context_data(**kwargs)
         context['page_title'] = self.contributors_page_title
-        context['meta_content_description'] = self.content_metadescription
-        return context
-
-
-class MovieListView(generic.ListView):
-    model = Movie
-    paginate_by = 5
-    movie_list_page_title = "Movie List | The Horror Explosion"
-    content_metadescription = "The list of all the movies in our database."
-
-    def get_context_data(self, **kwargs):
-        context = super(MovieListView, self).get_context_data(**kwargs)
-        context['page_title'] = self.movie_list_page_title
         context['meta_content_description'] = self.content_metadescription
         return context
 
