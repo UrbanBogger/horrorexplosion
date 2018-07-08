@@ -21,7 +21,7 @@
             <img src="{{ mov_review.reviewed_movie.poster.url }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
             {% endif %}
             <strong>{{ mov_review }}</strong></a>
-        <div id="rating"><p><strong>Our Rating</strong>: <img src="{{ mov_review.grade.grade_depiction.url }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="100" width="100" class="img-fluid img-thumbnail"/></p></div>
+        <div class="col-sm-4" id="rating"><strong>Our Rating</strong>: <img src="{{ mov_review.grade.grade_depiction.url }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="100" width="100" class="img-fluid img-thumbnail"/></div>
     </li>
     {% endfor %}
 </ul>
