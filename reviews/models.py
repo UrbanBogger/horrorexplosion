@@ -254,6 +254,9 @@ class MotionPicture(models.Model):
     poster = models.ImageField(
         upload_to='movie_posters/', null=True, blank=True,
         help_text='Upload the poster of the movie')
+    poster_thumbnail = models.ImageField(
+        upload_to='movie_posters/thumbnails/', null=True, blank=True,
+        help_text='Upload the poster thumbnail')
     first_created = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
