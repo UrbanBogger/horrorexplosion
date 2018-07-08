@@ -32,6 +32,23 @@ li.mov_index {
     padding: 10px;
 }
 
+div#sort-form {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.selectpicker {
+    float: right;
+}
+
+.btn {
+    margin-left: 10px;
+}
+
+div#sort-form > form {
+    padding-left: 10px;
+}
+
     * On small screens, set height to 'auto' for sidenav and grid */
     @media screen and (max-width: 767px) {
       .sidenav {

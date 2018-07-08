@@ -129,20 +129,46 @@ def movie_index(request, first_letter=''):
 def orderable_movie_list(request):
     movie_list_page_title = "Movie List | The Horror Explosion"
     content_metadescription = "The list of all the movies in our database."
-    ordering_dict = {'alphabetical':
-                     ('title_for_sorting', '(by title)'),
-                     'date_added':
-                     ('first_created', '(by date of addition)'),
-                     'release_year':
-                     ('year_of_release', '(by release year)')}
+    ordering_dict = {'alphabetical-ascending':
+                     ('title_for_sorting', '(by Title)'),
+                     'alphabetical-descending': ('-title_for_sorting',
+                                                      '(by Title)'),
+                     'date_added-ascending':
+                     ('first_created', '(by Date Added)'),
+                     'date_added-descending': ('-first_created', '(by Date '
+                                                                 'Added)'),
+                     'release_year-ascending':
+                     ('year_of_release', '(by Release Year)'),
+                     'release_year-descending': ('-year_of_release',
+                                                 '(by Release Year)')}
 
-    mov_qs = Movie.objects.all()
-    ordering = request.GET.get('ordering')
-    page = request.GET.get('page', 1)
-    if ordering:
-        mov_qs = Movie.objects.all().order_by(ordering_dict.get(ordering)[0])
+    ordering_categories = ['alphabetical', 'date_created', 'release_year']
+    ordering_sequence = ['ascending', 'descending']
+    default_ordering = 'alphabetical-ascending'
+    ordering_req = (request.GET.getlist('ordering'))
+
+    if not ordering_req:
+        ordering_req = ['alphabetical', 'ascending']
+    elif len(ordering_req) == 1:
+        if ordering_req[0] in ordering_categories:
+            ordering_req.insert(1, 'ascending')
+            print('request is: ' + str(ordering_req))
+        elif ordering_req[0] in ordering_sequence:
+            ordering_req.insert(0, 'alphabetical')
+            print('request is: ' + str(ordering_req))
+        else:
+            ordering_req = ['alphabetical', 'ascending']
+
+    if ordering_dict.get('-'.join(ordering_req)):
+        ordering = '-'.join(ordering_req)
     else:
-        ordering = 'alphabetical'
+        ordering = default_ordering
+        ordering_req = ['alphabetical', 'ascending']
+
+    mov_qs = Movie.objects.all().order_by(ordering_dict.get(ordering)[0])
+    ordering_msg = ordering_dict.get(ordering)[1]
+
+    page = request.GET.get('page', 1)
     paginator = Paginator(mov_qs, 5)
     try:
         movies = paginator.page(page)
@@ -150,11 +176,13 @@ def orderable_movie_list(request):
         movies = paginator.page(1)
     except EmptyPage:
         movies = paginator.page(paginator.num_pages)
+
     return render(request, 'movie_list.html',
                   {'page_title': movie_list_page_title,
                    'meta_content_description': content_metadescription,
-                   'movie_list': movies, 'current_ordering': ordering,
-                   'ordering_msg': ordering_dict.get(ordering)[1]})
+                   'movie_list': movies, 'ordering_category': ordering_req[0],
+                   'ordering_sequence': ordering_req[1],
+                   'ordering_msg': ordering_msg})
 
 
 class ContributorListView (generic.ListView):
