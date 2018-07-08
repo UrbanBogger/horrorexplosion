@@ -256,6 +256,9 @@ class MotionPicture(models.Model):
     poster = models.ImageField(
         upload_to='images/', null=True, blank=True,
         help_text='Upload the poster of the movie')
+    poster_thumbnail = models.ImageField(
+        upload_to='images/', null=True, blank=True,
+        help_text='Upload the poster thumbnail')
 
     class Meta:
         abstract = True
