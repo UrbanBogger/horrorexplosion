@@ -68,8 +68,11 @@ div.media-body {
 }
 
 #star-rating {
-   width: auto;
-   height: 50%;
+   border-style: solid;
+    border-width: 4px;
+    padding: 5px;
+    height: 50px;
+    width: auto;
 }
 
 * On small screens, set height to 'auto' for sidenav and grid */
