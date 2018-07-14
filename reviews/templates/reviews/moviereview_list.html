@@ -13,15 +13,15 @@
 {% if moviereview_list %}
 <ul class="list-group">
     {% for mov_review in moviereview_list %}
-    <li class="list-group-item clearfix">
+    <li class="list-group-item">
         <a href="{{ mov_review.get_absolute_url }}">
             {% if mov_review.reviewed_movie.poster_thumbnail %}
-            <img src="{{ mov_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ mov_review.reviewed_movie.main_title }} poster" height="100" width="100" class="img-thumbnail">
+            <img class="img-thumbnail" src="{{ mov_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ mov_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
             {% else %}
-            <img src="{{ mov_review.reviewed_movie.poster.url }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
+            <img class="img-thumbnail" src="{{ mov_review.reviewed_movie.poster.url }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
             {% endif %}
             <strong>{{ mov_review }}</strong></a>
-        <div class="col-sm-4" id="rating"><strong>Our Rating</strong>: <img src="{{ mov_review.grade.grade_depiction.url }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="100" width="100" class="img-fluid img-thumbnail"/></div>
+        <p><strong>Our Rating</strong>:</p><img id="star-rating" src="{{ mov_review.grade.grade_depiction.url }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="80" width="120"/>
     </li>
     {% endfor %}
 </ul>
