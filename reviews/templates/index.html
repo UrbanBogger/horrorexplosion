@@ -41,9 +41,9 @@
         <a href="{{ random_review.get_absolute_url }}">
             <div class="media-left">
             {% if random_review.reviewed_movie.poster_thumbnail %}
-            <img class="media-object" src="{{ random_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="100" width="100"/>
+            <img class="media-object" src="{{ random_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
             {% else %}
-            <img class="media-object" src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title }} poster" height="100" width="100"/>
+            <img class="media-object" src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
             {% endif %}
             </div>
             <div class="media-body"><h4 class="media-heading text-left">{{ random_review }}</h4>
