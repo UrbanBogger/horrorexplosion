@@ -21,11 +21,7 @@
         <div style="margin-bottom: 10px;" class="media">
             <a href="{{ latest_review.get_absolute_url }}">
             <div class="media-left">
-            {% if latest_review.reviewed_movie.poster_thumbnail %}
-            <img src="{{ latest_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
-            {% else %}
             <img src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="100" width="100" class="img-thumbnail">
-            {% endif %}
             </div>
                 <div class="media-body"><h4 class="media-heading text-left">{{ latest_review }}</h4>
                     <p>{{ latest_review.mov_review_page_description }}</p>
