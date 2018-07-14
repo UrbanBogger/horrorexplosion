@@ -21,9 +21,14 @@
         <div class="media" style="margin-bottom: 10px;">
             <a href="{{ latest_review.get_absolute_url }}">
             <div class="media-left">
-            <img class="media-object" src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="40" width="40"/>
+                {% if latest_review.reviewed_movie.poster_thumbnail %}
+                 <img class="media-object" src="{{ latest_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
+                {% else %}
+                <img class="media-object" src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
+                {% endif %}
             </div>
-                <div class="media-body"><h4 class="media-heading text-left">{{ latest_review }}</h4>
+                <div class="media-body">
+                    <h4 class="media-heading text-left">{{ latest_review }}</h4>
                     <p>{{ latest_review.mov_review_page_description }}</p>
                 </div>
             </a>
@@ -36,9 +41,9 @@
         <a href="{{ random_review.get_absolute_url }}">
             <div class="media-left">
             {% if random_review.reviewed_movie.poster_thumbnail %}
-            <img src="{{ random_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
+            <img class="media-object" src="{{ random_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="100" width="100"/>
             {% else %}
-            <img src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title }} poster" height="100" width="100" class="img-thumbnail">
+            <img class="media-object" src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title }} poster" height="100" width="100"/>
             {% endif %}
             </div>
             <div class="media-body"><h4 class="media-heading text-left">{{ random_review }}</h4>
