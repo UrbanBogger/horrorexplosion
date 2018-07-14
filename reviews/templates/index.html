@@ -18,10 +18,10 @@
 
 {% if latest_review %}
 <p><strong>Latest review: </strong></p>
-        <div style="margin-bottom: 10px;" class="media">
+        <div class="media" style="margin-bottom: 10px;">
             <a href="{{ latest_review.get_absolute_url }}">
-            <div class="media-left">
-            <img src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="100" width="100" class="img-thumbnail">
+            <div class="media-left pull-left">
+            <img class="img-thumbnail" src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="100" width="100"/>
             </div>
                 <div class="media-body"><h4 class="media-heading text-left">{{ latest_review }}</h4>
                     <p>{{ latest_review.mov_review_page_description }}</p>
