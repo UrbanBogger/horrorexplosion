@@ -75,13 +75,6 @@ div.media-body {
     width: auto;
 }
 
-div.media-body {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-}
-
 * On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     .sidenav {
