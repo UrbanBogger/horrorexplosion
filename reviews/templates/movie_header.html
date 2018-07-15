@@ -17,7 +17,7 @@
         {% elif movie.is_made_for_tv %}
         <p><strong>Note</strong>: Made for TV</p>
         {% endif %}
-<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in movie_directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
+<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in movie_directors %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% if movie_cast %}
 <em><strong>Cast</strong></em>: {% for movie_participation in movie_cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% endif %}
