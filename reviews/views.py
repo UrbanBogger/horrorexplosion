@@ -46,7 +46,7 @@ def substitute_links_in_text(text):
                 mov = Movie.objects.get(main_title__title__contains=mov_title)
             except ObjectDoesNotExist:
                     continue
-            mov_title_link['href'] = mov.get_absolute_url()
+        mov_title_link['href'] = mov.get_absolute_url()
     return str(html_to_be_modified)
 
 
