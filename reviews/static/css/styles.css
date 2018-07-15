@@ -63,6 +63,17 @@ div.media-body {
     height: 50px;
     width: auto;
 }
+
+#star-rating-review {
+    border-style: solid;
+    border-width: 4px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 5px;
+    padding: 5px;
+    height: 90px;
+    width: auto;
+}
     * On small screens, set height to 'auto' for sidenav and grid */
     @media screen and (max-width: 767px) {
       .sidenav {
