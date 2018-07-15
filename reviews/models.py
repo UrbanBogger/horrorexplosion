@@ -195,6 +195,7 @@ class MovieParticipation(models.Model):
 
     class Meta:
         ordering = ['person']
+        unique_together = ('person', 'creative_role')
 
 
 class Title(models.Model):
