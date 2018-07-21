@@ -1,6 +1,5 @@
 {% extends "base_generic.html" %}
 
-
 {% block title %}
 <title>{{ page_title }}</title>
 {% endblock %}
@@ -10,7 +9,8 @@
 {% endblock %}
 
 {% block main_content %}
-<h1>Movies {{ ordering_msg }}</h1>
+<h1>Movie Reviews {{ ordering_msg }}</h1>
+
 <div id="sort-form">
 <form method="get">
     <strong>Sort by:</strong>
@@ -18,7 +18,8 @@
         <optgroup label="Categories" data-max-options="1">
             <option value="alphabetical">Alphabetical</option>
             <option value="date_added">Date Added</option>
-            <option value="release_year">Release Year</option>
+            <option value="rating">Rating</option>
+            <option value="author">Author</option>
         </optgroup>
         <optgroup label="Sequence" data-max-options="1">
             <option value="ascending">Ascending</option>
@@ -28,23 +29,24 @@
     <button type="submit" class="btn btn-primary btn-lg">Sort</button>
 </form>
 </div>
-{% if movie_list %}
+
+{% if review_list %}
 <ul class="list-group">
-    {% for movie in movie_list %}
+    {% for mov_review in review_list %}
     {% load static %}
-    <li class="list-group-item">
-        <a href="{{ movie.get_absolute_url }}">
-            {% if movie.poster_thumbnail %}
-            <img src="{% static '' %}{{ movie.poster_thumbnail }}" alt="{{ movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
+    <li class="list-group-item clearfix">
+        <a href="{{ mov_review.get_absolute_url }}">
+            {% if mov_review.reviewed_movie.poster_thumbnail %}
+            <img src="{% static '' %}{{ mov_review.reviewed_movie.poster_thumbnail }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
             {% else %}
-            <img src="{% static '' %}{{ movie.poster }}" alt="{{ movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
-            {% endif %}
-            {{ movie.main_title }}</a> ({{ movie.year_of_release }})
+            <img src="{% static '' %}{{ mov_review.reviewed_movie.poster }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="100" width="100" class="img-thumbnail">
+            {% endif %}<strong>{{ mov_review }}</strong></a>
+        <p><strong>Our Rating</strong>:</p><img id="star-rating" src="{% static '' %}{{ mov_review.grade.grade_depiction }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="70" width="100"/>
     </li>
     {% endfor %}
 </ul>
 {% else %}
-<p>Could not find any movies</p>
+<p>Could not find any movie reviews</p>
 {% endif %}
 {% endblock %}
 
