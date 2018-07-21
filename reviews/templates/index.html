@@ -18,40 +18,10 @@
 
 {% if latest_review %}
 <p><strong>Latest review: </strong></p>
-<!--        <div class="media" style="margin-bottom: 10px;">
-            <div class="media-left">
-                {% if latest_review.reviewed_movie.poster_thumbnail %}
-                 <img class="media-object" src="{{ latest_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ latest_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
-                {% else %}
-                <img class="media-object" src="{{ latest_review.reviewed_movie.poster.url }}" alt="{{ latest_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
-                {% endif %}
-            </div>
-                <div class="media-body">
-                    <a href="{{ latest_review.get_absolute_url }}"><h4 class="media-heading text-left">{{ latest_review }}</h4></a>
-                    <p>{{ latest_review.mov_review_page_description }}</p>
-                </div>
-        </div>
-        -->
     {% include "review_media_object.html" with review=latest_review %}
 {% endif %}
 
 {% if random_review %}
-<!--
-<p><strong>Random review:</strong></p>
-    <div style="margin-bottom: 10px;" class="media">
-            <div class="media-left">
-            {% if random_review.reviewed_movie.poster_thumbnail %}
-            <img class="media-object" src="{{ random_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ random_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
-            {% else %}
-            <img class="media-object" src="{{ random_review.reviewed_movie.poster.url }}" alt="{{ random_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
-            {% endif %}
-            </div>
-            <div class="media-body">
-                <a href="{{ random_review.get_absolute_url }}"><h4 class="media-heading text-left">{{ random_review }}</h4></a>
-                <p>{{ random_review.mov_review_page_description }}</p>
-            </div>
-    </div>
-    -->
     {% include "review_media_object.html" with review=random_review %}
 {% endif %}
 {% endblock %}
