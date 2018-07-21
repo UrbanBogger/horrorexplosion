@@ -13,6 +13,33 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
 ENGLISH_ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                     'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
                     'W', 'X', 'Y', 'Z']
+ORDERING_SEQUENCE = ['ascending', 'descending']
+DEFAULT_ORDERING = 'alphabetical-ascending'
+ITEMS_PER_PAGE = 5
+MOV_ORDERING_DICT = {
+    'alphabetical-ascending': ('title_for_sorting', '(by Title, Ascending)'),
+    'alphabetical-descending': ('-title_for_sorting', '(by Title, '
+                                                      'Descending)'),
+    'date_added-ascending': ('first_created', '(by Date Added, Ascending)'),
+    'date_added-descending': ('-first_created', '(by Date Added, Descending)'),
+    'release_year-ascending': ('year_of_release', '(by Release Year, '
+                                                  'Ascending)'),
+    'release_year-descending': ('-year_of_release', '(by Release Year, '
+                                                    'Descending)')
+}
+MOV_ORDERING_CATEGORIES = ['alphabetical', 'date_added', 'release_year']
+MOVREV_ORDERING_DICT = {
+    'alphabetical-ascending': ('reviewed_movie', '(by Title, Ascending)'),
+    'alphabetical-descending': ('-reviewed_movie', '(by Title, Descending)'),
+    'date_added-ascending': ('first_created', '(by Date Added, Ascending)'),
+    'date_added-descending': ('-first_created', '(by Date Added, Descending)'),
+    'rating-ascending': ('grade', '(by Rating, Ascending)'),
+    'rating-descending': ('-grade', '(by Rating, Descending)'),
+    'author-ascending': ('review_author', '(by Author, Ascending)'),
+    'author-descending': ('-review_author', '(by Author, Descending)')
+}
+MOVREV_ORDERING_CATEGORIES = ['alphabetical', 'date_added', 'rating',
+                              'author']
 
 
 def substitute_links_in_text(text):
@@ -126,61 +153,81 @@ def movie_index(request, first_letter=''):
                       'movies_per_letter': movies_per_letter})
 
 
+def process_ordering_req(ordering_request, ordering_dict, ordering_categories):
+    if not ordering_request:
+        ordering_request = ['alphabetical', 'ascending']
+    elif len(ordering_request) == 1:
+        if ordering_request[0] in ordering_categories:
+            ordering_request.insert(1, 'ascending')
+        elif ordering_request[0] in ORDERING_SEQUENCE:
+            ordering_request.insert(0, 'alphabetical')
+        else:
+            ordering_request = ['alphabetical', 'ascending']
+
+    if ordering_dict.get('-'.join(ordering_request)):
+        ordering = '-'.join(ordering_request)
+    else:
+        ordering = DEFAULT_ORDERING
+        ordering_request = ['alphabetical', 'ascending']
+
+    return ordering, ordering_request
+
+
+def paginate_qs(qs, page):
+    paginator = Paginator(qs, ITEMS_PER_PAGE)
+
+    try:
+        paginated_qs = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_qs = paginator.page(1)
+    except EmptyPage:
+        paginated_qs = paginator.page(paginator.num_pages)
+
+    return paginated_qs
+
+
 def orderable_movie_list(request):
     movie_list_page_title = "Movie List | The Horror Explosion"
     content_metadescription = "The list of all the movies in our database."
-    ordering_dict = {'alphabetical-ascending':
-                     ('title_for_sorting', '(by Title)'),
-                     'alphabetical-descending': ('-title_for_sorting',
-                                                      '(by Title)'),
-                     'date_added-ascending':
-                     ('first_created', '(by Date Added)'),
-                     'date_added-descending': ('-first_created', '(by Date '
-                                                                 'Added)'),
-                     'release_year-ascending':
-                     ('year_of_release', '(by Release Year)'),
-                     'release_year-descending': ('-year_of_release',
-                                                 '(by Release Year)')}
 
-    ordering_categories = ['alphabetical', 'date_created', 'release_year']
-    ordering_sequence = ['ascending', 'descending']
-    default_ordering = 'alphabetical-ascending'
     ordering_req = (request.GET.getlist('ordering'))
+    ordering, ordering_req = process_ordering_req(
+        ordering_req, MOV_ORDERING_DICT, MOV_ORDERING_CATEGORIES)
+    ordering_msg = MOV_ORDERING_DICT.get(ordering)[1]
 
-    if not ordering_req:
-        ordering_req = ['alphabetical', 'ascending']
-    elif len(ordering_req) == 1:
-        if ordering_req[0] in ordering_categories:
-            ordering_req.insert(1, 'ascending')
-            print('request is: ' + str(ordering_req))
-        elif ordering_req[0] in ordering_sequence:
-            ordering_req.insert(0, 'alphabetical')
-            print('request is: ' + str(ordering_req))
-        else:
-            ordering_req = ['alphabetical', 'ascending']
-
-    if ordering_dict.get('-'.join(ordering_req)):
-        ordering = '-'.join(ordering_req)
-    else:
-        ordering = default_ordering
-        ordering_req = ['alphabetical', 'ascending']
-
-    mov_qs = Movie.objects.all().order_by(ordering_dict.get(ordering)[0])
-    ordering_msg = ordering_dict.get(ordering)[1]
-
+    mov_qs = Movie.objects.all().order_by(MOV_ORDERING_DICT.get(ordering)[0],
+                                          'title_for_sorting')
     page = request.GET.get('page', 1)
-    paginator = Paginator(mov_qs, 5)
-    try:
-        movies = paginator.page(page)
-    except PageNotAnInteger:
-        movies = paginator.page(1)
-    except EmptyPage:
-        movies = paginator.page(paginator.num_pages)
+    movies = paginate_qs(mov_qs, page)
 
     return render(request, 'movie_list.html',
                   {'page_title': movie_list_page_title,
                    'meta_content_description': content_metadescription,
                    'movie_list': movies, 'ordering_category': ordering_req[0],
+                   'ordering_sequence': ordering_req[1],
+                   'ordering_msg': ordering_msg})
+
+
+def orderable_movreview_list(request):
+    movie_list_page_title = "Movie Review List | The Horror Explosion"
+    content_metadescription = "The list of all the movie reviews in our " \
+                              "database."
+
+    ordering_req = (request.GET.getlist('ordering'))
+    ordering, ordering_req = process_ordering_req(
+        ordering_req, MOVREV_ORDERING_DICT, MOVREV_ORDERING_CATEGORIES)
+    ordering_msg = MOVREV_ORDERING_DICT.get(ordering)[1]
+
+    movrev_qs = MovieReview.objects.all().order_by(
+        MOVREV_ORDERING_DICT.get(ordering)[0], 'reviewed_movie')
+    page = request.GET.get('page', 1)
+    movreviews = paginate_qs(movrev_qs, page)
+
+    return render(request, 'movreview_list.html',
+                  {'page_title': movie_list_page_title,
+                   'meta_content_description': content_metadescription,
+                   'review_list': movreviews,
+                   'ordering_category': ordering_req[0],
                    'ordering_sequence': ordering_req[1],
                    'ordering_msg': ordering_msg})
 
@@ -219,7 +266,7 @@ class MovieDetailView(generic.DetailView):
         context['referenced_in_reviews'] = referenced_in_reviews
         return context
 
-
+'''
 class MovieReviewListView(generic.ListView):
     model = MovieReview
     paginate_by = 5
@@ -232,7 +279,7 @@ class MovieReviewListView(generic.ListView):
         context['page_title'] = self.movie_review_list_page_title
         context['meta_content_description'] = self.content_metadescription
         return context
-
+'''
 
 class MovieReviewDetailView(generic.DetailView):
     model = MovieReview

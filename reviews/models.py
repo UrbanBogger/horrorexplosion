@@ -132,6 +132,9 @@ class Grade(models.Model):
     def __str__(self):
         return '{numerical_grade}'.format(numerical_grade=self.grade_numerical)
 
+    class Meta:
+        ordering = ['grade_numerical']
+
 
 class PieceOfText(models.Model):
     review_author = models.ForeignKey(
