@@ -98,7 +98,7 @@ def get_mov_title_and_release_year(mov_link):
 def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
-    latest_review = MovieReview.objects.latest('first_created')
+    latest_review = MovieReview.objects.latest('id')
     random_review = get_random_review(latest_review)
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor. \
@@ -266,20 +266,6 @@ class MovieDetailView(generic.DetailView):
         context['referenced_in_reviews'] = referenced_in_reviews
         return context
 
-'''
-class MovieReviewListView(generic.ListView):
-    model = MovieReview
-    paginate_by = 5
-    movie_review_list_page_title = "Movie Review List | The Horror Explosion"
-    content_metadescription = "The list of all the movie reviews in our " \
-                              "database."
-
-    def get_context_data(self, **kwargs):
-        context = super(MovieReviewListView, self).get_context_data(**kwargs)
-        context['page_title'] = self.movie_review_list_page_title
-        context['meta_content_description'] = self.content_metadescription
-        return context
-'''
 
 class MovieReviewDetailView(generic.DetailView):
     model = MovieReview
