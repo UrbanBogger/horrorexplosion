@@ -11,7 +11,7 @@
 {% block main_content %}
 {% include "movie_header.html" %}
 {% if associated_reviews %}
-<p><strong>Review(s)</strong>: {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% endfor %}
+<p><strong>Review(s)</strong>: {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
     {% else %}
 <p><strong>No review(s) yet.</strong>
     {% endif %}
