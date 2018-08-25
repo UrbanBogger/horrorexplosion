@@ -1,12 +1,14 @@
 import re
 from bs4 import BeautifulSoup
 from django.db.models.base import ObjectDoesNotExist
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, get_random_review
+from django.core.mail import BadHeaderError, EmailMessage
+from .forms import ContactForm
 
 # Create your views here.
 
@@ -125,10 +127,38 @@ def about(request):
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
+
+    if request.method == 'GET':
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            contact_name = form.cleaned_data['contact_name']
+            contact_email = form.cleaned_data['contact_email']
+            content = form.cleaned_data['content']
+
+            try:
+                email = EmailMessage(contact_name, content, contact_email,
+                                     ['thehorrorexplosion@gmail.com'],
+                                     reply_to=[contact_email])
+                print('Email being sent...')
+                email.send()
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect(thanks)
     return render(request, 'contact.html',
-                  context={'page_title': contact_page_title,
+                  context={'form': form, 'page_title': contact_page_title,
                            'meta_content_description': content_metadescription}
                   )
+
+
+def thanks(request):
+    thanks_page_info = "Thank you | The Horror Explosion"
+    content_metadescription = "The Horror Explosion's 'thank you' page"
+    return render(request, 'thanks.html', context={
+        'page_title': thanks_page_info,
+        'meta_content_description': content_metadescription})
 
 
 def movie_index(request, first_letter=''):

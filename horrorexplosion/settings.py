@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,12 @@ CKEDITOR_CONFIGS = {
 }
 
 SITE_ID = 1
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'suncho'
+EMAIL_HOST_PASSWORD = 'bloodSport2000!'
+SENDGRID_API_KEY = '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'
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'

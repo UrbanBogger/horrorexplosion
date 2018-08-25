@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^contributors/$', views.ContributorListView.as_view(),
         name='contributors'),
     url(r'^contact/$', views.contact, name='contact'),
+    url(r'^thank-you/$', views.thanks, name='thank-you'),
     url(r'^movies/$', views.orderable_movie_list, name='movies'),
     url(r'^movie_reviews/$', views.orderable_movreview_list,
         name='movie_reviews'),
