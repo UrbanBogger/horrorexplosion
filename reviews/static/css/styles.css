@@ -82,6 +82,10 @@ div.media-body {
     height: 350px;
     width: auto;
 }
+
+.media-body {
+    display:inline;
+}
     * On small screens, set height to 'auto' for sidenav and grid */
     @media screen and (max-width: 767px) {
       .sidenav {
