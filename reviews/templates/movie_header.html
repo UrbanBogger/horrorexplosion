@@ -2,7 +2,7 @@
     <div class="media-left pull-left">
     <img id="review_mov_poster" class="media-object img-rounded" src="{{ movie.poster.url }}" alt="{{ movie.main_title}} poster" height="300" width="250" />
     </div>
-    <div class="media-body media-middle">
+    <div class="media-body">
 <h1 class="media-heading">{{ movie.main_title }}</h1>
         <h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% if not forloop.last %}/{% endif %}{% endfor %}, {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
         {% if movie.original_title %}
