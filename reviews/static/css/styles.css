@@ -83,8 +83,8 @@ div.media-body {
     width: auto;
 }
 
-.media-body {
-    display:inline;
+.media-body > p {
+    text-align: justify;
 }
 
 * On small screens, set height to 'auto' for sidenav and grid */
