@@ -343,6 +343,21 @@ class ReferencedMovie(models.Model):
                 self.referenced_movie.all()))
 
 
+class MovieRemake(models.Model):
+    remade_movie = models.OneToOneField(
+        Movie, related_name='remade_mov', help_text='Add the title of the '
+                                                    'remade movie')
+    remake = models.ManyToManyField(
+        Movie, related_name='remake', help_text='Add the remake(s) of this '
+                                                'movie')
+
+    def __str__(self):
+        return '{remade_mov} has been remade as: {remake}'.format(
+            remade_mov=self.remade_movie,
+            remake=', '.join(str(movie) for movie in
+                             self.remake.all()))
+
+
 def get_random_review(latest_review):
     qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
 

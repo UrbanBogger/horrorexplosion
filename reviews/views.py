@@ -6,7 +6,7 @@ from django.views import generic
 from django.http import Http404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
-    Contributor, get_random_review
+    Contributor, MovieRemake, get_random_review
 
 # Create your views here.
 
@@ -264,6 +264,12 @@ class MovieDetailView(generic.DetailView):
         referenced_in_reviews = ReferencedMovie.objects.filter(
             referenced_movie=movie)
         context['referenced_in_reviews'] = referenced_in_reviews
+        if MovieRemake.objects.filter(remade_movie=movie).exists():
+            remakes = MovieRemake.objects.get(remade_movie=movie).remake.all()
+            context['remakes'] = remakes
+        if MovieRemake.objects.filter(remake=movie).exists():
+            original_mov = MovieRemake.objects.get(remake=movie).remade_movie
+            context['remade_movie'] = original_mov
         return context
 
 
