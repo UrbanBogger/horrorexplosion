@@ -10,7 +10,7 @@
 
 {% block main_content %}
 {% include "movie_header.html" %}
-% if remakes %}
+{% if remakes %}
 <p><strong>Remade as:</strong> {% for remake in remakes %}<a href="{{ remake.get_absolute_url }}">{{ remake }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 {% endif %}
 {% if remade_movie %}
