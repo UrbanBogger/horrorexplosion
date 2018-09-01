@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
+from .models import Movie, MovieReview, MovieRemake, WebsiteMetadescriptor,\
+    ReferencedMovie, \
     Contributor, get_random_review
 from django.core.mail import BadHeaderError, EmailMessage
 from .forms import ContactForm
@@ -294,6 +295,12 @@ class MovieDetailView(generic.DetailView):
         referenced_in_reviews = ReferencedMovie.objects.filter(
             referenced_movie=movie)
         context['referenced_in_reviews'] = referenced_in_reviews
+        if MovieRemake.objects.filter(remade_movie=movie).exists():
+            remakes = MovieRemake.objects.get(remade_movie=movie).remake.all()
+            context['remakes'] = remakes
+        if MovieRemake.objects.filter(remake=movie).exists():
+            original_mov = MovieRemake.objects.get(remake=movie).remade_movie
+            context['remade_movie'] = original_mov
         return context
 
 

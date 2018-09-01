@@ -10,8 +10,14 @@
 
 {% block main_content %}
 {% include "movie_header.html" %}
+{% if remakes %}
+<p><strong>Remade as:</strong> {% for remake in remakes %}<a href="{{ remake.get_absolute_url }}">{{ remake }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+{% endif %}
+{% if remade_movie %}
+<p><strong>Remake of:</strong> <a href="{{ remade_movie.get_absolute_url }}">{{ remade_movie }}</a></p>
+{% endif %}
 {% if associated_reviews %}
-<p><strong>Review(s)</strong>: {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% endfor %}
+<p><strong>Review(s):</strong> {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% endfor %}
     {% else %}
 <p><strong>No review(s) yet.</strong>
     {% endif %}

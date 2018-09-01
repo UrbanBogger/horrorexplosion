@@ -213,14 +213,6 @@ class Title(models.Model):
         ordering = ['title']
 
 
-class MovieFranchise(models.Model):
-    franchise_name = models.CharField(
-        max_length=50, help_text='Enter the name of the movie franchise')
-
-    def __str__(self):
-        return '{franchise_name}'.format(franchise_name=self.franchise_name)
-
-
 class MotionPicture(models.Model):
     release_year_options = []
 
@@ -283,16 +275,6 @@ class Movie(MotionPicture):
     is_made_for_tv = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is the movie made-for-TV?')
-    is_a_sequel = models.NullBooleanField(
-        null=True, default=False, blank=True,
-        help_text='Is this movie a sequel?')
-    is_a_remake = models.NullBooleanField(
-        null=True, default=False, blank=True,
-        help_text='Is this movie a remake?')
-    franchise_association = models.ManyToManyField(
-        MovieFranchise, blank=True, help_text='If applicable, choose the '
-                                              'franchise that the movie '
-                                              'belongs to')
     first_created = models.DateField(auto_now_add=True, null=True, blank=True)
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
@@ -343,6 +325,45 @@ class ReferencedMovie(models.Model):
             movie_review=self.review,
             referenced_movie=', '.join(str(movie) for movie in \
                 self.referenced_movie.all()))
+
+
+class MovieInFranchise(models.Model):
+    movie = models.ForeignKey(Movie, help_text='Enter the movie that\'s part '
+                                               'of this franchise')
+    position_in_franchise = models.IntegerField(
+        default=1, help_text='Enter the movie\'s chronological position in '
+                             'the '
+                             'franchise as an integer, e.g. "1" for the '
+                             'first '
+                             'film in the franchise, "2" for the second '
+                             'one, etc.')
+
+
+class MovieFranchise(models.Model):
+    franchise_name = models.CharField(
+        max_length=50, help_text='Enter the name of the movie franchise')
+
+    movies_in_franchise = models.ManyToManyField(
+        MovieInFranchise, blank=True, help_text='List the movies '
+                                                'that belong to the franchise')
+
+    def __str__(self):
+        return '{franchise_name}'.format(franchise_name=self.franchise_name)
+
+
+class MovieRemake(models.Model):
+    remade_movie = models.OneToOneField(
+        Movie, related_name='remade_mov', help_text='Add the title of the '
+                                                    'remade movie')
+    remake = models.ManyToManyField(
+        Movie, related_name='remake', help_text='Add the remake(s) of this '
+                                                'movie')
+
+    def __str__(self):
+        return '{remade_mov} has been remade as: {remake}'.format(
+            remade_mov=self.remade_movie,
+            remake=', '.join(str(movie) for movie in
+                             self.remake.all()))
 
 
 def get_random_review(latest_review):
