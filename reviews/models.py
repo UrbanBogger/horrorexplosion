@@ -190,17 +190,35 @@ class CreativeRole(models.Model):
 class MovieParticipation(models.Model):
     person = models.ForeignKey(MovieCreator, on_delete=models.CASCADE)
     creative_role = models.ForeignKey(CreativeRole, on_delete=models.CASCADE)
+    position_in_credits = models.IntegerField(
+        default=1, help_text='Enter the position you want this creator to '
+                             'appear in the list, e.g. "1" means the first '
+                             'position in the list, "2" the second, etc.')
 
     def __str__(self):
-        return '{creative_role}: {creator}'.format(
+        return '{position}: {creative_role}: {creator}'.format(
+            position=self.position_in_credits,
             creative_role=self.creative_role, creator=self.person)
 
     def return_creator_name(self):
         return self.person.__str__()
 
     class Meta:
-        ordering = ['person']
+        ordering = ['position_in_credits', 'person']
         unique_together = ('person', 'creative_role')
+
+
+class MovieParticipationOrdered(models.Model):
+    movie_participation = models.ManyToManyField(
+        MovieParticipation,
+        help_text='Add the name of the movie creator and their role')
+    position_in_credits = models.IntegerField(
+        default=1, help_text='Enter the position you want this creator to '
+                             'appear in the list, e.g. "1" means the first '
+                             'position in the list, "2" the second, etc.')
+
+    class Meta:
+        ordering = ['position_in_credits']
 
 
 class Title(models.Model):
@@ -268,7 +286,8 @@ class MotionPicture(models.Model):
 class Movie(MotionPicture):
     movie_participation = models.ManyToManyField(
         MovieParticipation,
-        help_text='Add the name of the movie creator and their role')
+        help_text='Add the name of the movie creator, their role and the '
+                  'position you want them to appear in the credits')
     is_direct_to_video = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is the movie direct-to-video/DVD?')
@@ -286,9 +305,8 @@ class Movie(MotionPicture):
 
     def return_mov_participation_data(self, participation_type):
         participations = self.movie_participation.all()
-        return [MovieParticipation for MovieParticipation in
-                participations if str(MovieParticipation.creative_role) ==
-                participation_type]
+        return [MovieParticipation for MovieParticipation in participations
+                if str(MovieParticipation.creative_role) == participation_type]
 
 
 class MovieReview(Review):
