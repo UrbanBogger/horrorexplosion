@@ -16,6 +16,12 @@
 {% if remade_movie %}
 <p><strong>Remake of:</strong> <a href="{{ remade_movie.get_absolute_url }}">{{ remade_movie }}</a></p>
 {% endif %}
+{% if preceding_movie %}
+<p><strong>Preceded by:</strong> <a href="{{ preceding_movie.get_absolute_url }}">{{ preceding_movie }}</a></p>
+{% endif %}
+{% if following_movie %}
+<p><strong>Followed by:</strong> <a href="{{ following_movie.get_absolute_url }}">{{ following_movie }}</a></p>
+{% endif %}
 {% if associated_reviews %}
 <p><strong>Review(s)</strong>: {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
     {% else %}

@@ -358,6 +358,40 @@ class MovieRemake(models.Model):
                              self.remake.all()))
 
 
+class MovieInMovSeries(models.Model):
+    movie_in_series = models.ForeignKey(
+        Movie, help_text='Enter the movie that\'s part of this series')
+    position_in_series = models.IntegerField(
+        default=1, help_text='Enter the movie\'s chronological position in '
+                             'the '
+                             'series as an integer, e.g. "1" for the '
+                             'first '
+                             'film in the franchise, "2" for the second '
+                             'one, etc.')
+
+    class Meta:
+        ordering = ['position_in_series']
+
+    def __str__(self):
+        return '{position_in_series}: {movie_in_series}'.format(
+            position_in_series=self.position_in_series,
+            movie_in_series=self.movie_in_series)
+
+
+class MovieSeries(models.Model):
+    mov_series = models.ManyToManyField(
+        MovieInMovSeries, help_text='Enter the movie and its position in the '
+                                    'movie series')
+    franchise_association = models.ForeignKey(
+        MovieFranchise, on_delete=models.SET_NULL, null=True, blank=True,
+        help_text='Choose the franchise this movie might belong to[OPTIONAL]')
+
+    def __str__(self):
+        return 'Movies in this series: {movie_list}'.format(
+            movie_list=', '.join(str(mov_in_series) for mov_in_series in
+                                 self.mov_series.all()))
+
+
 def get_random_review(latest_review):
     qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
 
