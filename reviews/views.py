@@ -83,7 +83,11 @@ def get_mov_title_and_release_year(mov_link):
     mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
     mov_title = ''
     mov_year = None
-    if mov_title_w_year_pattern.match(mov_link.string):
+
+    if mov_link.find('em'):
+        mov_title = mov_link.find('em').string
+        mov_year = mov_year_pattern.search(mov_link.contents[1]).group(1)
+    elif mov_title_w_year_pattern.match(mov_link.string):
         mov_title = mov_year_split_pattern.split(
             mov_link.string)[0].strip()
         mov_year = mov_year_pattern.search(

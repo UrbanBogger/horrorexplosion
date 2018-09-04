@@ -1,10 +1,13 @@
+import re
+from bs4 import BeautifulSoup
 from django.test import TestCase
+from django.db.models import Max, Min
 from reviews.models import Genre, Subgenre, Keyword, WebsiteMetadescriptor,\
     Reviewer, MovieCreator, CreativeRole, Title, Movie, MovieReview, \
     Country, MovieParticipation, create_release_year_range, \
-    sort_titles_with_stop_word
+    Grade, get_random_review
 import datetime
-
+import random
 
 class MovieMetadescriptorsCommonCodeTest(TestCase):
     model_id = 2
@@ -367,9 +370,6 @@ class MovieTest(TestCase):
 
     def test_movie_ordering(self):
         movies = Movie.objects.all()
-        print('Unsorted movies: ' + str(movies))
-        sorted_movies = sort_titles_with_stop_word(movies)
-        print('Sorted movies: ' + str(sorted_movies))
 
     def test_only_reviewed_movies_retrieved(self):
         all_movies = Movie.objects.all()
@@ -409,32 +409,6 @@ class MovieTest(TestCase):
             self.assertRegexpMatches(
                 review.review_text + ' graded with '
                 + review.grade + ' stars', r'\w+\s(\d\.\d){1}\s\w+')
-    '''
-    def test_movie_participation_rendering(self):
-        director = MovieCreator.objects.create(
-            first_name='Tobe', last_name='Hooper')
-        actor01 = MovieCreator.objects.create(
-            first_name='Gunnar', last_name='Hansen')
-        actor02 = MovieCreator.objects.create(
-            first_name='Marilyn', last_name='Burns')
-        director_role = CreativeRole.objects.create(role_name='Director')
-        actor_role = CreativeRole.objects.create(role_name='Actor')
-        movie_director = MovieParticipation.objects.create(
-            person=director, creative_role=director_role)
-        movie_actor01 = MovieParticipation.objects.create(
-            person=actor01, creative_role=actor_role)
-        test_movie = Movie.objects.get(id=1)
-        movie_actor02 = MovieParticipation.objects.create(
-            person=actor02, creative_role=actor_role)
-        test_movie.movie_participation.add(movie_director)
-        test_movie.movie_participation.add(movie_actor01)
-        test_movie.movie_participation.add(movie_actor02)
-
-        expected_string = 'Director: Tobe Hooper. ' \
-                          'Cast: Marilyn Burns, Gunnar Hansen.'
-        self.assertEquals(expected_string,
-                          test_movie.format_movie_participation())
-    '''
 
 
 class ReviewerTest(TestCase):
@@ -447,23 +421,139 @@ class ReviewerTest(TestCase):
         reviewer = Reviewer.objects.get(pk=1)
         self.assertEquals('M.S.', reviewer.__str__())
 
+'''
+class MyHTMLParser(HTMLParser):
+    is_mov_link = False
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'a':
+            print(attrs[0][1])
+            if re.search(r'imdb.*/title/', attrs[0][1]):
+                print('found a link to IMDB movie title')
+                self.is_mov_link = True
+
+    def handle_endtag(self, tag):
+        #print("Encountered an end tag :", tag)
+        pass
+
+    def handle_data(self, data):
+        if self.is_mov_link:
+            print(str(data))
+'''
 
 class MovieReviewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        review_text = '<p>It&#39;s safe to say that director Ickx pays a loving ' \
+                      'homage to his favorite American backwoods brutality movies, ' \
+                      'such as <a ' \
+                      'href="https://www.imdb.com/title/tt0072271/?ref_' \
+                      '=fn_al_tt_8">The Texas Chainsaw Massacre (1974)</a> ' \
+                      'and <a href="https://www.imdb.com/name/nm0000127/?ref_=fn_al_nm_1">Craven</a>&#39;s ' \
+                      '<a href="https://www.imdb.com/title/tt0077681/?ref_' \
+                      '=nm_flmg_wr_38">The Hills Have Eyes (1977)</a>, ' \
+                      'in his only directorial effort thus far. This results in two issues: a forced plot device that attempts to sell ' \
+                      'us a ridiculous premise that people driving a car through one of Europe&#39;s most densely populated ' \
+                      'countries can get hopelessly lost &quot;in the middle of nowhere&quot; ' \
+                      '(a phrase that the characters repeat so many times it seems to be used as an invocation); ' \
+                      'and, as a direct consequence, some rather unconvincing locations.</p><p>Luckily, this ' \
+                      'appropriately mean-spirited shocker with a dash of torture horror manages to compensate for these ' \
+                      'setbacks with some disturbing and scary (especially the scene in the car inspired ' \
+                      'by <a href="https://www.imdb.com/name/nm0000118/?ref_=fn_al_nm_1">Carpenter</a>&#39;s ' \
+                      '<a href="https://www.imdb.com/title/tt0077651/?ref_' \
+                      '=nm_knf_t2">Halloween (1978)</a>) moments, ' \
+                      'accompanied by the director&#39;s excellent score; which comes as no surprise for being a ' \
+                      'composer is his main trade in the movie biz. Additional saving grace is the attention devoted to ' \
+                      'the interpersonal relationships between the members of an ad-hoc family unit harbouring a mentally ' \
+                      'defiecient serial killer, known as Junior.</p><p>It is upon him that the chiselled-faced Teutonic ' \
+                      'goddess Bergqvist, portraying a lipstick lesbian, runs afoul of with her partner (Simons) while on a road trip. ' \
+                      'Our heroine has to battle Junior and his enabling, slap-happy pappy (Dougherty in a thoroughly enjoyable thuggish turn) ' \
+                      'in order to save her life.</p><p>Bergqvist and Dougherty would share the ' \
+                      'spotlight again next year in the inferior ' \
+                      '<a href="https://www.imdb.com/title/tt0280012/?ref_=fn_al_tt_1">Parts of the Family</a>.</p>'
+        year_of_release = 2005
+        duration = 94
+        hostel = Title.objects.create(title='Hostel')
+        hostel_2 = Title.objects.create(title='Hostel: Part II')
+        amytiville_horror = Title.objects.create(title='The Amytiville Horror')
+        cabin_fever = Title.objects.create(title='Cabin Fever')
+        tcm = Title.objects.create(title='The Texas Chainsaw Massacre')
+        hills_have_eyes = Title.objects.create(title='The Hills Have Eyes')
+        halloween = Title.objects.create(title='Halloween')
+        parts_of_fam = Title.objects.create(title='Parts of the Family')
         test_author = Reviewer.objects.create(first_name='D.', last_name='D.')
+        grade = Grade.objects.create(grade_numerical=2.5)
+        tcm_mov = Movie.objects.create(main_title=tcm, year_of_release=1974,
+                                       duration=duration,
+                                       human_readable_url='tcm-slug-1974')
+        hills_have_eyes_mov = Movie.objects.create(
+            main_title=hills_have_eyes, year_of_release=1977,
+            duration=duration, human_readable_url='hills-have-eyes-slug-1977')
+        halloween_mov = Movie.objects.create(
+            main_title=halloween, year_of_release=1978, duration=duration,
+            human_readable_url='halloween-slug-1978')
+        parts_of_fam_mov = Movie.objects.create(
+            main_title=parts_of_fam, year_of_release=2003,
+            duration=duration, human_readable_url='parts-of-fam-slug-2003')
         test_movie = Movie.objects.create(
             main_title=Title.objects.create(title='Hostel'),
             year_of_release=2005, duration=94)
+        test_movie02 = Movie.objects.create(
+            main_title=hostel, year_of_release=year_of_release,
+            duration=duration)
+        test_movie03 = Movie.objects.create(
+            main_title=hostel_2, year_of_release=year_of_release,
+            duration=duration)
+        test_movie04 = Movie.objects.create(
+            main_title=amytiville_horror, year_of_release=year_of_release,
+            duration=duration)
+        test_movie05 = Movie.objects.create(
+            main_title=cabin_fever, year_of_release=year_of_release,
+            duration=duration)
         test_review = MovieReview.objects.create(
             reviewed_movie=test_movie, review_text='Some review txt',
-            grade='2.5', date_created=datetime.datetime.now())
-        test_review.review_author.add(test_author)
+            date_created=datetime.datetime(2018, 6, 14))
+        test_review_02 = MovieReview.objects.create(
+            reviewed_movie=test_movie02, review_text='Review 2',
+            date_created=datetime.datetime(2018, 6, 15))
+        test_review_03 = MovieReview.objects.create(
+            reviewed_movie=test_movie03, review_text='Review 3',
+            date_created=datetime.datetime(2018, 6, 16))
+        test_review_04 = MovieReview.objects.create(
+            reviewed_movie=test_movie04, review_text='Review 3',
+            date_created=datetime.datetime(2018, 6, 17))
+        review_referencing_movs = MovieReview.objects.create(
+            reviewed_movie=parts_of_fam_mov, review_text=review_text,
+            date_created=datetime.datetime.now())
+        #test_review.review_author.add(test_author)
 
     def test_string_representation_of_review_correct(self):
         review_object = MovieReview.objects.get(pk=1)
         self.assertEquals('Hostel (2005) by D.D.', review_object.__str__())
 
+    def test_link_substition_in_review(self):
+        review = MovieReview.objects.get(
+            reviewed_movie__main_title__title='Parts of the Family')
+        if review:
+            mov = None
+            review_text_html = BeautifulSoup(review.review_text, 'html.parser')
+            links = review_text_html.find_all('a')
+            mov_title_pattern = re.compile(r'.*imdb.*/title/')
+            mov_title_w_year_pattern = re.compile(r'.+\([0-9]{4}\).*')
+            mov_year_split_pattern = re.compile(r'\([0-9]{4}\)')
+            mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
 
-
-
+            for link_tag in links:
+                if mov_title_pattern.match(link_tag.attrs.get('href')):
+                    if mov_title_w_year_pattern.match(link_tag.string):
+                        mov_title = mov_year_split_pattern.split(
+                            link_tag.string)[0].strip()
+                        mov_year = mov_year_pattern.search(
+                            link_tag.string).group(1)
+                        mov = Movie.objects.get(main_title__title=mov_title,
+                                                year_of_release=mov_year)
+                    else:
+                        mov = Movie.objects.get(
+                            main_title__title=link_tag.string.strip())
+                    if mov:
+                        link_tag['href'] = mov.get_absolute_url()
