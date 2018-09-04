@@ -461,7 +461,7 @@ class MovieReviewTest(TestCase):
                       'setbacks with some disturbing and scary (especially the scene in the car inspired ' \
                       'by <a href="https://www.imdb.com/name/nm0000118/?ref_=fn_al_nm_1">Carpenter</a>&#39;s ' \
                       '<a href="https://www.imdb.com/title/tt0077651/?ref_' \
-                      '=nm_knf_t2">Halloween (1978)</a>) moments, ' \
+                      '=nm_knf_t2"><em>Halloween</em> (1978)</a>) moments, ' \
                       'accompanied by the director&#39;s excellent score; which comes as no surprise for being a ' \
                       'composer is his main trade in the movie biz. Additional saving grace is the attention devoted to ' \
                       'the interpersonal relationships between the members of an ad-hoc family unit harbouring a mentally ' \
@@ -538,14 +538,22 @@ class MovieReviewTest(TestCase):
             mov = None
             review_text_html = BeautifulSoup(review.review_text, 'html.parser')
             links = review_text_html.find_all('a')
+            print('all links in text: ' + str(links))
             mov_title_pattern = re.compile(r'.*imdb.*/title/')
             mov_title_w_year_pattern = re.compile(r'.+\([0-9]{4}\).*')
             mov_year_split_pattern = re.compile(r'\([0-9]{4}\)')
             mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
 
             for link_tag in links:
+                print('link tag is: ' + str(vars(link_tag)))
                 if mov_title_pattern.match(link_tag.attrs.get('href')):
-                    if mov_title_w_year_pattern.match(link_tag.string):
+                    if link_tag.find('em'):
+                        mov_title = link_tag.find('em').string
+                        mov_year = mov_year_pattern.search(
+                            link_tag.contents[1]).group(1)
+                        mov = Movie.objects.get(main_title__title=mov_title,
+                                                year_of_release=mov_year)
+                    elif mov_title_w_year_pattern.match(link_tag.string):
                         mov_title = mov_year_split_pattern.split(
                             link_tag.string)[0].strip()
                         mov_year = mov_year_pattern.search(
