@@ -290,16 +290,6 @@ class Movie(MotionPicture):
     is_made_for_tv = models.NullBooleanField(
         null=True, default=False, blank=True,
         help_text='Is the movie made-for-TV?')
-    is_a_sequel = models.NullBooleanField(
-        null=True, default=False, blank=True,
-        help_text='Is this movie a sequel?')
-    is_a_remake = models.NullBooleanField(
-        null=True, default=False, blank=True,
-        help_text='Is this movie a remake?')
-    franchise_association = models.ManyToManyField(
-        MovieFranchise, blank=True, help_text='If applicable, choose the '
-                                              'franchise that the movie '
-                                              'belongs to')
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the movie", unique=True, null=True)
