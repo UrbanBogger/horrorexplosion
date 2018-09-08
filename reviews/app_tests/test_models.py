@@ -444,11 +444,13 @@ class MyHTMLParser(HTMLParser):
 class MovieReviewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+
         review_text = '<p>It&#39;s safe to say that director Ickx pays a loving ' \
                       'homage to his favorite American backwoods brutality movies, ' \
                       'such as <a ' \
                       'href="https://www.imdb.com/title/tt0072271/?ref_' \
-                      '=fn_al_tt_8">The Texas Chainsaw Massacre (1974)</a> ' \
+                      '=fn_al_tt_8"><em>The Texas Chainsaw Massacre</em>' \
+                      '</a>' \
                       'and <a href="https://www.imdb.com/name/nm0000127/?ref_=fn_al_nm_1">Craven</a>&#39;s ' \
                       '<a href="https://www.imdb.com/title/tt0077681/?ref_' \
                       '=nm_flmg_wr_38">The Hills Have Eyes (1977)</a>, ' \
@@ -471,6 +473,9 @@ class MovieReviewTest(TestCase):
                       'in order to save her life.</p><p>Bergqvist and Dougherty would share the ' \
                       'spotlight again next year in the inferior ' \
                       '<a href="https://www.imdb.com/title/tt0280012/?ref_=fn_al_tt_1">Parts of the Family</a>.</p>'
+
+        #review_text = '<p>Hooper is not one of those genre directors whose
+        # output could be considered as consistently good; in fact, his every consecutive movie is an argument in favor of those who believe that the brilliance of <a href="https://www.imdb.com/title/tt0072271/"><em>The Texas Chainsaw Massacre</em> (1974)</a> was a mere lucky coincidence. But after watching <em>Crocodile</em> &ndash; director&rsquo;s second encounter with a bloodthirsty reptile; the first one being 1976&rsquo;s <a href="https://www.imdb.com/title/tt0074455"><em>Death Trap</em></a> &ndash; the man&rsquo;s qualities become apparent: the ability to execute scary scenes (here, it&rsquo;s crocodile attacks) with unmatched intensity, to create a desperate atmosphere and to make rednecks seem <em>really</em> frightening and completely fucked-up (man, that &ldquo; &lsquo;gator farm&rdquo;!) are all on display in this <a href="https://en.wikipedia.org/wiki/Nu_Image">Nu Image</a> production. It&#39;s not his fault that he has to deal with a badly-written script (authored by no less than four individuals) overpopulated with asshole characters and leading stars that don&rsquo;t seem to comprehend that this is supposed to be a horror flick.</p><p>Freshmen visiting a large swampy area somewhere in the South are decimated by an enormous Egyptian crocodile (brought there more than a century ago by an eccentric millionaire) after they break the eggs it&rsquo;s laid. Young as the sheriff and Evans as a local out to get the croc for chomping on his &ldquo;pappy&rdquo; and &ldquo;gran&rsquo; pappy&rdquo; try saving the kids and manage to leave a favorable impression thanks to their competent performances. Try to find the two (less or more) subtle homages to <em>TCM</em>. Popular enough to inspire a sequel <em>Crocodile 2: Death Swamp</em>.</p>'
         year_of_release = 2005
         duration = 94
         hostel = Title.objects.create(title='Hostel')
@@ -486,6 +491,10 @@ class MovieReviewTest(TestCase):
         tcm_mov = Movie.objects.create(main_title=tcm, year_of_release=1974,
                                        duration=duration,
                                        human_readable_url='tcm-slug-1974')
+        tcm_remake = Movie.objects.create(main_title=tcm,
+                                          year_of_release=2003,
+                                          duration=duration,
+                                          human_readable_url='tcm-remake-2003')
         hills_have_eyes_mov = Movie.objects.create(
             main_title=hills_have_eyes, year_of_release=1977,
             duration=duration, human_readable_url='hills-have-eyes-slug-1977')
@@ -532,6 +541,8 @@ class MovieReviewTest(TestCase):
         self.assertEquals('Hostel (2005) by D.D.', review_object.__str__())
 
     def test_link_substition_in_review(self):
+        mov_year = None
+        mov_title = ''
         review = MovieReview.objects.get(
             reviewed_movie__main_title__title='Parts of the Family')
         if review:
@@ -545,14 +556,22 @@ class MovieReviewTest(TestCase):
             mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
 
             for link_tag in links:
-                print('link tag is: ' + str(vars(link_tag)))
                 if mov_title_pattern.match(link_tag.attrs.get('href')):
                     if link_tag.find('em'):
                         mov_title = link_tag.find('em').string
-                        mov_year = mov_year_pattern.search(
-                            link_tag.contents[1]).group(1)
-                        mov = Movie.objects.get(main_title__title=mov_title,
-                                                year_of_release=mov_year)
+                        if len(link_tag.contents) == 2:
+                            mov_year = mov_year_pattern.search(
+                                link_tag.contents[1]).group(1)
+                            mov = Movie.objects.get(
+                                main_title__title=mov_title,
+                                year_of_release=mov_year)
+                        elif Movie.objects.filter(
+                                main_title__title=mov_title).exists():
+                            mov = Movie.objects.filter(
+                                main_title__title=mov_title).order_by(
+                                'year_of_release')[0]
+                        else:
+                            return
                     elif mov_title_w_year_pattern.match(link_tag.string):
                         mov_title = mov_year_split_pattern.split(
                             link_tag.string)[0].strip()
@@ -561,7 +580,8 @@ class MovieReviewTest(TestCase):
                         mov = Movie.objects.get(main_title__title=mov_title,
                                                 year_of_release=mov_year)
                     else:
-                        mov = Movie.objects.get(
-                            main_title__title=link_tag.string.strip())
+                        mov = Movie.objects.filter(
+                            main_title__title=link_tag.string.strip(
+                            )).order_by('year_of_release')[0]
                     if mov:
                         link_tag['href'] = mov.get_absolute_url()

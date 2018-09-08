@@ -62,20 +62,21 @@ def substitute_links_in_text(text):
 
     for mov_title_link in mov_title_links:
         mov_title, mov_year = get_mov_title_and_release_year(mov_title_link)
+
         if mov_year:
-            try:
-                mov = Movie.objects.get(
-                    main_title__title__contains=mov_title,
-                    year_of_release=mov_year)
-            except ObjectDoesNotExist:
-                continue
+            if Movie.objects.filter(main_title__title=mov_title,
+                                    year_of_release=mov_year).exists():
+                mov_title_link['href'] = Movie.objects.get(
+                    main_title__title=mov_title,
+                    year_of_release=mov_year).get_absolute_url()
 
         else:
-            try:
-                mov = Movie.objects.get(main_title__title__contains=mov_title)
-            except ObjectDoesNotExist:
-                    continue
-        mov_title_link['href'] = mov.get_absolute_url()
+            if Movie.objects.filter(
+                    main_title__title=mov_title).exists():
+                mov_title_link['href'] = Movie.objects.filter(
+                    main_title__title=mov_title).order_by(
+                    'year_of_release')[0].get_absolute_url()
+
     return str(html_to_be_modified)
 
 
@@ -88,16 +89,23 @@ def get_mov_title_and_release_year(mov_link):
 
     if mov_link.find('em'):
         mov_title = mov_link.find('em').string
-        mov_year = mov_year_pattern.search(mov_link.contents[1]).group(1)
+
+        if len(mov_link.contents) == 2:
+            mov_year = mov_year_pattern.search(
+                mov_link.contents[1]).group(1)
+
     elif mov_title_w_year_pattern.match(mov_link.string):
         mov_title = mov_year_split_pattern.split(
             mov_link.string)[0].strip()
         mov_year = mov_year_pattern.search(
             mov_link.string).group(1).strip()
+
     else:
         mov_title = mov_link.string.strip()
+
     if "’" in mov_title:
         mov_title = mov_title.replace("’", "'")
+
     return mov_title, mov_year
 
 
