@@ -188,17 +188,22 @@ class CreativeRole(models.Model):
 class MovieParticipation(models.Model):
     person = models.ForeignKey(MovieCreator, on_delete=models.CASCADE)
     creative_role = models.ForeignKey(CreativeRole, on_delete=models.CASCADE)
+    position_in_credits = models.IntegerField(
+        default=1, help_text='Enter the position you want this creator to '
+                             'appear in the list, e.g. "1" means the first '
+                             'position in the list, "2" the second, etc.')
 
     def __str__(self):
-        return '{creative_role}: {creator}'.format(
+        return '{position}: {creative_role}: {creator}'.format(
+            position=self.position_in_credits,
             creative_role=self.creative_role, creator=self.person)
 
     def return_creator_name(self):
         return self.person.__str__()
 
     class Meta:
-        ordering = ['person']
-        unique_together = ('person', 'creative_role')
+        ordering = ['position_in_credits', 'person']
+        unique_together = ('person', 'creative_role', 'position_in_credits')
 
 
 class Title(models.Model):
