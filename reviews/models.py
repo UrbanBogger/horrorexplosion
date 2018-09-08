@@ -170,6 +170,9 @@ class Country(models.Model):
     name = models.CharField(max_length=50, help_text='Enter the name of the ' \
                                                   'country')
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return '{country_name}'.format(country_name=self.name)
 
@@ -205,20 +208,7 @@ class MovieParticipation(models.Model):
 
     class Meta:
         ordering = ['position_in_credits', 'person']
-        unique_together = ('person', 'creative_role')
-
-
-class MovieParticipationOrdered(models.Model):
-    movie_participation = models.ManyToManyField(
-        MovieParticipation,
-        help_text='Add the name of the movie creator and their role')
-    position_in_credits = models.IntegerField(
-        default=1, help_text='Enter the position you want this creator to '
-                             'appear in the list, e.g. "1" means the first '
-                             'position in the list, "2" the second, etc.')
-
-    class Meta:
-        ordering = ['position_in_credits']
+        unique_together = ('person', 'creative_role', 'position_in_credits')
 
 
 class Title(models.Model):
