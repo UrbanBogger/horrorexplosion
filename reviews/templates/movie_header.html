@@ -4,7 +4,7 @@
     </div>
     <div class="media-body">
 <h1 class="media-heading">{{ movie.main_title }}</h1>
-        <h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% if not forloop.last %}/{% endif %}{% endfor %}, {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
+        <h2 class="media-heading">({% for country in movie.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ movie.year_of_release }}, {{ movie.duration }} min.)</h2>
         {% if movie.original_title %}
         <h3 class="media-heading"><em><strong>Original Title</strong></em>: {{ movie.original_title }}</h3>
         {% endif %}
