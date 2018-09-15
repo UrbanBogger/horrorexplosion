@@ -62,18 +62,18 @@ def substitute_links_in_text(text):
         mov_title, mov_year = get_mov_title_and_release_year(mov_title_link)
 
         if mov_year:
-            if Movie.objects.filter( main_title__title__contains=mov_title,
+            if Movie.objects.filter( main_title__title=mov_title,
                                      year_of_release=mov_year).exists():
                 mov_title_link['href'] = Movie.objects.filter(
-                    main_title__title__contains=mov_title,
+                    main_title__title=mov_title,
                     year_of_release=mov_year).order_by('year_of_release')[
                     0].get_absolute_url()
 
         else:
             if Movie.objects.filter(
-                    main_title__title__contains=mov_title).exists():
+                    main_title__title=mov_title).exists():
                 mov_title_link['href'] = Movie.objects.filter(
-                    main_title__title__contains=mov_title).order_by(
+                    main_title__title=mov_title).order_by(
                     'year_of_release')[0].get_absolute_url()
 
     return str(html_to_be_modified)
