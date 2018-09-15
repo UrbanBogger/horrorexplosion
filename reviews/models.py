@@ -84,6 +84,7 @@ class Person(models.Model):
     class Meta:
         abstract = True
         ordering = ['last_name']
+        unique_together = ('first_name', 'middle_name', 'last_name')
 
     def __str__(self):
         if self.middle_name:
