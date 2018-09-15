@@ -6,7 +6,7 @@ from django.views import generic
 from django.http import Http404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
-    Contributor, MovieRemake, MovieSeries, get_random_review
+    Contributor, MovieRemake, MovieSeries, MovieInMovSeries, get_random_review
 
 # Create your views here.
 
@@ -261,26 +261,23 @@ def get_preceding_and_following_movies(movie):
     preceding_mov = None
     following_mov = None
 
-    if MovieSeries.objects.filter(mov_series__movie_in_series=movie):
-        mov_position_in_series = MovieSeries.objects.get(
-            mov_series__movie_in_series=movie).mov_series.get(
+    if MovieSeries.objects.filter(mov_series__movie_in_series=movie).exists():
+        relevant_mov_series = MovieSeries.objects.get(
+            mov_series__movie_in_series=movie)
+        mov_position_in_series = relevant_mov_series.mov_series.get(
             movie_in_series=movie).position_in_series
 
-        if MovieSeries.objects.filter(
-                mov_series__position_in_series=mov_position_in_series - 1
-        ).exists():
-            preceding_mov = MovieSeries.objects.get(
-                mov_series__position_in_series=mov_position_in_series
-                - 1).mov_series.get(
+        try:
+            preceding_mov = relevant_mov_series.mov_series.get(
                 position_in_series=mov_position_in_series - 1).movie_in_series
+        except MovieInMovSeries.DoesNotExist:
+            pass
 
-        if MovieSeries.objects.filter(
-                mov_series__position_in_series=mov_position_in_series +
-                1).exists():
-            following_mov = MovieSeries.objects.get(
-                mov_series__position_in_series=mov_position_in_series
-                + 1).mov_series.get(
+        try:
+            following_mov = relevant_mov_series.mov_series.get(
                 position_in_series=mov_position_in_series + 1).movie_in_series
+        except MovieInMovSeries.DoesNotExist:
+            pass
 
     return preceding_mov, following_mov
 
