@@ -87,6 +87,16 @@ div.media-body {
     text-align: justify;
 }
 
+similar-mov-div {
+    padding: 3px;
+}
+
+.mov-similarity-img {
+     border-style: solid;
+     border-width: 1px;
+     padding: 3px;
+}
+
 * On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     .sidenav {

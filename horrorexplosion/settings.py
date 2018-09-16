@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

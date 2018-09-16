@@ -1,0 +1,15 @@
+<div style="margin-bottom: 10px;" class="media" id="similar-mov-div">
+    <div class="media-left">
+        {% if similar_mov.2.poster_thumbnail %}
+        <img class="media-object img-rounded mov-similarity-img" src="{{ similar_mov.2.poster_thumbnail.url }}" alt="{{ similar_mov.2.main_title }} poster" height="80" width="60"/>
+        {% else %}
+        <img class="media-object img-rounded mov-similarity-img" src="{{ similar_mov.2.poster.url }}" alt="{{ similar_mov.2.main_title}} poster" height="80" width="60"/>
+        {% endif %}
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading text-left"><a href="{{ similar_mov.2.get_absolute_url }}">{{ similar_mov.2 }}</a></h4>
+        <p><strong>Similarity Level:</strong> <kbd>{{ similar_mov.1 }}</kbd></p>
+        {% load humanize %}
+        <p><strong>Similarity Rating:</strong> {{ similar_mov.0|intcomma }} = [2<sup>{{ similar_mov.3 }}</sup>]</p>
+    </div>
+</div>
