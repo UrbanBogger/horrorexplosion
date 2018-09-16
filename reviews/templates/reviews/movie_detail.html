@@ -30,4 +30,14 @@
 {% if referenced_in_reviews %}
     <p><strong>Referenced in the following review(s)</strong>: {% for review_ref in referenced_in_reviews %}<a href="{{ review_ref.review.get_absolute_url }}">{{ review_ref.review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 {% endif %}
+{% if similar_movies %}
+<p><strong>Similar Movies:</strong></p>
+<ul class="list-inline">
+    {% for similar_mov in similar_movies %}
+    <li>
+        {% include "similar_mov_media_object.html" with similar_mov=similar_mov %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

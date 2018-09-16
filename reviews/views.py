@@ -1,4 +1,6 @@
 import re
+import math
+from operator import itemgetter
 from bs4 import BeautifulSoup
 from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import render, redirect
@@ -313,6 +315,81 @@ def get_preceding_and_following_movies(movie):
     return preceding_mov, following_mov
 
 
+def determine_similarity_level(similarity_exponent):
+    similarity_level = ''
+
+    if 0 <= similarity_exponent <= 9:
+        similarity_level = 'VERY LOW'
+    elif 10 <= similarity_exponent <= 15:
+        similarity_level = 'LOW'
+    elif 16 <= similarity_exponent <= 19:
+        similarity_level = 'MEDIUM'
+    elif 20 <= similarity_exponent <= 22:
+        similarity_level = 'HIGH'
+    elif similarity_exponent >= 23:
+        similarity_level = 'VERY HIGH'
+
+    return similarity_level
+
+
+def get_similar_movies(movie):
+    keywords = set([kw.name for kw in movie.keyword.all()])
+    genres = set([genre.name for genre in movie.genre.all()])
+    subgenres = set([sg.name for sg in movie.subgenre.all()])
+    microgenres = set([mg.name for mg in movie.microgenre.all()])
+    mov_similarity_list = []
+
+    all_movies = Movie.objects.all().exclude(pk=movie.pk)
+
+    for current_mov in all_movies:
+        nr_of_keyword_matches = None
+        nr_of_genre_matches = None
+        exponent = 0
+        keywords_to_compare = set([kw.name for kw in
+                                   current_mov.keyword.all()])
+
+        if list(keywords & keywords_to_compare):
+            nr_of_keyword_matches = len(list(keywords & keywords_to_compare))
+
+        if nr_of_keyword_matches:
+            exponent = nr_of_keyword_matches
+
+        genres_to_compare = set([genre.name for genre in
+                                 current_mov.genre.all()])
+        if list(genres & genres_to_compare):
+            nr_of_genre_matches = len(list(genres & genres_to_compare))
+
+        if subgenres:
+            subgenres_to_compare = set([sg.name for sg in
+                                        current_mov.subgenre.all()])
+            if list(subgenres & subgenres_to_compare):
+                nr_of_genre_matches += len(list(subgenres &
+                                                subgenres_to_compare))
+
+        if microgenres:
+            microgenres_to_compare = set([mg.name for mg in
+                                          current_mov.microgenre.all()])
+            if list(microgenres & microgenres_to_compare):
+                nr_of_genre_matches += len(list(microgenres &
+                                                microgenres_to_compare))
+
+        if nr_of_genre_matches:
+            exponent += 2 * nr_of_genre_matches
+
+        if exponent:
+            if exponent == 1:
+                exponent = 0
+            similarity_level = determine_similarity_level(exponent)
+            mov_similarity_list.append((int(math.pow(2, exponent)),
+                                        similarity_level, current_mov,
+                                        exponent))
+
+    if len(mov_similarity_list) >= 3:
+        return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[:3]
+    else:
+        return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)
+
+
 class MovieDetailView(generic.DetailView):
     model = Movie
 
@@ -342,6 +419,8 @@ class MovieDetailView(generic.DetailView):
             movie)
         context['preceding_movie'] = preceding_mov
         context['following_movie'] = following_mov
+        context['similar_movies'] = get_similar_movies(Movie.objects.get(
+            pk=self.kwargs.get(self.pk_url_kwarg)))
         return context
 
 
