@@ -15,7 +15,7 @@ ENGLISH_ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                     'W', 'X', 'Y', 'Z']
 ORDERING_SEQUENCE = ['ascending', 'descending']
 DEFAULT_ORDERING = 'alphabetical-ascending'
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 25
 MOV_ORDERING_DICT = {
     'alphabetical-ascending': ('title_for_sorting', '(by Title, Ascending)'),
     'alphabetical-descending': ('-title_for_sorting', '(by Title, '
