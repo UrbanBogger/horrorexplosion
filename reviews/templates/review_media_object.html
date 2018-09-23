@@ -1,5 +1,5 @@
 {% load static %}
-<div style="margin-bottom: 10px;" class="media">
+<div class="media">
       <a href="{{ review.get_absolute_url }}">
         <div class="media-left">
                 {% if review.reviewed_movie.poster_thumbnail %}
@@ -10,8 +10,8 @@
         </div>
         <div class="media-body">
           <h4 class="media-heading text-left">{{ review }}</h4>
-          <p>{{ review.mov_review_page_description }}</p>
-            <p><strong>Our Rating</strong>:<img id="star-rating" src="{% static '' %}{{ mov_review.grade.grade_depiction }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="70" width="100"/></p>
+            <p><strong>Summary: </strong> {{ review.mov_review_page_description }}</p>
+            <p><strong>Our Rating</strong>: <img id="star-rating" src="{% static '' %}{{ mov_review.grade.grade_depiction }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="70" width="100"/></p>
         </div>
       </a>
 </div>
