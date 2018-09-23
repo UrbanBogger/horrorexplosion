@@ -93,6 +93,10 @@ similar-mov-div {
      padding: 3px;
 }
 
+.alert {
+  display:inline-block;
+}
+
 * On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     .sidenav {

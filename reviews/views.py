@@ -288,13 +288,13 @@ def determine_similarity_level(similarity_exponent):
 
     if 0 <= similarity_exponent <= 9:
         similarity_level = 'VERY LOW'
-        alert_type = 'alert-secondary'
+        alert_type = 'alert-dark'
     elif 10 <= similarity_exponent <= 15:
         similarity_level = 'LOW'
         alert_type = 'alert-warning'
     elif 16 <= similarity_exponent <= 19:
         similarity_level = 'MEDIUM'
-        alert_type = 'alert-primary'
+        alert_type = 'alert-info'
     elif 20 <= similarity_exponent <= 22:
         similarity_level = 'HIGH'
         alert_type = 'alert-success'
