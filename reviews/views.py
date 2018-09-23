@@ -319,19 +319,19 @@ def determine_similarity_level(similarity_exponent):
     similarity_level = ''
     alert_type = ''
 
-    if 0 <= similarity_exponent <= 9:
+    if 0 <= similarity_exponent <= 20:
         similarity_level = 'VERY LOW'
         alert_type = 'alert-dark'
-    elif 10 <= similarity_exponent <= 15:
+    elif 21 <= similarity_exponent <= 40:
         similarity_level = 'LOW'
         alert_type = 'alert-warning'
-    elif 16 <= similarity_exponent <= 19:
+    elif 41 <= similarity_exponent <= 60:
         similarity_level = 'MEDIUM'
         alert_type = 'alert-info'
-    elif 20 <= similarity_exponent <= 22:
+    elif 61 <= similarity_exponent <= 80:
         similarity_level = 'HIGH'
         alert_type = 'alert-success'
-    elif similarity_exponent >= 23:
+    elif similarity_exponent >= 81:
         similarity_level = 'VERY HIGH'
         alert_type = 'alert-danger'
 
@@ -348,50 +348,69 @@ def get_similar_movies(movie):
     all_movies = Movie.objects.all().exclude(pk=movie.pk)
 
     for current_mov in all_movies:
-        nr_of_keyword_matches = None
-        nr_of_genre_matches = None
-        exponent = 0
+        percentage_of_keyword_matches = 0
+        percentage_of_metagenre_matches = 0
+        overall_similarity_percentage = 0
+
         keywords_to_compare = set([kw.name for kw in
                                    current_mov.keyword.all()])
 
         if list(keywords & keywords_to_compare):
-            nr_of_keyword_matches = len(list(keywords & keywords_to_compare))
-
-        if nr_of_keyword_matches:
-            exponent = nr_of_keyword_matches
+            percentage_of_keyword_matches = round(
+                len(list(keywords & keywords_to_compare)) /
+                float(len(keywords_to_compare)), 2) * 100
 
         genres_to_compare = set([genre.name for genre in
                                  current_mov.genre.all()])
+
         if list(genres & genres_to_compare):
-            nr_of_genre_matches = len(list(genres & genres_to_compare))
+            percentage_of_genre_matches = round(
+                len(list(genres & genres_to_compare)) /
+                float(len(genres_to_compare)), 2) * 100
 
         if subgenres:
             subgenres_to_compare = set([sg.name for sg in
                                         current_mov.subgenre.all()])
             if list(subgenres & subgenres_to_compare):
-                nr_of_genre_matches += len(list(subgenres &
-                                                subgenres_to_compare))
+                percentage_of_subgenre_matches = round(
+                    len(list(subgenres &
+                             subgenres_to_compare))
+                    / float(len(subgenres_to_compare)),
+                    2) * 100
+        else:
+            percentage_of_subgenre_matches = 0
 
         if microgenres:
             microgenres_to_compare = set([mg.name for mg in
                                           current_mov.microgenre.all()])
             if list(microgenres & microgenres_to_compare):
-                nr_of_genre_matches += len(list(microgenres &
-                                                microgenres_to_compare))
+                percentage_of_microgenre_matches = round(
+                    len(list(microgenres &
+                             microgenres_to_compare))
+                    / float(len(microgenres_to_compare)),
+                    2) * 100
+        else:
+            percentage_of_microgenre_matches = 0
 
-        if nr_of_genre_matches:
-            exponent += 2 * nr_of_genre_matches
+        percentage_of_metagenre_matches = round(
+            ((percentage_of_genre_matches + percentage_of_subgenre_matches +
+              percentage_of_microgenre_matches) / 3.0), 0)
 
-        if exponent:
-            if exponent == 1:
-                exponent = 0
-            similarity_level, alert_type = determine_similarity_level(exponent)
-            mov_similarity_list.append((int(math.pow(2, exponent)),
-                                        similarity_level, current_mov,
-                                        exponent, alert_type))
+        overall_similarity_percentage = int(
+            round((percentage_of_keyword_matches +
+                   percentage_of_metagenre_matches) / 2.0, 0))
 
+        similarity_level, alert_type = determine_similarity_level(
+            overall_similarity_percentage)
+        mov_similarity_list.append(((overall_similarity_percentage,
+                                     int(percentage_of_keyword_matches),
+                                    int(percentage_of_metagenre_matches)),
+                                    similarity_level, current_mov,
+                                    alert_type))
+    print('sorted list: ' + str(sorted(mov_similarity_list, key=itemgetter(0), reverse=True)))
     if len(mov_similarity_list) >= 3:
-        return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[:3]
+        return sorted(mov_similarity_list, key=itemgetter(0),
+                      reverse=True)[:3]
     else:
         return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)
 
