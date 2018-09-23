@@ -8,7 +8,7 @@
     </div>
     <div class="media-body">
         <h4 class="media-heading text-left"><a href="{{ similar_mov.2.get_absolute_url }}">{{ similar_mov.2 }}</a></h4>
-        <p><strong>Similarity Level:</strong> <kbd>{{ similar_mov.1 }}</kbd></p>
+        <div class="alert {{ similar_mov.4 }}" role="alert"><p><strong>Similarity Level:</strong> <kbd>{{ similar_mov.1 }}</kbd></p></div>
         {% load humanize %}
         <p><strong>Similarity Rating:</strong> {{ similar_mov.0|intcomma }} = [2<sup>{{ similar_mov.3 }}</sup>]</p>
     </div>

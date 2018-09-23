@@ -284,19 +284,25 @@ def get_preceding_and_following_movies(movie):
 
 def determine_similarity_level(similarity_exponent):
     similarity_level = ''
+    alert_type = ''
 
     if 0 <= similarity_exponent <= 9:
         similarity_level = 'VERY LOW'
+        alert_type = 'alert-secondary'
     elif 10 <= similarity_exponent <= 15:
         similarity_level = 'LOW'
+        alert_type = 'alert-warning'
     elif 16 <= similarity_exponent <= 19:
         similarity_level = 'MEDIUM'
+        alert_type = 'alert-primary'
     elif 20 <= similarity_exponent <= 22:
         similarity_level = 'HIGH'
+        alert_type = 'alert-success'
     elif similarity_exponent >= 23:
         similarity_level = 'VERY HIGH'
+        alert_type = 'alert-danger'
 
-    return similarity_level
+    return similarity_level, alert_type
 
 
 def get_similar_movies(movie):
@@ -346,10 +352,10 @@ def get_similar_movies(movie):
         if exponent:
             if exponent == 1:
                 exponent = 0
-            similarity_level = determine_similarity_level(exponent)
+            similarity_level, alert_type = determine_similarity_level(exponent)
             mov_similarity_list.append((int(math.pow(2, exponent)),
                                         similarity_level, current_mov,
-                                        exponent))
+                                        exponent, alert_type))
 
     if len(mov_similarity_list) >= 3:
         return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[:3]
