@@ -11,6 +11,7 @@
         <div class="media-body">
           <h4 class="media-heading text-left">{{ review }}</h4>
           <p>{{ review.mov_review_page_description }}</p>
+            <p><strong>Our Rating</strong>:<img id="star-rating" src="{% static '' %}{{ mov_review.grade.grade_depiction }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="70" width="100"/></p>
         </div>
       </a>
 </div>

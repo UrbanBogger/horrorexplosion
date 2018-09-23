@@ -1,5 +1,5 @@
 {% load static %}
-<div style="margin-bottom: 10px;" class="media" id="similar-mov-div">
+<div class="media" id="similar-mov-div">
     <div class="media-left">
         {% if similar_mov.2.poster_thumbnail %}
         <img class="media-object img-rounded mov-similarity-img" src="{% static '' %}{{ similar_mov.2.poster_thumbnail }}" alt="{{ similar_mov.2.main_title}} poster" />
