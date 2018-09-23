@@ -9,5 +9,6 @@
   <div class="media-body">
     <a href="{{ review.get_absolute_url }}"><h4 class="media-heading text-left">{{ review }}</h4></a>
     <p>{{ review.mov_review_page_description }}</p>
+    <p><strong>Our Rating</strong>: <img id="star-rating" src="{{ review.grade.grade_depiction.url }}" alt="{{ review.grade.grade_numerical }} stars" height="80" width="120"/></p>
   </div>
 </div>
