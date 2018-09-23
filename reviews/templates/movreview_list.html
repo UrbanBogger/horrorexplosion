@@ -34,14 +34,7 @@
 <ul class="list-group">
     {% for mov_review in review_list %}
     <li class="list-group-item">
-        <a href="{{ mov_review.get_absolute_url }}">
-            {% if mov_review.reviewed_movie.poster_thumbnail %}
-            <img class="img-thumbnail" src="{{ mov_review.reviewed_movie.poster_thumbnail.url }}" alt="{{ mov_review.reviewed_movie.main_title }} poster" height="80" width="60"/>
-            {% else %}
-            <img class="img-thumbnail" src="{{ mov_review.reviewed_movie.poster.url }}" alt="{{ mov_review.reviewed_movie.main_title}} poster" height="80" width="60"/>
-            {% endif %}
-            <strong>{{ mov_review }}</strong></a>
-        <p><strong>Our Rating</strong>:</p><img id="star-rating" src="{{ mov_review.grade.grade_depiction.url }}" alt="{{ mov_review.grade.grade_numerical }} stars" height="80" width="120"/>
+        {% include "review_media_object.html" with review=mov_review %}
     </li>
     {% endfor %}
 </ul>
