@@ -318,6 +318,9 @@ def get_similar_movies(movie):
         percentage_of_keyword_matches = 0
         percentage_of_metagenre_matches = 0
         overall_similarity_percentage = 0
+        percentage_of_genre_matches = 0
+        percentage_of_subgenre_matches = 0
+        percentage_of_microgenre_matches = 0
 
         keywords_to_compare = set([kw.name for kw in
                                    current_mov.keyword.all()])
@@ -344,8 +347,6 @@ def get_similar_movies(movie):
                              subgenres_to_compare))
                     / float(len(subgenres_to_compare)),
                     2) * 100
-        else:
-            percentage_of_subgenre_matches = 0
 
         if microgenres:
             microgenres_to_compare = set([mg.name for mg in
@@ -356,8 +357,6 @@ def get_similar_movies(movie):
                              microgenres_to_compare))
                     / float(len(microgenres_to_compare)),
                     2) * 100
-        else:
-            percentage_of_microgenre_matches = 0
 
         percentage_of_metagenre_matches = round(
             ((percentage_of_genre_matches + percentage_of_subgenre_matches +
