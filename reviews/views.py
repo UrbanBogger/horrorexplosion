@@ -328,7 +328,7 @@ def get_similar_movies(movie):
         if list(keywords & keywords_to_compare):
             percentage_of_keyword_matches = round(
                 len(list(keywords & keywords_to_compare)) /
-                float(len(keywords_to_compare)), 2) * 100
+                float(len(keywords)), 2) * 100
 
         genres_to_compare = set([genre.name for genre in
                                  current_mov.genre.all()])
@@ -336,7 +336,7 @@ def get_similar_movies(movie):
         if list(genres & genres_to_compare):
             percentage_of_genre_matches = round(
                 len(list(genres & genres_to_compare)) /
-                float(len(genres_to_compare)), 2) * 100
+                float(len(genres)), 2) * 100
 
         if subgenres:
             subgenres_to_compare = set([sg.name for sg in
@@ -345,8 +345,7 @@ def get_similar_movies(movie):
                 percentage_of_subgenre_matches = round(
                     len(list(subgenres &
                              subgenres_to_compare))
-                    / float(len(subgenres_to_compare)),
-                    2) * 100
+                    / float(len(subgenres)), 2) * 100
 
         if microgenres:
             microgenres_to_compare = set([mg.name for mg in
@@ -355,8 +354,7 @@ def get_similar_movies(movie):
                 percentage_of_microgenre_matches = round(
                     len(list(microgenres &
                              microgenres_to_compare))
-                    / float(len(microgenres_to_compare)),
-                    2) * 100
+                    / float(len(microgenres)), 2) * 100
 
         percentage_of_metagenre_matches = round(
             ((percentage_of_genre_matches + percentage_of_subgenre_matches +
