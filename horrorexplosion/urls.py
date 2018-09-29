@@ -59,4 +59,9 @@ urlpatterns += [
         content_type="text/plain")),
 ]
 
+urlpatterns += [
+    url(r'^BingSiteAuth.xml', TemplateView.as_view(
+        template_name="BingSiteAuth.xml", content_type="text/xml")),
+]
+
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
