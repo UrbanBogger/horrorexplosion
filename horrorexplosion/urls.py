@@ -56,7 +56,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^googled807ca5be9d86494\.html$', lambda r: HttpResponse(
         "google-site-verification: googled807ca5be9d86494.html",
-        mimetype="text/plain")),
+        content_type="text/plain")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
