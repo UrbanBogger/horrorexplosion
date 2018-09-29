@@ -20,6 +20,7 @@ from django.views.generic import RedirectView, TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
+from django.http import HttpResponse
 from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
     HomePageSitemap, StaticPagesSitemap, ListViewSitemap
 
@@ -50,6 +51,12 @@ urlpatterns += [
 urlpatterns += [
     url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
                                              content_type="text/plain")),
+]
+
+urlpatterns += [
+    url(r'^googled807ca5be9d86494\.html$', lambda r: HttpResponse(
+        "google-site-verification: googled807ca5be9d86494.html",
+        mimetype="text/plain")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
