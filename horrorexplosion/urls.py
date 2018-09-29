@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.conf.urls import include
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
@@ -46,4 +46,11 @@ sitemaps = {
 urlpatterns += [
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ]
+
+urlpatterns += [
+    url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
+                                             content_type="text/plain")),
+]
+
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
