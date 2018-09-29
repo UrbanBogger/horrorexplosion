@@ -339,6 +339,8 @@ class ReferencedMovie(models.Model):
 class MovieFranchise(models.Model):
     franchise_name = models.CharField(
         max_length=50, help_text='Enter the name of the movie franchise')
+    franchise_description = RichTextField(
+        blank=True, help_text="Enter the description of the franchise")
 
     def __str__(self):
         return '{franchise_name}'.format(franchise_name=self.franchise_name)
