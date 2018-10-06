@@ -33,7 +33,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^$', RedirectView.as_view(url='/reviews/', permanent=True)),
+    url(r'^.*$', RedirectView.as_view(url='/reviews/home/', permanent=True)),
 ]
 
 sitemaps = {
