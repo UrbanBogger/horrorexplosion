@@ -32,10 +32,6 @@ urlpatterns += [
     url(r'^reviews/', include('reviews.urls')),
 ]
 
-urlpatterns += [
-    url(r'^.*$', RedirectView.as_view(url='/reviews/home/', permanent=True)),
-]
-
 sitemaps = {
     'movie_reviews': MovReviewSitemap,
     'movies': MovieSitemap,
@@ -64,4 +60,9 @@ urlpatterns += [
         template_name="BingSiteAuth.xml", content_type="text/xml")),
 ]
 
+urlpatterns += [
+    url(r'^.*$', RedirectView.as_view(url='/reviews/home/', permanent=True)),
+]
+
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
