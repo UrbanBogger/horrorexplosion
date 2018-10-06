@@ -31,12 +31,14 @@
             <p class="navbar-brand">The Horror Explosion</p>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
+                <nav>
                 <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'index' %}">Home</a></li>
                 <li><a href="{% url 'about' %}">About</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
                     <li><a href="{% url 'contributors' %}">Contributors</a></li>
             </ul>
+                </nav>
             </div>
         </div>
     </nav>
@@ -46,9 +48,11 @@
             <div class="col-sm-3 sidenav">
                 <p class="lead">Content:</p>
                 <div class="list-group">
+                    <nav>
                     <a href="{% url 'movies' %}" class="list-group-item">Movies</a>
                     <a href="{% url 'movie_reviews' %}" class="list-group-item">Movie Reviews</a>
                     <a href="{% url 'movie_index' %}" class="list-group-item">Movie Index</a>
+                    </nav>
                 </div>
             </div>
             <div class="col-sm-8 text-left main">
