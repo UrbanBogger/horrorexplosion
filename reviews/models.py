@@ -73,7 +73,7 @@ class WebsiteMetadescriptor(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, blank=True)
     biography = RichTextField(max_length=1000, blank=True)
     photograph = models.ImageField(
         upload_to='people/', null=True, blank=True,
