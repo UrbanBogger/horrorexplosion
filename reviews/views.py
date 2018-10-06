@@ -310,6 +310,8 @@ def get_similar_movies(movie):
     genres = set([genre.name for genre in movie.genre.all()])
     subgenres = set([sg.name for sg in movie.subgenre.all()])
     microgenres = set([mg.name for mg in movie.microgenre.all()])
+    total_nr_of_metagenre_tags = len(genres) + len(subgenres) + len(
+        microgenres)
     mov_similarity_list = []
 
     all_movies = Movie.objects.all().exclude(pk=movie.pk)
@@ -318,9 +320,7 @@ def get_similar_movies(movie):
         percentage_of_keyword_matches = 0
         percentage_of_metagenre_matches = 0
         overall_similarity_percentage = 0
-        percentage_of_genre_matches = 0
-        percentage_of_subgenre_matches = 0
-        percentage_of_microgenre_matches = 0
+        num_of_metagenre_matches = 0
 
         keywords_to_compare = set([kw.name for kw in
                                    current_mov.keyword.all()])
@@ -334,31 +334,26 @@ def get_similar_movies(movie):
                                  current_mov.genre.all()])
 
         if list(genres & genres_to_compare):
-            percentage_of_genre_matches = round(
-                len(list(genres & genres_to_compare)) /
-                float(len(genres)), 2) * 100
+            num_of_metagenre_matches += len(list(genres & genres_to_compare))
 
         if subgenres:
             subgenres_to_compare = set([sg.name for sg in
                                         current_mov.subgenre.all()])
             if list(subgenres & subgenres_to_compare):
-                percentage_of_subgenre_matches = round(
-                    len(list(subgenres &
-                             subgenres_to_compare))
-                    / float(len(subgenres)), 2) * 100
+                num_of_metagenre_matches += len(list(subgenres &
+                                                     subgenres_to_compare))
 
         if microgenres:
             microgenres_to_compare = set([mg.name for mg in
                                           current_mov.microgenre.all()])
             if list(microgenres & microgenres_to_compare):
-                percentage_of_microgenre_matches = round(
-                    len(list(microgenres &
-                             microgenres_to_compare))
-                    / float(len(microgenres)), 2) * 100
+                num_of_metagenre_matches += len(list(microgenres &
+                                                     microgenres_to_compare))
 
         percentage_of_metagenre_matches = round(
-            ((percentage_of_genre_matches + percentage_of_subgenre_matches +
-              percentage_of_microgenre_matches) / 3.0), 0)
+            (round(num_of_metagenre_matches / float(
+                total_nr_of_metagenre_tags), 2
+             ) * 100), 0)
 
         overall_similarity_percentage = int(
             round((percentage_of_keyword_matches +
