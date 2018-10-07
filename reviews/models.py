@@ -89,6 +89,8 @@ class Person(models.Model):
             return '{first_name} {middle_name} {last_name}'.format(
                 first_name=self.first_name, middle_name=self.middle_name,
                 last_name=self.last_name)
+        elif not self.last_name:
+            return '{first_name}'.format(first_name=self.first_name)
         else:
             return '{first_name} {last_name}'.format(
                 first_name=self.first_name,
