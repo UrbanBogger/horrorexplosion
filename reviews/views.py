@@ -83,14 +83,28 @@ def get_mov_title_and_release_year(mov_link):
     mov_title_w_year_pattern = re.compile(r'.+\([0-9]{4}\).*')
     mov_year_split_pattern = re.compile(r'\([0-9]{4}\)')
     mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
+    html_comment_pattern = re.compile(r'.*<!--.*-->.*')
     mov_title = ''
     mov_year = None
 
-    if mov_link.find('em'):
+    if html_comment_pattern.match(str(mov_link)):
+        html_comment_content = mov_link.contents[1].string.strip()
+        if mov_title_w_year_pattern.match(html_comment_content):
+            mov_title = mov_year_split_pattern.split(
+                html_comment_content)[0].strip()
+            mov_year = mov_year_pattern.search(
+                html_comment_content).group(1)
+
+        else:
+            mov_title = html_comment_content
+
+    elif mov_link.find('em'):
         mov_title = mov_link.find('em').string
 
         if len(mov_link.contents) == 2:
-            mov_year = mov_year_pattern.search(mov_link.contents[1]).group(1)
+            if mov_year_pattern.match(mov_link.contents[1]):
+                mov_year = mov_year_pattern.search(mov_link.contents[
+                                                      1]).group(1)
 
     elif mov_title_w_year_pattern.match(mov_link.string):
         mov_title = mov_year_split_pattern.split(
