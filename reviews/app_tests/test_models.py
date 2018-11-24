@@ -472,7 +472,23 @@ class MovieReviewTest(TestCase):
                       'Our heroine has to battle Junior and his enabling, slap-happy pappy (Dougherty in a thoroughly enjoyable thuggish turn) ' \
                       'in order to save her life.</p><p>Bergqvist and Dougherty would share the ' \
                       'spotlight again next year in the inferior ' \
-                      '<a href="https://www.imdb.com/title/tt0280012/?ref_=fn_al_tt_1">Parts of the Family</a>.</p>'
+                      '<a href="https://www.imdb.com/title/tt0280012/?ref_=fn_al_tt_1">Parts of the Family</a>.</p>' \
+                      '<p>The 1977 nature-runs-amok movie <a ' \
+                      'href="https://www.imdb.com/title/tt0076516/">The ' \
+                      'Pack<!--The Pack (1977)--></a> ' \
+                      'is pretty doggone ' \
+                      'good.</p>' \
+                      '<p>In an attempt to capitalize on the thirst for torture (porn) flicks, newly awakened in the noughties horror ' \
+                      'audiences, <a href="https://en.wikipedia.org/wiki/Saw_(franchise)"><em>Saw</em> franchise</a> wonderboy Bousman ' \
+                      '(responsible for parts <em><a ' \
+                      'href="https://www.imdb.com/title/tt0432348/">II' \
+                      '<!--Saw II--></a></em>, <em><a ' \
+                      'href="https://www.imdb.com/title/tt0489270/?ref_' \
+                      '=fn_al_tt_1">III<!--Saw III--></a></em> and <em><a ' \
+                      'href="https://www.imdb.com/title/tt0890870/?ref_' \
+                      '=fn_al_tt_1">IV<!--Saw IV--></a></em>) gets to work ' \
+                      'at remaking one of <a ' \
+                      'href="https://www.troma.com/">Troma</a>&#39;s most fondly remembered original productions &ndash; Charles Kaufman-directed Mother&#39;s Day (1980) &ndash; with an inordinately big budget (11 mills!), delivering not a full-course gourmet meal one would expect but a moderately tasteful hors d&#39;oeuvre.</p>'
 
         #review_text = '<p>Hooper is not one of those genre directors whose
         # output could be considered as consistently good; in fact, his every consecutive movie is an argument in favor of those who believe that the brilliance of <a href="https://www.imdb.com/title/tt0072271/"><em>The Texas Chainsaw Massacre</em> (1974)</a> was a mere lucky coincidence. But after watching <em>Crocodile</em> &ndash; director&rsquo;s second encounter with a bloodthirsty reptile; the first one being 1976&rsquo;s <a href="https://www.imdb.com/title/tt0074455"><em>Death Trap</em></a> &ndash; the man&rsquo;s qualities become apparent: the ability to execute scary scenes (here, it&rsquo;s crocodile attacks) with unmatched intensity, to create a desperate atmosphere and to make rednecks seem <em>really</em> frightening and completely fucked-up (man, that &ldquo; &lsquo;gator farm&rdquo;!) are all on display in this <a href="https://en.wikipedia.org/wiki/Nu_Image">Nu Image</a> production. It&#39;s not his fault that he has to deal with a badly-written script (authored by no less than four individuals) overpopulated with asshole characters and leading stars that don&rsquo;t seem to comprehend that this is supposed to be a horror flick.</p><p>Freshmen visiting a large swampy area somewhere in the South are decimated by an enormous Egyptian crocodile (brought there more than a century ago by an eccentric millionaire) after they break the eggs it&rsquo;s laid. Young as the sheriff and Evans as a local out to get the croc for chomping on his &ldquo;pappy&rdquo; and &ldquo;gran&rsquo; pappy&rdquo; try saving the kids and manage to leave a favorable impression thanks to their competent performances. Try to find the two (less or more) subtle homages to <em>TCM</em>. Popular enough to inspire a sequel <em>Crocodile 2: Death Swamp</em>.</p>'
@@ -549,16 +565,43 @@ class MovieReviewTest(TestCase):
             mov = None
             review_text_html = BeautifulSoup(review.review_text, 'html.parser')
             links = review_text_html.find_all('a')
-            print('all links in text: ' + str(links))
+            #print('all links in text: ' + str(links))
             mov_title_pattern = re.compile(r'.*imdb.*/title/')
             mov_title_w_year_pattern = re.compile(r'.+\([0-9]{4}\).*')
             mov_year_split_pattern = re.compile(r'\([0-9]{4}\)')
             mov_year_pattern = re.compile(r'\(([0-9]{4})\)')
+            html_comment_pattern = re.compile(r'.*<!--.*-->.*')
 
             for link_tag in links:
                 if mov_title_pattern.match(link_tag.attrs.get('href')):
+                    if html_comment_pattern.match(str(link_tag)):
+                        additional_content = link_tag.contents[
+                            1].string.strip()
+                        if mov_title_w_year_pattern.match(additional_content):
+                            mov_title = mov_year_split_pattern.split(
+                                additional_content)[0].strip()
+                            mov_year = mov_year_pattern.search(
+                                additional_content).group(1)
+
+                            try:
+                                mov = Movie.objects.get(
+                                    main_title__title=mov_title,
+                                    year_of_release=mov_year)
+                            except Movie.DoesNotExist:
+                                print('No such movie exists. Continue looking '
+                                      'through links')
+                                continue
+                        else:
+                            try:
+                                mov = Movie.objects.get(
+                                    main_title__title=mov_title)
+                            except Movie.DoesNotExist:
+                                print('No such movie exists. Continue looking '
+                                      'through links')
+                                continue
                     if link_tag.find('em'):
                         mov_title = link_tag.find('em').string
+                        print('looking for movie: ' + mov_title)
                         if len(link_tag.contents) == 2:
                             mov_year = mov_year_pattern.search(
                                 link_tag.contents[1]).group(1)
