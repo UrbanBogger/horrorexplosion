@@ -31,10 +31,6 @@ urlpatterns += [
     url(r'^reviews/', include('reviews.urls')),
 ]
 
-urlpatterns += [
-    url(r'^.*$', RedirectView.as_view(url='/reviews/home/', permanent=True)),
-]
-
 sitemaps = {
     'movie_reviews': MovReviewSitemap,
     'movies': MovieSitemap,
@@ -59,3 +55,6 @@ urlpatterns += [
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+urlpatterns += [
+    url(r'^$', RedirectView.as_view(url='/reviews/home/', permanent=True)),
+]

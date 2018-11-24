@@ -8,8 +8,8 @@ from django.views import generic
 from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, MovieRemake, WebsiteMetadescriptor,\
-    ReferencedMovie, Contributor, MovieSeries, MovieInMovSeries,\
-    get_random_review
+    ReferencedMovie, Contributor, MovieSeries, MovieInMovSeries, \
+    TelevisionSeries, get_random_review
 from django.core.mail import BadHeaderError, EmailMessage
 from .forms import ContactForm
 
@@ -458,4 +458,30 @@ class MovieReviewDetailView(generic.DetailView):
             return_mov_participation_data('Director')
         context['movie_cast'] = \
             movie_review.reviewed_movie.return_mov_participation_data('Actor')
+        return context
+
+
+class TVSeriesListView(generic.ListView):
+    model = TelevisionSeries
+
+
+class TVSeriesDetailView(generic.DetailView):
+    model = TelevisionSeries
+    print('inside the TV series view...')
+
+    def get_context_data(self, **kwargs):
+        print('inside the get context function...')
+        # Call the base implementation first to get the context
+        context = super(TVSeriesDetailView, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        tv_series = TelevisionSeries.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        context['page_title'] = str(tv_series) + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            'Data and metadata about ' + str(tv_series) \
+            + ' like genre/subgenre affiliation and plot keywords'
+        context['movie_directors'] = tv_series.return_mov_participation_data(
+            'Director')
+        context['movie_cast'] = tv_series.return_mov_participation_data(
+            'Actor')
         return context
