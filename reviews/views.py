@@ -321,11 +321,10 @@ def determine_similarity_level(similarity_exponent):
 
 def get_similar_movies(movie):
     keywords = set([kw.name for kw in movie.keyword.all()])
-    genres = set([genre.name for genre in movie.genre.all()])
-    subgenres = set([sg.name for sg in movie.subgenre.all()])
-    microgenres = set([mg.name for mg in movie.microgenre.all()])
-    total_nr_of_metagenre_tags = len(genres) + len(subgenres) + len(
-        microgenres)
+    all_metagenre_tags = set(
+        [genre.name for genre in movie.genre.all()] +
+        [sg.name for sg in movie.subgenre.all()] +
+        [mg.name for mg in movie.microgenre.all()])
     mov_similarity_list = []
 
     all_movies = Movie.objects.all().exclude(pk=movie.pk)
@@ -334,7 +333,6 @@ def get_similar_movies(movie):
         percentage_of_keyword_matches = 0
         percentage_of_metagenre_matches = 0
         overall_similarity_percentage = 0
-        num_of_metagenre_matches = 0
 
         keywords_to_compare = set([kw.name for kw in
                                    current_mov.keyword.all()])
@@ -342,32 +340,18 @@ def get_similar_movies(movie):
         if list(keywords & keywords_to_compare):
             percentage_of_keyword_matches = round(
                 len(list(keywords & keywords_to_compare)) /
-                float(len(keywords)), 2) * 100
+                float(len(keywords | keywords_to_compare)), 2) * 100
 
-        genres_to_compare = set([genre.name for genre in
-                                 current_mov.genre.all()])
+        metagenre_tags_to_compare = set(
+            [genre.name for genre in current_mov.genre.all()]
+            + [sg.name for sg in current_mov.subgenre.all()]
+            + [mg.name for mg in current_mov.microgenre.all()])
 
-        if list(genres & genres_to_compare):
-            num_of_metagenre_matches += len(list(genres & genres_to_compare))
-
-        if subgenres:
-            subgenres_to_compare = set([sg.name for sg in
-                                        current_mov.subgenre.all()])
-            if list(subgenres & subgenres_to_compare):
-                num_of_metagenre_matches += len(list(subgenres &
-                                                     subgenres_to_compare))
-
-        if microgenres:
-            microgenres_to_compare = set([mg.name for mg in
-                                          current_mov.microgenre.all()])
-            if list(microgenres & microgenres_to_compare):
-                num_of_metagenre_matches += len(list(microgenres &
-                                                     microgenres_to_compare))
-
-        percentage_of_metagenre_matches = round(
-            (round(num_of_metagenre_matches / float(
-                total_nr_of_metagenre_tags), 2
-             ) * 100), 0)
+        if list(all_metagenre_tags & metagenre_tags_to_compare):
+            percentage_of_metagenre_matches = round(
+                len(list(all_metagenre_tags & metagenre_tags_to_compare)) /
+                float(len(all_metagenre_tags | metagenre_tags_to_compare)
+                      ), 2) * 100
 
         overall_similarity_percentage = int(
             round((percentage_of_keyword_matches +
