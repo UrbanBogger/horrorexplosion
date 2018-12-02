@@ -2,6 +2,7 @@ import re
 import math
 from operator import itemgetter
 from bs4 import BeautifulSoup
+from django.db.models import Q
 from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
