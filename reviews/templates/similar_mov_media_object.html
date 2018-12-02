@@ -3,7 +3,7 @@
         {% if similar_mov.movie.poster_thumbnail %}
         <img class="media-object img-rounded mov-similarity-img" src="{{ similar_mov.movie.poster_thumbnail }}" alt="{{ similar_mov.movie.main_title}} poster" />
         {% else %}
-        <img class="media-object img-rounded mov-similarity-img" src="{{{ similar_mov.movie.poster }}" alt="{{ similar_mov.movie.main_title}} poster" />
+        <img class="media-object img-rounded mov-similarity-img" src="{{ similar_mov.movie.poster }}" alt="{{ similar_mov.movie.main_title }} poster" />
         {% endif %}
     </div>
     <div class="media-body">
