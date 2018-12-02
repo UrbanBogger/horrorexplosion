@@ -383,9 +383,9 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
              'bonus_similarity_points': bonus_similarity_points})
     # adjust similar movies based on bonus points
     return sorted(mov_similarity_list, key=itemgetter(
-        'similarity_percentages',
+        'similarity_percentages', 'bonus_similarity_points',
         'similarity_level',
-        'bonus_similarity_points'), reverse=True)
+        ), reverse=True)
 
 
 def get_similar_movies(movie):
