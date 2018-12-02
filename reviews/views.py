@@ -300,13 +300,13 @@ def determine_similarity_level(similarity_exponent):
     similarity_level = ''
     alert_type = ''
 
-    if 0 <= similarity_exponent <= 20:
+    if 0 <= similarity_exponent <= 10:
         similarity_level = 'VERY LOW'
         alert_type = 'alert-dark'
-    elif 21 <= similarity_exponent <= 40:
+    elif 11 <= similarity_exponent <= 30:
         similarity_level = 'LOW'
         alert_type = 'alert-warning'
-    elif 41 <= similarity_exponent <= 60:
+    elif 31 <= similarity_exponent <= 60:
         similarity_level = 'MEDIUM'
         alert_type = 'alert-info'
     elif 61 <= similarity_exponent <= 80:
@@ -317,6 +317,72 @@ def determine_similarity_level(similarity_exponent):
         alert_type = 'alert-danger'
 
     return similarity_level, alert_type
+
+
+def calculate_bonus_similarity_pts(similar_mov_list, movie):
+    keywords_and_points = [
+        ('anthology film', 4), ('micro budget (<=$100,000)', 3),
+        ('shot on video SOV', 2), ('splatter', 2),
+        ('Stephen King related', 3), ('Troma production', 3),
+        ('underground horror', 4),
+    ]
+    mov_directors = [mov_participation.person for mov_participation in
+                     movie.movie_participation.filter(
+                         creative_role__role_name='Director')]
+    mov_series = None
+    mov_similarity_list = []
+
+    if MovieSeries.objects.filter(mov_series__movie_in_series=movie).exists():
+        mov_series = MovieSeries.objects.filter(
+            mov_series__movie_in_series=movie)
+
+    for mov_tuple in similar_mov_list:
+        bonus_similarity_exponent = 0
+        bonus_similarity_points = 0
+        # do the movies have the same country of origin (exact matches only
+        # for now)?
+        if set(list(mov_tuple[2].country_of_origin.all())) == set(list(
+                movie.country_of_origin.all())):
+            bonus_similarity_exponent += 1
+        # do the movies have the same director (exact matches only for now)?
+        if set([mov_participation.person for mov_participation in
+                         mov_tuple[2].movie_participation.filter(
+                             creative_role__role_name='Director')]) == set(
+                mov_directors):
+            bonus_similarity_exponent += 2
+
+        if movie.is_direct_to_video and mov_tuple[2].is_direct_to_video:
+            bonus_similarity_exponent += 2
+
+        if movie.is_made_for_tv and mov_tuple[2].is_made_for_tv:
+            bonus_similarity_exponent += 2
+        # are we dealing with a remake?
+        if MovieRemake.objects.filter(Q(remade_movie=movie) & Q(
+                remake=mov_tuple[2])).exists() or MovieRemake.objects.filter(
+                    Q(remade_movie=mov_tuple[2]) & Q(remake=movie)).exists():
+            bonus_similarity_exponent += 3
+        # do the 2 movies belong to the same movie series?
+        if mov_series:
+            if mov_series.filter(
+                    mov_series__movie_in_series=mov_tuple[2]).exists():
+                bonus_similarity_exponent += 3
+        # check for special keywords last
+        for keyword_point_tuple in keywords_and_points:
+            if movie.keyword.filter(name=keyword_point_tuple[0]).exists() and \
+                    mov_tuple[2].keyword.filter(
+                        name=keyword_point_tuple[0]).exists():
+                bonus_similarity_exponent += keyword_point_tuple[1]
+
+        bonus_similarity_points = int(math.pow(2, bonus_similarity_exponent))
+        mov_similarity_list.append(
+            {'similarity_percentages': mov_tuple[0],
+             'similarity_level': mov_tuple[1],
+             'movie': mov_tuple[2],
+             'alert_type': mov_tuple[3],
+             'bonus_similarity_points': bonus_similarity_points})
+    # adjust similar movies based on bonus points
+    return sorted(mov_similarity_list, key=itemgetter(
+        'similarity_percentages', 'bonus_similarity_points'), reverse=True)
 
 
 def get_similar_movies(movie):
@@ -364,11 +430,16 @@ def get_similar_movies(movie):
                                     int(percentage_of_metagenre_matches)),
                                     similarity_level, current_mov, alert_type))
 
-    if len(mov_similarity_list) >= 3:
-        return sorted(mov_similarity_list, key=itemgetter(0),
-                      reverse=True)[:3]
+    if len(mov_similarity_list) >= 8:
+        return calculate_bonus_similarity_pts(
+            sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[
+            :8], movie)[:4]
     else:
-        return sorted(mov_similarity_list, key=itemgetter(0), reverse=True)
+        similar_movies = calculate_bonus_similarity_pts(
+            sorted(mov_similarity_list, key=itemgetter(0), reverse=True),
+            movie)
+        if similar_movies > 4:
+            return similar_movies[:4]
 
 
 class MovieDetailView(generic.DetailView):
