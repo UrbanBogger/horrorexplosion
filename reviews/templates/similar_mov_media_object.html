@@ -1,17 +1,20 @@
 {% load static %}
 <div class="media" id="similar-mov-div">
     <div class="media-left">
-        {% if similar_mov.2.poster_thumbnail %}
-        <img class="media-object img-rounded mov-similarity-img" src="{% static '' %}{{ similar_mov.2.poster_thumbnail }}" alt="{{ similar_mov.2.main_title}} poster" />
+        {% if similar_mov.movie.poster_thumbnail %}
+        <img class="media-object img-rounded mov-similarity-img" src="{% static '' %}{{ similar_mov.movie.poster_thumbnail }}" alt="{{ similar_mov.movie.main_title}} poster" />
         {% else %}
-        <img class="media-object img-rounded mov-similarity-img" src="{% static '' %}{{ similar_mov.2.poster }}" alt="{{ similar_mov.2.main_title}} poster" />
+        <img class="media-object img-rounded mov-similarity-img" src="{% static '' %}{{ similar_mov.movie.poster }}" alt="{{ similar_mov.movie.main_title}} poster" />
         {% endif %}
     </div>
     <div class="media-body">
-        <h4 class="media-heading text-left"><a href="{{ similar_mov.2.get_absolute_url }}">{{ similar_mov.2 }}</a></h4>
-        <div class="alert {{ similar_mov.3 }}" role="alert"><p><strong>Similarity Level:</strong> <kbd>{{ similar_mov.1 }}</kbd></p></div>
-        <p><strong>Overall Similarity:</strong> {{ similar_mov.0.0 }}%</p>
-        <p><strong>Keyword Similarity:</strong> {{ similar_mov.0.1 }}%</p>
-        <p><strong>Genre Similarity:</strong> {{ similar_mov.0.2 }}%</p>
+        <h4 class="media-heading text-left"><a href="{{ similar_mov.movie.get_absolute_url }}">{{ similar_mov.movie }}</a></h4>
+        <div class="alert {{ similar_mov.alert_type }}" role="alert"><p><strong>Similarity Level:</strong> <kbd>{{ similar_mov.similarity_level }}</kbd></p></div>
+        <p><strong>Overall Similarity:</strong> {{ similar_mov.similarity_percentages.0 }}%</p>
+        <p><strong>Keyword Similarity:</strong> {{ similar_mov.similarity_percentages.1 }}%</p>
+        <p><strong>Genre Similarity:</strong> {{ similar_mov.similarity_percentages.2 }}%</p>
+        {% if similar_mov.bonus_similarity_points != 1 %}
+        <p><strong>Bonus Similarity Points:</strong> {{ similar_mov.bonus_similarity_points }}</p>
+        {% endif %}
     </div>
 </div>
