@@ -1,5 +1,6 @@
 aiocoap==0.3
 aiohttp==3.3.0
+APScheduler==3.5.3
 async-timeout==3.0.0
 attrs==18.1.0
 beautifulsoup4==4.6.0
@@ -14,6 +15,7 @@ django-filter==1.1.0
 django-js-asset==1.1.0
 django-sites==0.10
 django-storages==1.6.6
+django-widget-tweaks==1.4.2
 docutils==0.14
 gunicorn==19.7.1
 idna==2.6
@@ -28,6 +30,7 @@ readline==6.2.4.1
 s3transfer==0.1.13
 sites==0.0.1
 six==1.11.0
+tzlocal==1.5.1
 virtualenv==15.1.0
 Werkzeug==0.14.1
 whitenoise==3.3.1
