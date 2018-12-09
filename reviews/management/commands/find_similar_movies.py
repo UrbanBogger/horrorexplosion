@@ -151,10 +151,12 @@ def get_similar_movies(movie, all_movies):
 
     if len(mov_similarity_list) >= 10:
         similar_movies = calculate_bonus_similarity_pts(
-            mov_similarity_list[:10], movie)
+            sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[
+            :10], movie)
     else:
-        similar_movies = calculate_bonus_similarity_pts(mov_similarity_list,
-                                                        movie)
+        similar_movies = calculate_bonus_similarity_pts(
+            sorted(mov_similarity_list, key=itemgetter(0), reverse=True),
+            movie)
 
     mov_similarity_list = []
     for similar_movie_tuple in similar_movies:
