@@ -74,8 +74,10 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
             bonus_similarity_exponent += 2
         # are we dealing with a remake?
         if MovieRemake.objects.filter(Q(remade_movie=movie) & Q(
-                remake=mov_tuple_as_list[1])).exists() or MovieRemake.objects.filter(
-                    Q(remade_movie=mov_tuple_as_list[1]) & Q(remake=movie)).exists():
+                remake=mov_tuple_as_list[1])).exists() or \
+                MovieRemake.objects.filter(
+                    Q(remade_movie=mov_tuple_as_list[1]) &
+                            Q(remake=movie)).exists():
             bonus_similarity_exponent += 3
         # do the 2 movies belong to the same movie series?
         if mov_series:
@@ -115,7 +117,6 @@ def get_similar_movies(movie, all_movies):
         [mg.name for mg in movie.microgenre.all()])
     mov_similarity_list = []
 
-    #all_other_movies = all_movies.all().exclude(pk=movie.pk)
     for current_mov in all_movies:
         percentage_of_keyword_matches = 0
         percentage_of_metagenre_matches = 0
@@ -185,14 +186,11 @@ class Command(BaseCommand):
         self.stdout.write('Deleting all the rows in the SimilarMovies table')
         SimilarMovie.objects.all().delete()
         all_movies = Movie.objects.all()
-        #self.stdout.write('ALL MOVIES from the DB: ' + str(all_movies))
         self.stdout.write('Beginning to calculate movie similarity for each '
                           'movie in the DB')
         for movie in all_movies:
             all_other_movies = Movie.objects.all().exclude(pk=movie.pk)
             similar_movies = get_similar_movies(movie, all_other_movies)
-            print('similar movies for movie ' + str(movie) + ' :' + str(
-                similar_movies))
 
             for similar_movie_dict in similar_movies:
                 similar_mov = SimilarMovie()
@@ -203,8 +201,8 @@ class Command(BaseCommand):
                 similar_mov.keyword_similarity_percentage = similar_movie_dict[
                     'similarity_percentages'][1]
                 similar_mov.metagenre_similarity_percentage = \
-                similar_movie_dict[
-                    'similarity_percentages'][2]
+                    similar_movie_dict[
+                        'similarity_percentages'][2]
                 similar_mov.bonus_similarity_points = similar_movie_dict[
                     'bonus_similarity_points']
                 similar_mov.similarity_category = similar_movie_dict[
