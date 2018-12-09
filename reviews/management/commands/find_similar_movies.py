@@ -205,6 +205,5 @@ class Command(BaseCommand):
                     'similarity_level']
                 similar_mov.alert_type = similar_movie_dict['alert_type']
                 similar_mov.save()
-                self.stdout.write(
-                    'Have finished adding entries for movie: "%s"' %
-                    movie)
+        self.stdout.write(
+            'Have finished adding entries for all movies in the DB')
