@@ -7,7 +7,8 @@ from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
-    Contributor, MovieRemake, MovieSeries, MovieInMovSeries, get_random_review
+    Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
+    SimilarMovie, get_random_review
 
 # Create your views here.
 
@@ -478,8 +479,10 @@ class MovieDetailView(generic.DetailView):
             movie)
         context['preceding_movie'] = preceding_mov
         context['following_movie'] = following_mov
-        context['similar_movies'] = get_similar_movies(Movie.objects.get(
-            pk=self.kwargs.get(self.pk_url_kwarg)))
+        context['similar_movies'] = SimilarMovie.objects.filter(
+            compared_mov=Movie.objects.get(
+                pk=self.kwargs.get(self.pk_url_kwarg))).order_by(
+            '-overall_similarity_percentage')
         return context
 
 
