@@ -359,8 +359,9 @@ class MovieDetailView(generic.DetailView):
             movie)
         context['preceding_movie'] = preceding_mov
         context['following_movie'] = following_mov
-        context['similar_movies'] = SimilarMovie.objects.filter(compared_mov=
-            Movie.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))).order_by(
+        context['similar_movies'] = SimilarMovie.objects.filter(
+               compared_mov=Movie.objects.get(
+                   pk=self.kwargs.get(self.pk_url_kwarg))).order_by(
                 '-overall_similarity_percentage')
         return context
 
