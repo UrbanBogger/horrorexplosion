@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'reviews.apps.ReviewsConfig',
+    'reviews',
     'ckeditor',
     'django.contrib.sites',
     'django.contrib.sitemaps',
