@@ -183,12 +183,14 @@ class Command(BaseCommand):
         self.stdout.write('Deleting all the rows in the SimilarMovies table')
         SimilarMovie.objects.all().delete()
         all_movies = Movie.objects.all()
-        self.stdout.write('ALL MOVIES from the DB: ' + str(all_movies))
+        #self.stdout.write('ALL MOVIES from the DB: ' + str(all_movies))
         self.stdout.write('Beginning to calculate movie similarity for each '
                           'movie in the DB')
         for movie in all_movies:
             similar_movies = get_similar_movies(movie, all_movies)
-
+            print('similar movies for movie ' + str(movie) + ' :' + str(
+                similar_movies))
+            
             for similar_movie_dict in similar_movies:
                 similar_mov = SimilarMovie()
                 similar_mov.compared_mov = similar_movie_dict['compared_mov']
