@@ -183,6 +183,7 @@ class Command(BaseCommand):
         self.stdout.write('Deleting all the rows in the SimilarMovies table')
         SimilarMovie.objects.all().delete()
         all_movies = Movie.objects.all()
+        self.stdout.write('ALL MOVIES from the DB: ' + str(all_movies))
         self.stdout.write('Beginning to calculate movie similarity for each '
                           'movie in the DB')
         for movie in all_movies:
