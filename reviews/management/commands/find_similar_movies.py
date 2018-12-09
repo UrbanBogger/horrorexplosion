@@ -115,8 +115,8 @@ def get_similar_movies(movie, all_movies):
         [mg.name for mg in movie.microgenre.all()])
     mov_similarity_list = []
 
-    all_other_movies = all_movies.all().exclude(pk=movie.pk)
-    for current_mov in all_other_movies:
+    #all_other_movies = all_movies.all().exclude(pk=movie.pk)
+    for current_mov in all_movies:
         percentage_of_keyword_matches = 0
         percentage_of_metagenre_matches = 0
         overall_similarity_percentage = 0
@@ -187,10 +187,11 @@ class Command(BaseCommand):
         self.stdout.write('Beginning to calculate movie similarity for each '
                           'movie in the DB')
         for movie in all_movies:
-            similar_movies = get_similar_movies(movie, all_movies)
+            all_other_movies = Movie.objects.all().exclude(pk=movie.pk)
+            similar_movies = get_similar_movies(movie, all_other_movies)
             print('similar movies for movie ' + str(movie) + ' :' + str(
                 similar_movies))
-            
+
             for similar_movie_dict in similar_movies:
                 similar_mov = SimilarMovie()
                 similar_mov.compared_mov = similar_movie_dict['compared_mov']
