@@ -186,14 +186,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # delete all rows in the 'SimilarMovie' table
         self.stdout.write('Deleting all the rows in the SimilarMovies table')
-        SimilarMovie.objects.all().delete()
+        #SimilarMovie.objects.all().delete()
         all_movies = Movie.objects.all()
         self.stdout.write('Beginning to calculate movie similarity for each '
                           'movie in the DB')
         for movie in all_movies:
             all_other_movies = Movie.objects.all().exclude(pk=movie.pk)
             similar_movies = get_similar_movies(movie, all_other_movies)
-
+            # delete all rows in the 'SimilarMovie' table for the current movie
+            self.stdout.write('Removing DB rows for movie: "%s"' % movie)
+            SimilarMovie.objects.filter(compared_mov=movie).delete()
+            # repopulate the table rows for the movie
             for similar_movie_dict in similar_movies:
                 similar_mov = SimilarMovie()
                 similar_mov.compared_mov = similar_movie_dict['compared_mov']
