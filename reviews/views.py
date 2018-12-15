@@ -1,9 +1,11 @@
 import sys
 import re
 from bs4 import BeautifulSoup
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.mail import EmailMessage, BadHeaderError
+from django.http import HttpResponse
 from forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
@@ -187,6 +189,14 @@ def contact(request):
                            'meta_content_description': content_metadescription}
                   )
     '''
+
+
+def thanks(request):
+    thanks_page_info = "Thank you | The Horror Explosion"
+    content_metadescription = "The Horror Explosion's 'thank you' page"
+    return render(request, 'thanks.html', context={
+        'page_title': thanks_page_info,
+        'meta_content_description': content_metadescription})
 
 
 def movie_index(request, first_letter=''):
