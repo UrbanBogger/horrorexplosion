@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from django.shortcuts import render, redirect
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
@@ -151,6 +152,7 @@ def about(request):
                            'mission_statement': mission_statement})
 
 
+@csrf_exempt
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
