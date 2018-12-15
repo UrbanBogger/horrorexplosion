@@ -3,12 +3,11 @@ import re
 from bs4 import BeautifulSoup
 from django.shortcuts import render, redirect
 from django.views import generic
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
 from .forms import ContactForm
-from django.template.context_processors import csrf
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, get_random_review
@@ -153,7 +152,7 @@ def about(request):
                            'mission_statement': mission_statement})
 
 
-@csrf_protect
+@csrf_exempt
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
@@ -184,13 +183,6 @@ def contact(request):
                   context={'form': form, 'page_title': contact_page_title,
                            'meta_content_description':
                                content_metadescription})
-
-    '''
-    return render(request, 'contact.html',
-                  context={'page_title': contact_page_title,
-                           'meta_content_description': content_metadescription}
-                  )
-    '''
 
 
 def thanks(request):
