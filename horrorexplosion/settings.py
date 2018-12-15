@@ -142,10 +142,6 @@ SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_SSL_REDIRECT = False
 
-SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_SECURE = True
-
 X_FRAME_OPTIONS = 'DENY'
 
 # Heroku: Update database configuration from $DATABASE_URL.

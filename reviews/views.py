@@ -152,7 +152,7 @@ def about(request):
                            'mission_statement': mission_statement})
 
 
-@csrf_exempt
+#@csrf_exempt
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
