@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /reviews/contact
 
 Sitemap: http://www.horrorexplosion.com/sitemap.xml
