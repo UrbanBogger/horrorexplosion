@@ -170,7 +170,6 @@ def contact(request):
             try:
                 email = EmailMessage(contact_name, content, contact_email,
                                      ['thehorrorexplosion@gmail.com'],
-                                     fail_silently=False,
                                      reply_to=[contact_email])
                 sys.stdout.write('Email being sent...\n')
                 sys.stdout.write('Name: "%s"\n' % contact_name)
