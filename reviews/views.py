@@ -6,7 +6,7 @@ from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
-from forms import ContactForm
+from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, get_random_review
