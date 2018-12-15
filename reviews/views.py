@@ -1,11 +1,10 @@
+import sys
 import re
-import math
-from operator import itemgetter
 from bs4 import BeautifulSoup
-from django.db.models import Q
 from django.shortcuts import render
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, get_random_review
@@ -153,10 +152,41 @@ def about(request):
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
+
+    if request.method == 'GET':
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            contact_name = form.cleaned_data['contact_name']
+            contact_email = form.cleaned_data['contact_email']
+            content = form.cleaned_data['content']
+
+            try:
+                email = EmailMessage(contact_name, content, contact_email,
+                                     ['thehorrorexplosion@gmail.com'],
+                                     fail_silently=False,
+                                     reply_to=[contact_email])
+                sys.stdout.write('Email being sent...\n')
+                sys.stdout.write('Name: "%s"\n' % contact_name)
+                sys.stdout.write('Contact email: "%s"\n' % contact_email)
+                sys.stdout.write('Content: "%s"\n' % content)
+                email.send()
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect(thanks)
+    return render(request, 'contact.html',
+                  context={'form': form, 'page_title': contact_page_title,
+                           'meta_content_description': content_metadescription}
+                  )
+
+    '''
     return render(request, 'contact.html',
                   context={'page_title': contact_page_title,
                            'meta_content_description': content_metadescription}
                   )
+    '''
 
 
 def movie_index(request, first_letter=''):
