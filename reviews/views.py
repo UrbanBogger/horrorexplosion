@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
 from .forms import ContactForm
+from django.template.context_processors import csrf
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, get_random_review
@@ -152,7 +153,7 @@ def about(request):
                            'mission_statement': mission_statement})
 
 
-@csrf_exempt
+#@csrf_exempt
 def contact(request):
     contact_page_title = "Contact Info | The Horror Explosion"
     content_metadescription = "The Horror Explosion website contact info"
@@ -181,8 +182,8 @@ def contact(request):
             return redirect(thanks)
     return render(request, 'contact.html',
                   context={'form': form, 'page_title': contact_page_title,
-                           'meta_content_description': content_metadescription}
-                  )
+                           'meta_content_description':
+                               content_metadescription})
 
     '''
     return render(request, 'contact.html',
