@@ -1,9 +1,6 @@
+import sys
 import re
-import math
-from operator import itemgetter
 from bs4 import BeautifulSoup
-from django.db.models import Q
-from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.http import Http404, HttpResponse
@@ -171,8 +168,12 @@ def contact(request):
             try:
                 email = EmailMessage(contact_name, content, contact_email,
                                      ['thehorrorexplosion@gmail.com'],
+                                     fail_silently=False,
                                      reply_to=[contact_email])
-                print('Email being sent...')
+                sys.stdout.write('Email being sent...\n')
+                sys.stdout.write('Name: "%s"\n' % contact_name)
+                sys.stdout.write('Contact email: "%s"\n' % contact_email)
+                sys.stdout.write('Content: "%s"\n' % content)
                 email.send()
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
