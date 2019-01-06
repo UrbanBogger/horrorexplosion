@@ -37,11 +37,11 @@ def determine_similarity_level(similarity_exponent):
 
 def calculate_bonus_similarity_pts(similar_mov_list, movie):
     keywords_and_points = [
-        ('anthology film', 4), ('found footage', 3),
-        ('H. P. Lovecraft related', 3),
-        ('micro budget (<=$100,000)', 3),
+        ('anthology film', 4), ('atmospheric', 2), ('found footage', 3),
+        ('H. P. Lovecraft related', 3), ('literary adaptation', 2),
+        ('lovecraftian', 3), ('micro budget (<=$100,000)', 3),
         ('shot on video SOV', 2), ('splatter', 2),
-        ('Stephen King related', 3), ('Troma production', 3),
+        ('Stephen King related', 3), ('stylized', 2), ('Troma production', 3),
         ('underground horror', 4),
     ]
     mov_directors = [mov_participation.person for mov_participation in
@@ -153,14 +153,8 @@ def get_similar_movies(movie, all_movies):
                                      int(percentage_of_metagenre_matches)),
                                     current_mov))
 
-    if len(mov_similarity_list) >= 10:
-        similar_movies = calculate_bonus_similarity_pts(
-            sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[
-            :10], movie)
-    else:
-        similar_movies = calculate_bonus_similarity_pts(
-            sorted(mov_similarity_list, key=itemgetter(0), reverse=True),
-            movie)
+        similar_movies = calculate_bonus_similarity_pts(mov_similarity_list,
+                                                        movie)
 
     mov_similarity_list = []
     for similar_movie_tuple in similar_movies:
