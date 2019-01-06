@@ -37,10 +37,11 @@ def determine_similarity_level(similarity_exponent):
 
 def calculate_bonus_similarity_pts(similar_mov_list, movie):
     keywords_and_points = [
-        ('anthology film', 4), ('atmospheric', 2), ('found footage', 3),
+        ('anthology film', 4), ('atmospheric', 2),
+        ('found footage narrative', 3),
         ('H. P. Lovecraft related', 3), ('literary adaptation', 2),
         ('lovecraftian', 3), ('micro budget (<=$100,000)', 3),
-        ('shot on video SOV', 2), ('splatter', 2),
+        ('shot on video (SOV)', 2), ('splatter', 2),
         ('Stephen King related', 3), ('stylized', 2), ('Troma production', 3),
         ('underground horror', 4),
     ]
