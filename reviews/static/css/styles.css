@@ -23,7 +23,7 @@ body {
     }
 
     footer {
-      background-color: #555;
+      background-color: #aaaaaa;
       color: white;
       padding: 15px;
     }
@@ -99,6 +99,22 @@ div.media-body {
 
 .alert {
   display:inline-block;
+}
+
+#sitemap_table {
+    margin: 0 auto 0 auto
+}
+
+#sitemap_table td {
+    padding: 7px;
+}
+
+#sitemap_table a {
+    color: black;
+}
+
+.col-lg-12 {
+    padding: 5px;
 }
     * On small screens, set height to 'auto' for sidenav and grid */
     @media screen and (max-width: 767px) {
