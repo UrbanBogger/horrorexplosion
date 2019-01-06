@@ -103,6 +103,22 @@ similar-mov-div {
     margin-top: 20px;
 }
 
+#sitemap_table {
+    margin: 0 auto 0 auto
+}
+
+#sitemap_table td {
+    padding: 7px;
+}
+
+#sitemap_table a {
+    color: black;
+}
+
+.col-lg-12 {
+    padding: 5px;
+}
+
 * On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     .sidenav {
