@@ -153,10 +153,10 @@ def get_similar_movies(movie, all_movies):
                                      int(percentage_of_metagenre_matches)),
                                     current_mov))
 
-    if len(mov_similarity_list) >= 10:
+    if len(mov_similarity_list) >= 15:
         similar_movies = calculate_bonus_similarity_pts(
-            sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[
-            :10], movie)
+            sorted(mov_similarity_list, key=itemgetter(0), reverse=True)[:15],
+            movie)
     else:
         similar_movies = calculate_bonus_similarity_pts(
             sorted(mov_similarity_list, key=itemgetter(0), reverse=True),
