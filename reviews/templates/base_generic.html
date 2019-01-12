@@ -91,27 +91,16 @@
         <hr>
 
     <footer class="row">
-        <table class="sitemap_table">
-                <tr>
-                    <th>Sitemap</th>
-                </tr>
-                <tr>
-                    <td><a href="{% url 'index' %}">Home</a></td>
-                    <td><a href="{% url 'movie_reviews' %}">Movie Review List</a></td>
-                    <td><a href="{% url 'movie_index' %}">Alphabetical Movie Index</a></td>
-                    <td><a href="{% url 'contact' %}">Get in Touch</a></td>
-                </tr>
-                <tr>
-                    <td><a href="{% url 'movies' %}">Movie List</a></td>
-                    <td><a href="{% url 'about' %}">About the Website</a></td>
-                    <td><a href="{% url 'contributors' %}">About our Contributors</a></td>
-                </tr>
-                <tr>
-
-
-                    <td></td>
-                </tr>
-            </table>
+        <h4 class="text-center">Sitemap:</h4>
+        <ul class="list-inline text-center" id="footer_sitemap">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'movie_reviews' %}">Movie Review List</a></li>
+                    <li><a href="{% url 'movie_index' %}">Alphabetical Movie Index</a></li>
+                    <li><a href="{% url 'contact' %}">Get in Touch</a></li>
+                    <li><a href="{% url 'movies' %}">Movie List</a></li>
+                    <li><a href="{% url 'about' %}">About the Website</a></li>
+                    <li><a href="{% url 'contributors' %}">About our Contributors</a></li>
+            </ul>
         <!-- Copyright -->
         <div class="col-lg-12 text-center">
             <p>Copyright &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> The Horror Explosion</p>
