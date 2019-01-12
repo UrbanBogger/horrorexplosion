@@ -23,7 +23,7 @@ body {
 }
 
 footer {
-      background-color: #555;
+      background-color: grey;
       color: white;
       padding: 15px;
 }
@@ -103,16 +103,18 @@ similar-mov-div {
     margin-top: 20px;
 }
 
-#sitemap_table {
+.sitemap_table {
     margin: 0 auto 0 auto
 }
 
-#sitemap_table td {
-    padding: 7px;
+.sitemap_table th {
+    text-decoration: underline;
 }
 
-#sitemap_table a {
-    color: black;
+.sitemap_table a {
+        font-size: 12px;
+        color: white;
+        margin-left: 15px;
 }
 
 .col-lg-12 {
