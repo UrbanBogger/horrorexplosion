@@ -11,16 +11,28 @@
 {% block main_content %}
 {% include "movie_header.html" %}
 {% if remakes %}
-<p><strong>Remade as:</strong> {% for remake in remakes %}<a href="{{ remake.get_absolute_url }}">{{ remake }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+<p><span class="glyphicon glyphicon-link" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Remade as:</strong> {% for remake in remakes %}<a href="{{ remake.get_absolute_url }}">{{ remake }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+    <span class="glyphicon glyphicon-link" aria-hidden="true" style="font-size:15px"></span>
+</p>
 {% endif %}
 {% if remade_movie %}
-<p><strong>Remake of:</strong> <a href="{{ remade_movie.get_absolute_url }}">{{ remade_movie }}</a></p>
+<p><span class="glyphicon glyphicon-wrench" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Remake of:</strong> <a href="{{ remade_movie.get_absolute_url }}">{{ remade_movie }}</a></span>
+    <span class="glyphicon glyphicon-wrench" aria-hidden="true" style="font-size:15px"></span>
+</p>
 {% endif %}
 {% if preceding_movie %}
-<p><strong>Preceded by:</strong> <a href="{{ preceding_movie.get_absolute_url }}">{{ preceding_movie }}</a></p>
+<p><span class="glyphicon glyphicon-step-backward" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Preceded by:</strong> <a href="{{ preceding_movie.get_absolute_url }}">{{ preceding_movie }}</a></span>
+    <span class="glyphicon glyphicon-step-backward" aria-hidden="true" style="font-size:15px"></span>
+</p>
 {% endif %}
 {% if following_movie %}
-<p><strong>Followed by:</strong> <a href="{{ following_movie.get_absolute_url }}">{{ following_movie }}</a></p>
+<p><span class="glyphicon glyphicon-step-forward" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Followed by:</strong> <a href="{{ following_movie.get_absolute_url }}">{{ following_movie }}</a></span>
+    <span class="glyphicon glyphicon-step-forward" aria-hidden="true" style="font-size:15px"></span>
+</p>
 {% endif %}
 {% if associated_reviews %}
 <p><span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size:20px"></span><span style="font-size:25px"> <strong>Review(s):</strong> {% for review in associated_reviews %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span> <span class="glyphicon glyphicon-hand-left" aria-hidden="true" style="font-size:20px"></span></p>
@@ -28,7 +40,10 @@
 <p><strong>No review(s) yet.</strong></p>
     {% endif %}
 {% if referenced_in_reviews %}
-<p><strong>Referenced in the following review(s)</strong>: {% for review_ref in referenced_in_reviews %}<a href="{{ review_ref.review.get_absolute_url }}">{{ review_ref.review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+<p><span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Referenced in the following review(s)</strong>: {% for review_ref in referenced_in_reviews %}<a href="{{ review_ref.review.get_absolute_url }}">{{ review_ref.review }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+    <span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size:15px"></span>
+</p>
 {% endif %}
 {% if similar_movies %}
 <p><strong>Similar Movies:</strong></p>
