@@ -1,0 +1,12 @@
+<div class="media">
+  <div class="media-left media-middle">
+    {% if mov.poster_thumbnail %}
+    <img class="media-object" src="{{ mov.poster_thumbnail.url }}" alt="{{ mov.main_title}} poster" height="80" width="60"/>
+    {% else %}
+    <img class="media-object" src="{{ mov.poster.url }}" alt="{{ mov.main_title }} poster" height="80" width="60"/>
+    {% endif %}
+  </div>
+  <div class="media-body">
+    <a href="{{ mov.get_absolute_url }}"><h4 class="media-heading text-left">{{ mov }}</h4></a>
+  </div>
+</div>

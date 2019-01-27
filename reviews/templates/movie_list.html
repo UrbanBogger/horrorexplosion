@@ -31,13 +31,7 @@
 <ul class="list-group">
     {% for movie in movie_list %}
     <li class="list-group-item">
-        <a href="{{ movie.get_absolute_url }}">
-            {% if movie.poster_thumbnail %}
-            <img class="img-thumbnail" src="{{ movie.poster_thumbnail.url }}" alt="{{ movie.main_title}} poster" height="80" width="60"/>
-            {% else %}
-            <img class="img-thumbnail" src="{{ movie.poster.url }}" alt="{{ movie.main_title }} poster" height="80" width="60"/>
-            {% endif %}
-            <strong>{{ movie.main_title }} ({{ movie.year_of_release }})</strong></a>
+       {% include "movie_media_object.html" with mov=movie %}
     </li>
     {% endfor %}
 </ul>
