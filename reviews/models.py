@@ -396,8 +396,8 @@ class MovieRemake(models.Model):
             remake=', '.join(str(movie) for movie in
                              self.remake.all()))
 
-'''
-class TelevisionSeries(MotionPicture):
+
+class TelevisionSeries(models.Model):
     SERIES_TYPES = (
         ('TV Mini-Series', 'TV Mini-Series'),
         ('Anthology (Episodic) TV Series', 'Anthology (Episodic) TV Series'),
@@ -418,9 +418,60 @@ class TelevisionSeries(MotionPicture):
         Title, blank=True, related_name='tv_series_alternative_title_set',
         help_text='Enter the TV serie\'s alternative_title(s) ['
                   'OPTIONAL]')
+    poster = models.ImageField(
+        upload_to='images/', null=True, blank=True,
+        help_text='Upload the top-level poster for the TV series if '
+                  'applicable [OPTIONAL]')
+    poster_thumbnail = models.ImageField(
+        upload_to='images/', null=True, blank=True,
+        help_text='Upload the top-level poster thumbnail for the TV series '
+                  'if applicable [OPTIONAL]')
+    description = RichTextField(blank=True, help_text='Provide background '
+                                                      'info on the TV series '
+                                                      '[OPTIONAL]')
+    tv_series_type = models.CharField(max_length=25, choices=SERIES_TYPES)
+    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
+    human_readable_url = models.SlugField(
+        help_text="Enter the 'slug',i.e., the human-readable "
+                  "URL for the TV series", unique=True, null=True)
+
+    class Meta:
+        ordering = ['title_for_sorting']
+
+    def get_absolute_url(self):
+        return reverse('tv-series', args=[str(self.id)])
+
+    def __str__(self):
+        return '{main_title} [{series_type}]'.format(
+            main_title=self.main_title,
+            series_type=self.tv_series_type)
+
+
+class TelevisionSeason(models.Model):
+    tv_series = models.ForeignKey(TelevisionSeries, on_delete=models.SET_NULL,
+                                  related_name='tv_series',
+                                  null=True, help_text='Enter the TV series')
+    season_title = models.CharField(
+        max_length=50, default='Season', help_text='Enter the title of the '
+                                                   'television season')
+    season_number = models.IntegerField(
+        default=1, help_text='Enter the TV season\'s chronological position '
+                             'in the TV series'
+                             'as an integer, e.g. "1" for the '
+                             'first '
+                             'season in the TV series, "2" for the second '
+                             'one, etc.')
     year_of_release = models.IntegerField(
         choices=create_release_year_range(), blank=True,
         help_text='Choose the TV serie\'s release year')
+    country_of_origin = models.ManyToManyField(
+        Country, help_text='Enter the country of origin')
+    poster = models.ImageField(
+        upload_to='images/', null=True,
+        help_text='Upload the top-level poster for the TV series')
+    poster_thumbnail = models.ImageField(
+        upload_to='images/', null=True,
+        help_text='Upload the top-level poster thumbnail for the TV series')
     duration = models.IntegerField(
         default=90, blank=True, help_text='Enter the duration of the TV ' \
                                           'Mini-Series in minutes')
@@ -434,77 +485,28 @@ class TelevisionSeries(MotionPicture):
                                           'microgenre [OPTIONAL]')
     keyword = models.ManyToManyField(
         Keyword, blank=True, help_text='Enter the keyword(s) that best ' \
-                                       'describe the motion picture')
-    country_of_origin = models.ManyToManyField(
-        Country, help_text='Enter the country of origin')
-    poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster of the movie')
-    poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster thumbnail')
-    description = RichTextField(blank=True, help_text='Provide background '
-                                                      'info on the TV series '
-                                                      '[OPTIONAL]')
-    tv_series_type = models.CharField(max_length=25, choices=SERIES_TYPES)
+                                       'describe the TV series picture ['
+                                       'OPTIONAL]')
     tv_series_participation = models.ManyToManyField(
         MovieParticipation, blank=True,
         help_text='Add the name of the TV series creator, their role and the '
                   'position you want them to appear in the credits')
-
-    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
-                  "URL for the TV series", unique=True, null=True)
+                  "URL for the TV serie\'s season", null=True)
 
     class Meta:
-        ordering = ['title_for_sorting']
+        ordering = ['tv_series', 'season_number']
 
     def get_absolute_url(self):
-        return reverse('tv_series_detail', args=[str(self.id)])
-
-    def return_mov_participation_data(self, participation_type):
-        participations = self.tv_series_participation.all()
-        return [MovieParticipation for MovieParticipation in participations
-                if str(MovieParticipation.creative_role) == participation_type]
+        return reverse('tv-series', args=[str(self.id)])
 
     def __str__(self):
-        return '{main_title} ({year_of_release}) [{series_type}]'.format(
-            main_title=self.main_title,
-            year_of_release=self.year_of_release,
-            series_type=self.tv_series_type)
+        return '{tv_series} {season} #{season_num}'.format(
+            tv_series=self.tv_series, season=self.season_title,
+            season_num=self.season_number)
 
-
-class TelevisionSeason(models.Model):
-    season_title = models.CharField(
-        max_length=50, default='Season', help_text='Enter the title of the '
-                                                   'television season')
-    season_number = models.IntegerField(
-        default=1, help_text='Enter the TV season\'s chronological position '
-                             'in the TV series'
-                             'as an integer, e.g. "1" for the '
-                             'first '
-                             'season in the TV series, "2" for the second '
-                             'one, etc.')
-    movie_participation = models.ManyToManyField(
-        MovieParticipation, blank=True,
-        help_text='Add the name of the movie creator, their role and the '
-                  'position you want them to appear in the credits')
-    poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster of the movie [OPTIONAL]')
-    poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster thumbnail [OPTIONAL]')
-
-    class Meta:
-        ordering = ['season_number']
-
-    def __str__(self):
-        return '{season} #{season_num}'.format(season=self.season_title,
-                                              season_num=self.season_number)
-
-
+'''
 class TelevisionEpisode(models.Model):
     episode_title = models.CharField(
         max_length=50, default='Episode', help_text='Enter the title of the '
@@ -544,7 +546,6 @@ class TelevisionReview(Review):
                                                       'that you\'re '
                                                       'reviewing [OPTIONAL]')
 '''
-
 
 class PickedReview(models.Model):
     picked_review = models.OneToOneField(MovieReview)
