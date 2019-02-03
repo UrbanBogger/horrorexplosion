@@ -14,7 +14,8 @@
         <p><strong>Keyword Similarity:</strong> {{ similar_mov.keyword_similarity_percentage }}%</p>
         <p><strong>Genre Similarity:</strong> {{ similar_mov.keyword_similarity_percentage }}%</p>
         {% if smov.bonus_similarity_points != 1 %}
-        <p><strong>Bonus Similarity Points:</strong> {{ smov.bonus_similarity_points }}</p>
+        {% load humanize %}
+        <p><strong>Bonus Similarity Points:</strong> {{ smov.bonus_similarity_points|intcomma }}</p>
         {% endif %}
     </div>
 </div>

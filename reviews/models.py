@@ -400,8 +400,8 @@ class MovieRemake(models.Model):
 class TelevisionSeries(MotionPicture):
     SERIES_TYPES = (
         ('TV Mini-Series', 'TV Mini-Series'),
-        ('Anthology TV Series', 'Anthology TV Series'),
-        ('Seasonal TV Series', 'Seasonal TV Series'),)
+        ('Anthology (Episodic) TV Series', 'Anthology (Episodic) TV Series'),
+        ('Serial TV Series', 'Serial TV Series'),)
 
     main_title = models.ForeignKey(Title, on_delete=models.SET_NULL,
                                    related_name='tv_series_main_title_set',
@@ -492,10 +492,10 @@ class TelevisionSeason(models.Model):
                   'position you want them to appear in the credits')
     poster = models.ImageField(
         upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster of the movie')
+        help_text='Upload the poster of the movie [OPTIONAL]')
     poster_thumbnail = models.ImageField(
         upload_to='images/', null=True, blank=True,
-        help_text='Upload the poster thumbnail')
+        help_text='Upload the poster thumbnail [OPTIONAL]')
 
     class Meta:
         ordering = ['season_number']
