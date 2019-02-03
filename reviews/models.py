@@ -419,8 +419,12 @@ class PickedReview(models.Model):
             picked_review=self.picked_review, date=self.date_added)
 
 
-def get_random_review(latest_review):
-    qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
+def get_random_review(latest_review, featured_review):
+    if featured_review is not None:
+        qs = MovieReview.objects.all().exclude(pk__in=[latest_review.pk,
+                                                       featured_review.pk])
+    else:
+        qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
 
     if not qs:
         return None

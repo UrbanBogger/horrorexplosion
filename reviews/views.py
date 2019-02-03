@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
-    SimilarMovie, get_random_review
+    SimilarMovie, PickedReview, get_random_review
 
 # Create your views here.
 
@@ -128,7 +128,12 @@ def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
     latest_review = MovieReview.objects.latest('id')
-    random_review = get_random_review(latest_review)
+    try:
+        featured_review = PickedReview.objects.latest('id').picked_review
+    except PickedReview.DoesNotExist:
+        featured_review = None
+    random_review = get_random_review(latest_review,
+                                      featured_review)
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor. \
         objects.get().landing_page_description
@@ -138,7 +143,8 @@ def index(request):
                            'number_of_reviews': number_of_reviews,
                            'number_of_movies': number_of_movies,
                            'latest_review': latest_review,
-                           'random_review': random_review}, )
+                           'random_review': random_review,
+                           'featured_review': featured_review},)
 
 
 def about(request):
