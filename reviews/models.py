@@ -462,7 +462,7 @@ class TelevisionSeason(models.Model):
                              'season in the TV series, "2" for the second '
                              'one, etc.')
     year_of_release = models.IntegerField(
-        choices=create_release_year_range(), blank=True,
+        choices=create_release_year_range(),
         help_text='Choose the TV serie\'s release year')
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
