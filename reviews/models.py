@@ -396,7 +396,7 @@ class MovieRemake(models.Model):
             remake=', '.join(str(movie) for movie in
                              self.remake.all()))
 
-
+'''
 class TelevisionSeries(MotionPicture):
     SERIES_TYPES = (
         ('TV Mini-Series', 'TV Mini-Series'),
@@ -543,6 +543,16 @@ class TelevisionReview(Review):
                                             help_text='Enter the TV episode '
                                                       'that you\'re '
                                                       'reviewing [OPTIONAL]')
+'''
+
+
+class PickedReview(models.Model):
+    picked_review = models.OneToOneField(MovieReview)
+    date_added = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return 'review: {picked_review} picked on: {date}'.format(
+            picked_review=self.picked_review, date=self.date_added)
 
 
 class SimilarMovie(models.Model):
@@ -562,8 +572,13 @@ class SimilarMovie(models.Model):
             compared_mov=self.compared_mov, similar_mov=self.similar_mov)
 
 
-def get_random_review(latest_review):
-    qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
+def get_random_review(latest_review, featured_review):
+    if featured_review is not None:
+        qs = MovieReview.objects.all().exclude(pk__in=[latest_review.pk,
+                                                       featured_review.pk])
+    else:
+        qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
+
     if not qs:
         return None
     max_pk = qs.aggregate(Max('pk'))['pk__max']

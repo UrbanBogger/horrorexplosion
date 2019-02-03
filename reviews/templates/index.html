@@ -25,4 +25,9 @@
 <p><strong>Random review:</strong></p>
     {% include "review_media_object.html" with review=random_review %}
 {% endif %}
+
+{% if featured_review %}
+<p><strong>Featured review (editor's weekly pick):</strong></p>
+    {% include "review_media_object.html" with review=featured_review %}
+{% endif %}
 {% endblock %}

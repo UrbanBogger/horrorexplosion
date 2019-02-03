@@ -24,7 +24,7 @@ urlpatterns = [
             name='movie_index_letter'),
             ])
         ),
-    url(r'^tv_series/$', views.TVSeriesListView.as_view(), name='tv_series'),
-    url(r'tv_series_detail/(?P<pk>\d+)$',
-        views.TVSeriesDetailView.as_view(), name='tv_series_detail')
+    #url(r'^tv_series/$', views.TVSeriesListView.as_view(), name='tv_series'),
+    #url(r'tv_series_detail/(?P<pk>\d+)$',
+        #views.TVSeriesDetailView.as_view(), name='tv_series_detail')
 ]

@@ -7,7 +7,7 @@ from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Movie, MovieReview, MovieRemake, WebsiteMetadescriptor,\
     ReferencedMovie, Contributor, MovieSeries, MovieInMovSeries, \
-    TelevisionSeries, SimilarMovie, get_random_review
+    SimilarMovie, PickedReview, get_random_review
 from django.core.mail import BadHeaderError, EmailMessage
 from .forms import ContactForm
 
@@ -128,7 +128,12 @@ def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
     latest_review = MovieReview.objects.latest('id')
-    random_review = get_random_review(latest_review)
+    try:
+        featured_review = PickedReview.objects.latest('id').picked_review
+    except PickedReview.DoesNotExist:
+        featured_review = None
+    random_review = get_random_review(latest_review,
+                                      featured_review)
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor.\
         objects.get().landing_page_description
@@ -138,7 +143,8 @@ def index(request):
                            'number_of_reviews': number_of_reviews,
                            'number_of_movies': number_of_movies,
                            'latest_review': latest_review,
-                           'random_review': random_review},)
+                           'random_review': random_review,
+                           'featured_review': featured_review},)
 
 
 def about(request):
@@ -387,7 +393,7 @@ class MovieReviewDetailView(generic.DetailView):
             movie_review.reviewed_movie.return_mov_participation_data('Actor')
         return context
 
-
+'''
 class TVSeriesListView(generic.ListView):
     model = TelevisionSeries
 
@@ -410,3 +416,4 @@ class TVSeriesDetailView(generic.DetailView):
         context['movie_cast'] = tv_series.return_mov_participation_data(
             'Actor')
         return context
+'''
