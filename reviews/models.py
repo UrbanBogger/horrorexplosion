@@ -410,6 +410,15 @@ class SimilarMovie(models.Model):
             compared_mov=self.compared_mov, similar_mov=self.similar_mov)
 
 
+class PickedReview(models.Model):
+    picked_review = models.OneToOneField(MovieReview)
+    date_added = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return 'review: {picked_review} picked on: {date}'.format(
+            picked_review=self.picked_review, date=self.date_added)
+
+
 def get_random_review(latest_review):
     qs = MovieReview.objects.all().exclude(pk=latest_review.pk)
 

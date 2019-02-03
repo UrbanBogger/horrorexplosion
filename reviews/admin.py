@@ -3,7 +3,7 @@ from .models import Genre, Subgenre, Microgenre, Keyword, \
 WebsiteMetadescriptor, Reviewer, MovieCreator, Country, \
     CreativeRole, Movie, MovieParticipation, Title, MovieFranchise, \
     MovieReview, ReferencedMovie, Grade, Contributor, Article, MovieRemake, \
-    MovieInMovSeries, MovieSeries, SimilarMovie
+    MovieInMovSeries, MovieSeries, SimilarMovie, PickedReview
 
 # Register your models here.
 
@@ -29,3 +29,4 @@ admin.site.register(MovieRemake)
 admin.site.register(MovieInMovSeries)
 admin.site.register(MovieSeries)
 admin.site.register(SimilarMovie)
+admin.site.register(PickedReview)
