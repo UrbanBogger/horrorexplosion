@@ -1,0 +1,48 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+{% include "tv_season_header.html" %}
+<h3>TV season info</h3>
+{% if televisionseason.televisionepisode_set.all.exists %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Episode Number</th>
+            <th scope="col">Episode Title</th>
+            <th scope="col">Our Review</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for episode in televisionseason.televisionepisode_set.all %}
+    <tr>
+        <th scope="row">{{ episode.episode_number }}</th>
+        <td>{{ episode.episode_title }}</td>
+        {% if episode.televisionepisodereview_set.all.exists %}
+        <td>{% for review in episode.televisionepisodereview_set.all %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% endfor %}</td>
+        {% else %}
+        <td>No review(s)</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p><strong>No info yet.</strong></p>
+{% endif %}
+{% if not televisionseason.tv_series.get_seasons_w_episode_reviews %}
+<h3>Review(s)</h3>
+{% if televisionseason.televisionseasonreview_set.all.exists %}
+<p><span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size:20px"></span><span style="font-size:25px">{% for review in televisionseason.televisionseasonreview_set.all %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span> <span class="glyphicon glyphicon-hand-left" aria-hidden="true" style="font-size:20px"></span></p>
+    {% else %}
+<p><strong>No review(s) yet.</strong></p>
+    {% endif %}
+{% endif %}
+{% endblock %}

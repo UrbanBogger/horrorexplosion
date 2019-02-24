@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+{% include "tv_season_review_header.html" with televisionseason=televisionseasonreview.reviewed_tv_season %}
+{% load static %}
+<img id="star-rating-review" src="{% static '' %}{{ televisionseasonreview.grade.grade_depiction }}" alt="{{ televisionseasonreview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ televisionseasonreview.grade.grade_description }}]</strong></span>
+<div id="review_body">{{ televisionseasonreview.review_text|safe }}</div>
+<p><strong>Author: </strong>{{ televisionseasonreview.review_author }}</p>
+<p><strong>Written on: </strong>{{ televisionseasonreview.date_created }}; <strong>Added to the Database: </strong>{{ televisionseasonreview.first_created }}; <strong>Last Modified: </strong>{{ televisionseasonreview.last_modified }}</p>
+{% if televisionseasonreview.previous_and_next_season_review.0 %}
+<p><span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="font-size:25px"></span><span style="font-size:18px"><strong>Previous review</strong>: {% for review in televisionseasonreview.previous_and_next_season_review.0 %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span><span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="font-size:25px"></span></p>
+{% endif %}
+{% if televisionseasonreview.previous_and_next_season_review.1 %}
+<p><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span><span style="font-size:18px"><strong>Next review</strong>:{% for review in televisionseasonreview.previous_and_next_season_review.1 %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span></p>
+{% endif %}
+{% endblock %}

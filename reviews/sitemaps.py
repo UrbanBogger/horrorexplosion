@@ -1,5 +1,6 @@
 from django.contrib.sitemaps import Sitemap
-from .models import MovieReview, Movie
+from .models import MovieReview, Movie, TelevisionSeries, TelevisionSeason, \
+    TelevisionSeasonReview, TelevisionEpisodeReview
 from django.core.urlresolvers import reverse
 
 
@@ -25,12 +26,56 @@ class MovieSitemap(Sitemap):
          item.first_created
 
 
+class TVSeriesSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.7
+
+    def items(self):
+        return TelevisionSeries.objects.all()
+
+    def lastmod(self, item):
+        item.first_created
+
+
+class TVSeasonSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.7
+
+    def items(self):
+        return TelevisionSeason.objects.all()
+
+    def lastmod(self, item):
+        item.first_created
+
+
+class TVSeasonRevSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.9
+
+    def items(self):
+        return TelevisionSeasonReview.objects.all()
+
+    def lastmod(self, item):
+        item.first_created
+
+
+class TVEpisodeRevSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.9
+
+    def items(self):
+        return TelevisionEpisodeReview.objects.all()
+
+    def lastmod(self, item):
+        item.first_created
+
+
 class ListViewSitemap(Sitemap):
     changefreq = 'weekly'
     priority = 0.7
 
     def items(self):
-        return ['movies', 'movie_reviews']
+        return ['movies', 'movie_reviews', 'tv_series',]
 
     def location(self, item):
         return reverse(item)

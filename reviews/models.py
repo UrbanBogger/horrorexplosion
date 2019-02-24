@@ -21,6 +21,12 @@ def create_release_year_range():
 # Create your models here.
 
 
+def return_mov_participation_data(motion_pic_obj, participation_type):
+    participations = motion_pic_obj.movie_participation.all()
+    return [MovieParticipation for MovieParticipation in participations if
+            str(MovieParticipation.creative_role) == participation_type]
+
+
 class MovieMetadescriptors(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=1000, blank=True, default='')
@@ -296,11 +302,6 @@ class Movie(MotionPicture):
         return reverse('movie-detail', args=[str(self.id),
                                              str(self.human_readable_url)])
 
-    def return_mov_participation_data(self, participation_type):
-        participations = self.movie_participation.all()
-        return [MovieParticipation for MovieParticipation in participations
-                if str(MovieParticipation.creative_role) == participation_type]
-
 
 class MovieReview(Review):
     reviewed_movie = models.ForeignKey(
@@ -399,9 +400,9 @@ class MovieRemake(models.Model):
 
 class TelevisionSeries(models.Model):
     SERIES_TYPES = (
-        ('TV Mini-Series', 'TV Mini-Series'),
-        ('Anthology (Episodic) TV Series', 'Anthology (Episodic) TV Series'),
-        ('Serial TV Series', 'Serial TV Series'),)
+        ('Mini-Series', 'TV Mini-Series'),
+        ('Anthology', 'Anthology (Episodic) TV Series'),
+        ('Serial', 'Serial TV Series'),)
 
     main_title = models.ForeignKey(Title, on_delete=models.SET_NULL,
                                    related_name='tv_series_main_title_set',
@@ -418,12 +419,14 @@ class TelevisionSeries(models.Model):
         Title, blank=True, related_name='tv_series_alternative_title_set',
         help_text='Enter the TV serie\'s alternative_title(s) ['
                   'OPTIONAL]')
+    is_still_running = models.NullBooleanField(
+        null=True, default=False, help_text='Is TV series still ongoing?')
     poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='images/', null=True,
         help_text='Upload the top-level poster for the TV series if '
                   'applicable [OPTIONAL]')
     poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='images/', null=True,
         help_text='Upload the top-level poster thumbnail for the TV series '
                   'if applicable [OPTIONAL]')
     description = RichTextField(blank=True, help_text='Provide background '
@@ -435,21 +438,54 @@ class TelevisionSeries(models.Model):
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the TV series", unique=True, null=True)
 
+    @property
+    def get_season_reviews(self):
+        return [tv_season_review for tv_season in
+                self.televisionseason_set.all() for tv_season_review in
+                tv_season.televisionseasonreview_set.all()]
+
+    @property
+    def get_seasons_w_episode_reviews(self):
+        return set([tv_season for tv_season in
+                    self.televisionseason_set.all() for tv_episode in
+                    tv_season.televisionepisode_set.all()
+                    if tv_episode.televisionepisodereview_set.all().exists()])
+
+    @property
+    def get_year_range(self):
+        start_year = self.televisionseason_set.all().aggregate(
+            Min('year_of_release'))['year_of_release__min']
+        latest_season = self.televisionseason_set.get(
+            season_number=self.televisionseason_set.all().aggregate(
+                Max('season_number'))['season_number__max'])
+        end_year = latest_season.season_end_year if \
+            latest_season.season_end_year else \
+            latest_season.year_of_release
+
+        if not start_year and not end_year:
+            return None
+        elif self.is_still_running:
+            end_year = ''
+        elif start_year == end_year:
+            end_year = ''
+
+        return start_year, end_year
+
     class Meta:
         ordering = ['title_for_sorting']
 
     def get_absolute_url(self):
-        return reverse('tv-series', args=[str(self.id)])
+        return reverse('tv-series-detail', args=[
+            str(self.id), str(self.human_readable_url)])
 
     def __str__(self):
-        return '{main_title} [{series_type}]'.format(
+        return '{main_title}'.format(
             main_title=self.main_title,
             series_type=self.tv_series_type)
 
 
 class TelevisionSeason(models.Model):
     tv_series = models.ForeignKey(TelevisionSeries, on_delete=models.SET_NULL,
-                                  related_name='tv_series',
                                   null=True, help_text='Enter the TV series')
     season_title = models.CharField(
         max_length=50, default='Season', help_text='Enter the title of the '
@@ -463,51 +499,68 @@ class TelevisionSeason(models.Model):
                              'one, etc.')
     year_of_release = models.IntegerField(
         choices=create_release_year_range(),
-        help_text='Choose the TV serie\'s release year')
+        help_text='Choose the TV season\'s release year')
+    season_end_year = models.IntegerField(choices=create_release_year_range(
+    ), blank=True, null=True, help_text='Choose the year when the TV season '
+                                        'stopped being aired')
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
     poster = models.ImageField(
-        upload_to='images/', null=True,
-        help_text='Upload the top-level poster for the TV series')
+        upload_to='images/', null=True, blank=True,
+        help_text='Upload a poster for the TV season if applicable')
     poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True,
-        help_text='Upload the top-level poster thumbnail for the TV series')
+        upload_to='images/', null=True, blank=True,
+        help_text='Upload a poster thumbnail for the TV season if applicable')
     duration = models.IntegerField(
-        default=90, blank=True, help_text='Enter the duration of the TV ' \
-                                          'Mini-Series in minutes')
+        null=True, blank=True, help_text='Enter the duration of the TV '
+                                         'Mini-Series in minutes [OPTIONAL]')
     genre = models.ManyToManyField(
-        Genre, blank=True, help_text='Enter the TV serie\'s genre(s)')
+        Genre, blank=True, help_text='Enter the TV season\'s genre(s) ['
+                                     'OPTIONAL]')
     subgenre = models.ManyToManyField(
-        Subgenre, blank=True, help_text='Enter the TV serie\'s '
+        Subgenre, blank=True, help_text='Enter the TV season\'s '
                                         'subgenre [OPTIONAL]')
     microgenre = models.ManyToManyField(
-        Microgenre, blank=True, help_text='Enter the TV serie\'s '
+        Microgenre, blank=True, help_text='Enter the TV season\'s '
                                           'microgenre [OPTIONAL]')
     keyword = models.ManyToManyField(
         Keyword, blank=True, help_text='Enter the keyword(s) that best ' \
-                                       'describe the TV series picture ['
-                                       'OPTIONAL]')
-    tv_series_participation = models.ManyToManyField(
+                                       'describe the TV season [OPTIONAL]')
+    movie_participation = models.ManyToManyField(
         MovieParticipation, blank=True,
-        help_text='Add the name of the TV series creator, their role and the '
-                  'position you want them to appear in the credits')
+        help_text='Add the name of the TV season\'s creator, their role and '
+                  'the position you want them to appear in the credits')
+    description = RichTextField(blank=True, help_text='Provide background '
+                                                      'info on this TV season '
+                                                      '[OPTIONAL]')
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the TV serie\'s season", null=True)
+    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    @property
+    def nr_of_episode_reviews_for_season(self):
+        return len(
+            [tv_episode_review for tv_episode in
+             self.televisionepisode_set.all() for tv_episode_review
+             in tv_episode.televisionepisodereview_set.all()])
 
     class Meta:
         ordering = ['tv_series', 'season_number']
 
     def get_absolute_url(self):
-        return reverse('tv-series', args=[str(self.id)])
+        return reverse('tv-season-detail', args=[
+            str(self.id), str(self.human_readable_url)])
 
     def __str__(self):
-        return '{tv_series} {season} #{season_num}'.format(
-            tv_series=self.tv_series, season=self.season_title,
-            season_num=self.season_number)
+        return '{tv_series}, Season #{season_num}'.format(
+            tv_series=self.tv_series, season_num=self.season_number)
 
-'''
+
 class TelevisionEpisode(models.Model):
+    tv_season = models.ForeignKey(
+        TelevisionSeason, on_delete=models.SET_NULL, null=True,
+        help_text='Enter the TV Season this episode belongs to')
     episode_title = models.CharField(
         max_length=50, default='Episode', help_text='Enter the title of the '
                                                     'television episode')
@@ -524,28 +577,135 @@ class TelevisionEpisode(models.Model):
     poster_thumbnail = models.ImageField(
         upload_to='images/', null=True, blank=True,
         help_text='Upload the poster thumbnail')
+    duration = models.IntegerField(
+        null=True, blank=True, help_text='Enter the duration of the TV '
+                                         'episode in minutes [OPTIONAL]')
+    genre = models.ManyToManyField(
+        Genre, blank=True, help_text='Enter the TV episode\'s genre(s) ['
+                                     'OPTIONAL]')
+    subgenre = models.ManyToManyField(
+        Subgenre, blank=True, help_text='Enter the TV episode\'s '
+                                        'subgenre [OPTIONAL]')
+    microgenre = models.ManyToManyField(
+        Microgenre, blank=True, help_text='Enter the TV episode\'s '
+                                          'microgenre [OPTIONAL]')
+    keyword = models.ManyToManyField(
+        Keyword, blank=True, help_text='Enter the keyword(s) that best ' \
+                                       'describe the TV episode ['
+                                       'OPTIONAL]')
+    movie_participation = models.ManyToManyField(
+        MovieParticipation, blank=True,
+        help_text='Add the name of the TV episode creator, their role and the '
+                  'position you want them to appear in the credits')
 
     class Meta:
-        ordering = ['episode_number']
+        ordering = ['tv_season', 'episode_number']
 
     def __str__(self):
-        return '{episode} #{episode_num}'.format(
-            episode=self.episode_title, episode_num=self.episode_number)
+        return '{tv_season}, ep.: {episode_title}'.format(
+            tv_season=self.tv_season, episode_title=self.episode_title)
 
 
-class TelevisionReview(Review):
-    reviewed_tv_series = models.ForeignKey(TelevisionSeries,
-                                           help_text='Enter the TV series '
-                                                     'which you\'re reviewing')
+class TelevisionSeasonReview(Review):
     reviewed_tv_season = models.ForeignKey(
-        TelevisionSeason, blank=True, help_text='Enter the season that '
-                                                'you\'re reviewing [OPTIONAL]')
+        TelevisionSeason, null=True,
+        help_text='Enter the TV season that you\'re reviewing')
+    mov_review_page_description = models.CharField(
+        max_length=155, default='Click on the link to see what we have to '
+                                'say about this flick.')
+    human_readable_url = models.SlugField(
+        null=True, help_text="Enter the 'slug',i.e., the human-readable "
+                             "URL for the TV season review")
 
-    reviewed_tv_episode = models.ForeignKey(TelevisionEpisode, blank=True,
-                                            help_text='Enter the TV episode '
-                                                      'that you\'re '
-                                                      'reviewing [OPTIONAL]')
-'''
+    @property
+    def previous_and_next_season_review(self):
+        previous_season_review = None
+        next_season_review = None
+        current_season_nr = self.reviewed_tv_season.season_number
+        highest_season_nr = \
+            self.reviewed_tv_season.tv_series.televisionseason_set.all(
+            ).aggregate(Max('season_number'))['season_number__max']
+
+        if current_season_nr != 1:
+            if self.reviewed_tv_season.tv_series.televisionseason_set.all(
+            ).filter(season_number=current_season_nr - 1).exists():
+                previous_season_review = self.reviewed_tv_season.tv_series\
+                    .televisionseason_set.all().get(
+                    season_number=current_season_nr - 1
+                ).televisionseasonreview_set.all()
+
+        if current_season_nr != highest_season_nr:
+            if self.reviewed_tv_season.tv_series.televisionseason_set.all(
+            ).filter(season_number=current_season_nr + 1).exists():
+                next_season_review = self.reviewed_tv_season.tv_series.\
+                    televisionseason_set.all().get(
+                    season_number=current_season_nr + 1). \
+                    televisionseasonreview_set.all()
+
+        return previous_season_review, next_season_review
+
+    class Meta:
+        ordering = ['reviewed_tv_season']
+
+    def get_absolute_url(self):
+        return reverse('tv-season-review',
+                       args=[str(self.id), str(self.human_readable_url)])
+
+    def __str__(self):
+            return '{tv_season}, by {reviewer}'.format(
+                tv_season=self.reviewed_tv_season, reviewer=self.review_author)
+
+
+class TelevisionEpisodeReview(Review):
+    reviewed_tv_episode = models.ForeignKey(
+        TelevisionEpisode, null=True,
+        help_text='Enter the TV episode that you\'re reviewing')
+    mov_review_page_description = models.CharField(
+        max_length=155, default='Click on the link to see what we have to '
+                                'say about this flick.')
+    human_readable_url = models.SlugField(
+        null=True, help_text='Enter the "slug",i.e., the human-readable URL '
+                             'for the TV episode review')
+
+    @property
+    def previous_and_next_episode_review(self):
+        previous_episode_review = None
+        next_episode_review = None
+        current_episode_nr = self.reviewed_tv_episode.episode_number
+        highest_episode_nr = \
+            self.reviewed_tv_episode.tv_season.televisionepisode_set.all(
+                ).aggregate(Max('episode_number'))['episode_number__max']
+
+        if current_episode_nr != 1:
+            if self.reviewed_tv_episode.tv_season.televisionepisode_set.all(
+                    ).filter(episode_number=current_episode_nr-1).exists():
+                previous_episode_review = self.reviewed_tv_episode.tv_season.\
+                    televisionepisode_set.all().get(
+                        episode_number=current_episode_nr-1
+                ).televisionepisodereview_set.all()
+
+        if current_episode_nr != highest_episode_nr:
+            if self.reviewed_tv_episode.tv_season.televisionepisode_set.all(
+            ).filter(episode_number=current_episode_nr+1).exists():
+                next_episode_review = self.reviewed_tv_episode.tv_season.\
+                    televisionepisode_set.all().get(
+                    episode_number=current_episode_nr+1).\
+                    televisionepisodereview_set.all()
+
+        return previous_episode_review, next_episode_review
+
+    class Meta:
+        ordering = ['reviewed_tv_episode']
+
+    def get_absolute_url(self):
+        return reverse('tv-episode-review',
+                       args=[str(self.id), str(self.human_readable_url)])
+
+    def __str__(self):
+            return '{tv_episode}, by {reviewer}'.format(
+                tv_episode=self.reviewed_tv_episode,
+                reviewer=self.review_author)
+
 
 class PickedReview(models.Model):
     picked_review = models.OneToOneField(MovieReview)

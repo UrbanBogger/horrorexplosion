@@ -30,4 +30,9 @@
 <p><strong>Featured review (editor's weekly pick):</strong></p>
     {% include "review_media_object.html" with review=featured_review %}
 {% endif %}
+
+{% if latest_tv_review %}
+<h3>Latest TV Review</h3>
+    {% include "review_media_object.html" with review=latest_tv_review %}
+{% endif %}
 {% endblock %}

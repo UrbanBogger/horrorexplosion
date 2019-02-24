@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Television Series</h1>
+{% if televisionseries_list %}
+<ul class="list-group">
+    {% for tv_series in televisionseries_list %}
+    {% load static %}
+    <li class="list-group-item">
+        <div class="media">
+  <div class="media-left media-middle">
+      {% if tv_series.poster_thumbnail %}
+    <img class="media-object" src="{% static '' %}{{ tv_series.poster_thumbnail }}" alt="{{ tv_series.main_title }} poster" height="80" width="60"/>
+      {% else %}
+     <img class="media-object" src="{% static '' %}{{ tv_series.poster }}" alt="{{ tv_series.main_title }} poster" height="80" width="60"/>
+      {% endif %}
+  </div>
+  <div class="media-body">
+    <a href="{{ tv_series.get_absolute_url }}"><h4 class="media-heading text-left">{{ tv_series }} {% if tv_series.get_year_range %}({{ tv_series.get_year_range.0 }}{% if tv_series.get_year_range.1 %}&ndash;{{ tv_series.get_year_range.1 }}{% elif tv_series.is_still_running %}&ndash; {% endif %}){% endif %}</h4></a>
+      <p><em><strong>TV Series Type</strong></em>: {{ tv_series.tv_series_type }}</p>
+      <p><em><strong>TV Series Review(s)</strong></em>:
+          {% if tv_series.get_season_reviews %}
+          {% for tv_season_review in tv_series.get_season_reviews %}<a href="{{ tv_season_review.get_absolute_url }}">{{ tv_season_review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}
+          {% elif tv_series.get_seasons_w_episode_reviews %}
+          {% for tv_season in tv_series.get_seasons_w_episode_reviews %}<a href="{{ tv_season.get_absolute_url }}">Click here</a> for a list episode reviews for season #{{ tv_season.season_number }}{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}
+          {% else %}
+          No reviews yet.
+          {% endif %}
+      </p>
+  </div>
+</div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Could not find any movies</p>
+{% endif %}
+{% endblock %}

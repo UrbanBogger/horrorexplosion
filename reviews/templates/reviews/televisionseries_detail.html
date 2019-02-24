@@ -15,27 +15,55 @@
     <img id="review_mov_poster" class="media-object img-rounded" src="{% static '' %}{{ televisionseries.poster }}" alt="{{ televisionseries.main_title}} poster" height="300" width="250" />
     </div>
     <div class="media-body">
-<h1 class="media-heading">{{ televisionseries.main_title }}</h1>
-        <h2 class="media-heading">({% for country in televisionseries.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionseries.year_of_release }}, {{ televisionseries.duration }} min.)</h2>
+<h1 class="media-heading">{{ televisionseries.main_title }} {% if televisionseries.get_year_range %}({{ televisionseries.get_year_range.0 }}{% if televisionseries.get_year_range.1 %}&ndash;{{ televisionseries.get_year_range.1 }}{% elif televisionseries.is_still_running %}&ndash; {% endif %}){% endif %}</h1>
+        <h2 class="media-heading"><em><strong>TV Series Type</strong></em>: {{ televisionseries.tv_series_type }}</h2>
         {% if televisionseries.original_title %}
         <h3 class="media-heading"><em><strong>Original Title</strong></em>: {{ televisionseries.original_title }}</h3>
         {% endif %}
         {% if televisionseries.alternative_title.all %}
-        <h3 class="media-heading"><em><strong>AKA</strong></em>: {% for alt_title in televisionseries.alternative_title.all %}{{ alt_title }}{% if not forloop.last %};&nbsp;{% endif %}{% endfor %}</h3>
+        <h3 class="media-heading"><em><strong>AKA</strong></em>: {% for alt_title in televisionseries.alternative_title.all %}{{ alt_title }}{% if not forloop.last %}; {% endif %}{% endfor %}</h3>
         {% endif %}
-<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in movie_directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
-    {% if movie_cast %}
-<em><strong>Cast</strong></em>: {% for movie_participation in movie_cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
-    {% endif %}
-</h3>
-<p><strong>Genre(s)</strong>: {% for genre in televisionseries.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
-{% if televisionseries.subgenre.all %}
-<p><strong>Subgenre(s)</strong>: {% for subgenre in televisionseries.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
-{% endif %}
-{% if televisionseries.microgenre.all %}
-<p><strong>Microgenre(s)</strong>: {% for microgenre in televisionseries.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
-{% endif %}
-<p><strong>Keyword(s)</strong>: {% for keyword in televisionseries.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
     </div>
     </div>
+{% if televisionseries.description %}
+<h3>Description</h3>
+{{ televisionseries.description|safe }}
+{% endif %}
+<h3>TV series info</h3>
+{% if televisionseries.televisionseason_set.all.exists %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Season Number</th>
+            <th scope="col">Season Title</th>
+            <th scope="col">Year</th>
+            <th scope="col">Number of Episodes</th>
+            <th scope="col">Our Review</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for season in seasons %}
+    <tr>
+        <th scope="row">{{ season.season_number }}</th>
+        <td><a href="{{ season.get_absolute_url }}">{{ season.season_title }}</a></td>
+        <td>{{ season.year_of_release }}{% if season.season_end_year %}&ndash;{{ season.season_end_year }}{% endif %}</td>
+        <td>{% if season.televisionepisode_set.all.count > 0 %}
+            <a href="{{ season.get_absolute_url }}">{{ season.televisionepisode_set.all.count }}</a>
+            {% else %}
+            No episode entries in our database yet.
+            {% endif %}
+        </td>
+        <td>{% if season.televisionseasonreview_set.all.exists %}
+            {% for review in season.televisionseasonreview_set.all %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}
+        {% elif season.nr_of_episode_reviews_for_season > 0 %}
+            {{ season.nr_of_episode_reviews_for_season }} episode reviews exist &ndash; <a href="{{ season.get_absolute_url }}">click here</a> for details
+            {% else %}No review(s) yet</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+No info yet.
+{% endif %}
 {% endblock %}
