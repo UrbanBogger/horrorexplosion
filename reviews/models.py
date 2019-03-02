@@ -614,8 +614,8 @@ class TelevisionEpisode(models.Model):
         ordering = ['tv_season', 'episode_number']
 
     def __str__(self):
-        return '{tv_season}, ep.: {episode_title}'.format(
-            tv_season=self.tv_season, episode_title=self.episode_title)
+        return '{tv_season}, ep# {episode_number}'.format(
+            tv_season=self.tv_season, episode_number=self.episode_number)
 
 
 class TelevisionSeasonReview(Review):
