@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import Genre, Subgenre, Microgenre, Keyword, \
-WebsiteMetadescriptor, Reviewer, MovieCreator, Country, \
+    WebsiteMetadescriptor, Reviewer, MovieCreator, Country, \
     CreativeRole, Movie, MovieParticipation, Title, MovieFranchise, \
     MovieReview, ReferencedMovie, Grade, Contributor, Article, MovieRemake, \
-    MovieInMovSeries, MovieSeries, SimilarMovie, PickedReview
+    MovieInMovSeries, MovieSeries, SimilarMovie, PickedReview, \
+    TelevisionSeries, TelevisionSeason, TelevisionEpisode, \
+    TelevisionSeasonReview, TelevisionEpisodeReview
 
 # Register your models here.
 
@@ -29,4 +31,9 @@ admin.site.register(MovieRemake)
 admin.site.register(MovieInMovSeries)
 admin.site.register(MovieSeries)
 admin.site.register(SimilarMovie)
+admin.site.register(TelevisionSeries)
+admin.site.register(TelevisionSeason)
+admin.site.register(TelevisionEpisode)
+admin.site.register(TelevisionSeasonReview)
+admin.site.register(TelevisionEpisodeReview)
 admin.site.register(PickedReview)
