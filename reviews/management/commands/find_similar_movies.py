@@ -42,7 +42,8 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
         ('H. P. Lovecraft related', 3), ('literary adaptation', 2),
         ('lovecraftian', 3), ('micro budget (<=$100,000)', 3),
         ('shot on video (SOV)', 2), ('splatter', 2),
-        ('Stephen King related', 3), ('stylized', 2), ('surreal', 2),
+        ('Stephen King related', 3), ('stylized', 2), ('Sub Rosa', 3),
+        ('surreal', 2),
         ('Troma production', 3), ('underground horror', 4),
     ]
     mov_directors = [mov_participation.person for mov_participation in
