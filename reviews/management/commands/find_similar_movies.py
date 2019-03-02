@@ -46,8 +46,9 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
         ('Platinum Dunes', 2), ('regional horror film', 3), ('remake [a]', 2),
         ('Santa Claus', 2), ('shot on video (SOV)', 2), ('Splat Pack', 3),
         ('splatter', 2), ('Stephen King related', 3), ('stylized', 2),
-        ('surreal', 2), ('toilet humour', 3), ('Troma-distributed', 3),
-        ('Troma production', 3), ('underground horror', 4),
+        ('Sub Rosa', 3), ('surreal', 2), ('toilet humour', 3),
+        ('Troma-distributed', 3), ('Troma production', 3),
+        ('underground horror', 4),
     ]
     mov_directors = [mov_participation.person for mov_participation in
                      movie.movie_participation.filter(
