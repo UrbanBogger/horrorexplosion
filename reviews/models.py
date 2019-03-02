@@ -434,11 +434,11 @@ class TelevisionSeries(models.Model):
     is_still_running = models.NullBooleanField(
         null=True, default=False, help_text='Is TV series still ongoing?')
     poster = models.ImageField(
-        upload_to='images/', null=True,
+        upload_to='tv_series_posters/', null=True,
         help_text='Upload the top-level poster for the TV series if '
                   'applicable [OPTIONAL]')
     poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True,
+        upload_to='tv_series_posters/thumbnails/', null=True,
         help_text='Upload the top-level poster thumbnail for the TV series '
                   'if applicable [OPTIONAL]')
     description = RichTextField(blank=True, help_text='Provide background '
@@ -518,10 +518,10 @@ class TelevisionSeason(models.Model):
     country_of_origin = models.ManyToManyField(
         Country, help_text='Enter the country of origin')
     poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='tv_series_posters/', null=True, blank=True,
         help_text='Upload a poster for the TV season if applicable')
     poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='tv_series_posters/thumbnails/', null=True, blank=True,
         help_text='Upload a poster thumbnail for the TV season if applicable')
     duration = models.IntegerField(
         null=True, blank=True, help_text='Enter the duration of the TV '
@@ -584,10 +584,10 @@ class TelevisionEpisode(models.Model):
                              'episode in the TV season, "2" for the second '
                              'one, etc.')
     poster = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='tv_series_posters/', null=True, blank=True,
         help_text='Upload the poster of the movie')
     poster_thumbnail = models.ImageField(
-        upload_to='images/', null=True, blank=True,
+        upload_to='tv_series_posters/thumbnails/', null=True, blank=True,
         help_text='Upload the poster thumbnail')
     duration = models.IntegerField(
         null=True, blank=True, help_text='Enter the duration of the TV '
