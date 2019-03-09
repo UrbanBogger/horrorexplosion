@@ -9,7 +9,8 @@ from django.http import HttpResponse
 from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
-    SimilarMovie, PickedReview, get_random_review
+    SimilarMovie, PickedReview, get_random_review, \
+    return_mov_participation_data
 
 # Create your views here.
 
@@ -348,9 +349,9 @@ class MovieDetailView(generic.DetailView):
         context['meta_content_description'] = \
             'Data and metadata about ' + str(movie) + ' like genre/subgenre ' \
             'affiliation and plot keywords'
-        context['movie_directors'] = movie.return_mov_participation_data(
-            'Director')
-        context['movie_cast'] = movie.return_mov_participation_data('Actor')
+        context['movie_directors'] = return_mov_participation_data(movie,
+                                                                   'Director')
+        context['movie_cast'] = return_mov_participation_data(movie, 'Actor')
         context['associated_reviews'] = movie.moviereview_set.all()
         referenced_in_reviews = ReferencedMovie.objects.filter(
             referenced_movie=movie)
@@ -386,8 +387,8 @@ class MovieReviewDetailView(generic.DetailView):
         context['meta_content_description'] = movie_review.\
             mov_review_page_description
         context['movie'] = movie_review.reviewed_movie
-        context['movie_directors'] = movie_review.reviewed_movie.\
-            return_mov_participation_data('Director')
-        context['movie_cast'] = \
-            movie_review.reviewed_movie.return_mov_participation_data('Actor')
+        context['movie_directors'] = return_mov_participation_data(
+            movie_review.reviewed_movie, 'Director')
+        context['movie_cast'] = return_mov_participation_data(
+            movie_review.reviewed_movie, 'Actor')
         return context

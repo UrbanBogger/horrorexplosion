@@ -16,6 +16,12 @@ def create_release_year_range():
         release_year_options.append((year_option, year_option))
         year_option += 1
     return release_year_options
+
+
+def return_mov_participation_data(motion_pic_obj, participation_type):
+    participations = motion_pic_obj.movie_participation.all()
+    return [MovieParticipation for MovieParticipation in participations if
+            str(MovieParticipation.creative_role) == participation_type]
 # Create your models here.
 
 
@@ -300,12 +306,6 @@ class Movie(MotionPicture):
     def get_absolute_url(self):
         return reverse('movie-detail', args=[str(self.id),
                                              str(self.human_readable_url)])
-
-    def return_mov_participation_data(self, participation_type):
-        participations = self.movie_participation.all()
-        return [MovieParticipation for MovieParticipation in
-                participations if str(MovieParticipation.creative_role) ==
-                participation_type]
 
 
 class MovieReview(Review):
