@@ -69,11 +69,12 @@ def substitute_links_in_text(text):
         mov_title, mov_year = get_mov_title_and_release_year(mov_title_link)
 
         if mov_year:
-            if Movie.objects.filter(main_title__title=mov_title,
-                                    year_of_release=mov_year).exists():
-                mov_title_link['href'] = Movie.objects.get(
+            if Movie.objects.filter( main_title__title=mov_title,
+                                     year_of_release=mov_year).exists():
+                mov_title_link['href'] = Movie.objects.filter(
                     main_title__title=mov_title,
-                    year_of_release=mov_year).get_absolute_url()
+                    year_of_release=mov_year).order_by('year_of_release')[
+                    0].get_absolute_url()
 
         else:
             if Movie.objects.filter(
@@ -109,8 +110,8 @@ def get_mov_title_and_release_year(mov_link):
 
         if len(mov_link.contents) == 2:
             if mov_year_pattern.match(mov_link.contents[1]):
-                mov_year = mov_year_pattern.search(
-                    mov_link.contents[1]).group(1)
+                mov_year = mov_year_pattern.search(mov_link.contents[
+                                                      1]).group(1)
 
     elif mov_title_w_year_pattern.match(mov_link.string):
         mov_title = mov_year_split_pattern.split(
@@ -439,6 +440,8 @@ class TVSeriesDetailView(generic.DetailView):
         context['meta_content_description'] = \
             'Data and metadata about TV series: ' + str(tv_series)
         context['seasons'] = tv_series.televisionseason_set.all()
+        context['tvseries_description'] = substitute_links_in_text(
+            tv_series.description)
         return context
 
 
@@ -478,6 +481,8 @@ class TVSeasonReviewDetailView(generic.DetailView):
             tv_season_review.reviewed_tv_season, 'Director')
         context['cast'] = return_mov_participation_data(
             tv_season_review.reviewed_tv_season, 'Actor')
+        context['tvseason_review'] = substitute_links_in_text(
+            tv_season_review.review_text)
         return context
 
 
@@ -499,4 +504,6 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.reviewed_tv_episode, 'Director')
         context['cast'] = return_mov_participation_data(
             tv_episode_review.reviewed_tv_episode, 'Actor')
+        context['tvepisode_review'] = substitute_links_in_text(
+            tv_episode_review.review_text)
         return context

@@ -27,7 +27,7 @@
     </div>
 {% if televisionseries.description %}
 <h3>Description</h3>
-{{ televisionseries.description|safe }}
+{{ tvseries_description|safe }}
 {% endif %}
 <h3>TV series info</h3>
 {% if televisionseries.televisionseason_set.all.exists %}
