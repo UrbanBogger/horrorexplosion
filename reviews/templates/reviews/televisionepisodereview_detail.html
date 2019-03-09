@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+{% include "tv_episode_review_header.html" with televisionepisode=televisionepisodereview.reviewed_tv_episode %}
+<img id="star-rating-review" src="{{ televisionepisodereview.grade.grade_depiction.url }}" alt="{{ televisionepisodereview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ televisionepisodereview.grade.grade_description }}]</strong></span>
+<div id="review_body">{{ tvepisode_review|safe }}</div>
+<p><strong>Author: </strong>{{ televisionepisodereview.review_author }}</p>
+<p><strong>Written on: </strong>{{ televisionepisodereview.date_created }}; <strong>Added to the Database: </strong>{{ televisionepisodereview.first_created }}; <strong>Last Modified: </strong>{{ televisionepisodereview.last_modified }}</p>
+{% if televisionepisodereview.previous_and_next_episode_review.0 %}
+<p><span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="font-size:25px"></span><span style="font-size:18px"><strong>Previous review</strong>: {% for review in televisionepisodereview.previous_and_next_episode_review.0 %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span><span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="font-size:25px"></span></p>
+{% endif %}
+{% if televisionepisodereview.previous_and_next_episode_review.1 %}
+<p><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span><span style="font-size:18px"><strong>Next review</strong>:{% for review in televisionepisodereview.previous_and_next_episode_review.1 %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span></p>
+{% endif %}
+{% endblock %}

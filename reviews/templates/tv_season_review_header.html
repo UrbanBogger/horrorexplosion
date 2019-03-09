@@ -1,0 +1,34 @@
+<div class="media" style="margin-bottom: 10px;">
+    <div class="media-left pull-left">
+      {% if televisionseason.poster %}
+    <img id="review_mov_poster" class="media-object img-rounded" src="{{ televisionseason.poster.url }}" alt="{{ televisionseason }} poster" height="300" width="250" />
+      {% else %}
+      <img id="review_mov_poster" class="media-object img-rounded" src="{{ televisionseason.tv_series.poster.url }}" alt="{{ televisionseason }} poster" height="300" width="250" />
+      {% endif %}
+    </div>
+    <div class="media-body">
+        <h1 class="media-heading"><em><strong>TV Series Title</strong></em>:{{ televisionseason.tv_series.main_title }}</h1>
+        <h2 class="media-heading"><em><strong>TV Series Type</strong></em>: {{ televisionseason.tv_series.tv_series_type }}</h2>
+      <h2 class="media-heading"><em><strong>Season</strong></em>: {{ televisionseason.season_title }} (S{{ televisionseason.season_number }})</h2>
+        <h2 class="media-heading">({% for country in televisionseason.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionseason.year_of_release }}{% if televisionseason.duration %}, {{ televisionseason.duration }} min.){% else %}){% endif %}</h2>
+      {% if directors %}
+<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
+    {% if cast %}
+<em><strong>Cast</strong></em>: {% for movie_participation in cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
+    {% endif %}
+</h3>
+      {% endif %}
+      {% if televisionseason.genre.all %}
+<p><strong>Genre(s)</strong>: {% for genre in televisionseason.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+      {% endif %}
+{% if televisionseason.subgenre.all %}
+<p><strong>Subgenre(s)</strong>: {% for subgenre in televisionseason.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+{% endif %}
+{% if televisionseason.microgenre.all %}
+<p><strong>Microgenre(s)</strong>: {% for microgenre in televisionseason.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+{% endif %}
+      {% if televisionseason.keyword.all %}
+<p><strong>Keyword(s)</strong>: {% for keyword in televisionseason.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+      {% endif %}
+    </div>
+    </div>

@@ -1,0 +1,68 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<div class="media" style="margin-bottom: 10px;">
+    <div class="media-left pull-left">
+    <img id="review_mov_poster" class="media-object img-rounded" src="{{ televisionseries.poster.url }}" alt="{{ televisionseries.main_title}} poster" height="300" width="250" />
+    </div>
+    <div class="media-body">
+<h1 class="media-heading">{{ televisionseries.main_title }} {% if televisionseries.get_year_range %}({{ televisionseries.get_year_range.0 }}{% if televisionseries.get_year_range.1 %}&ndash;{{ televisionseries.get_year_range.1 }}{% elif televisionseries.is_still_running %}&ndash; {% endif %}){% endif %}</h1>
+        <h2 class="media-heading"><em><strong>TV Series Type</strong></em>: {{ televisionseries.tv_series_type }}</h2>
+        {% if televisionseries.original_title %}
+        <h3 class="media-heading"><em><strong>Original Title</strong></em>: {{ televisionseries.original_title }}</h3>
+        {% endif %}
+        {% if televisionseries.alternative_title.all %}
+        <h3 class="media-heading"><em><strong>AKA</strong></em>: {% for alt_title in televisionseries.alternative_title.all %}{{ alt_title }}{% if not forloop.last %}; {% endif %}{% endfor %}</h3>
+        {% endif %}
+    </div>
+    </div>
+{% if televisionseries.description %}
+<h3>Description</h3>
+{{ tvseries_description|safe }}
+{% endif %}
+<h3>TV series info</h3>
+{% if televisionseries.televisionseason_set.all.exists %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Season Number</th>
+            <th scope="col">Season Title</th>
+            <th scope="col">Year</th>
+            <th scope="col">Number of Episodes</th>
+            <th scope="col">Our Review</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for season in seasons %}
+    <tr>
+        <th scope="row">{{ season.season_number }}</th>
+        <td><a href="{{ season.get_absolute_url }}">{{ season.season_title }}</a></td>
+        <td>{{ season.year_of_release }}{% if season.season_end_year %}&ndash;{{ season.season_end_year }}{% endif %}</td>
+        <td>{% if season.televisionepisode_set.all.count > 0 %}
+            <a href="{{ season.get_absolute_url }}">{{ season.televisionepisode_set.all.count }}</a>
+            {% else %}
+            No episode entries in our database yet.
+            {% endif %}
+        </td>
+        <td>{% if season.televisionseasonreview_set.all.exists %}
+            {% for review in season.televisionseasonreview_set.all %}<a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}
+        {% elif season.nr_of_episode_reviews_for_season > 0 %}
+            {{ season.nr_of_episode_reviews_for_season }} episode reviews exist &ndash; <a href="{{ season.get_absolute_url }}">click here</a> for details
+            {% else %}No review(s) yet</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+No info yet.
+{% endif %}
+{% endblock %}
