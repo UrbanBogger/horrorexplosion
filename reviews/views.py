@@ -9,7 +9,8 @@ from django.http import HttpResponse
 from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
-    SimilarMovie, PickedReview, get_random_review, \
+    SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
+    TelevisionSeasonReview, TelevisionEpisodeReview, get_random_review, \
     return_mov_participation_data
 
 # Create your views here.
@@ -391,4 +392,99 @@ class MovieReviewDetailView(generic.DetailView):
             movie_review.reviewed_movie, 'Director')
         context['movie_cast'] = return_mov_participation_data(
             movie_review.reviewed_movie, 'Actor')
+        return context
+
+
+class TVSeriesListView(generic.ListView):
+    model = TelevisionSeries
+    tv_series_list_page_title = 'TV Series | The Horror Explosion'
+    tv_series_metadescriptor = 'The list of TV series in our database'
+
+    def get_context_data(self, **kwargs):
+        context = super(TVSeriesListView, self).get_context_data(**kwargs)
+        context['page_title'] = self.tv_series_list_page_title
+        context['meta_content_description'] = self.tv_series_metadescriptor
+        return context
+
+
+class TVSeriesDetailView(generic.DetailView):
+    model = TelevisionSeries
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(TVSeriesDetailView, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        tv_series = TelevisionSeries.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        context['page_title'] = str(tv_series) + ' | The Horror Explosion'
+        context['page_title'] = str(tv_series) + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            'Data and metadata about TV series: ' + str(tv_series)
+        context['seasons'] = tv_series.televisionseason_set.all()
+        context['tvseries_description'] = substitute_links_in_text(
+            tv_series.description)
+        return context
+
+
+class TVSeasonDetailView(generic.DetailView):
+    model = TelevisionSeason
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(TVSeasonDetailView, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        tv_season = TelevisionSeason.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        context['page_title'] = str(tv_season) + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            'Data and metadata about TV series: ' + str(tv_season)
+        context['directors'] = return_mov_participation_data(tv_season,
+                                                             'Director')
+        context['cast'] = return_mov_participation_data(tv_season, 'Actor')
+        return context
+
+
+class TVSeasonReviewDetailView(generic.DetailView):
+    model = TelevisionSeasonReview
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(TVSeasonReviewDetailView, self).get_context_data(
+            **kwargs)
+        # Create any data and add it to the context
+        tv_season_review = TelevisionSeasonReview.objects.get(
+            pk=self.kwargs.get(self.pk_url_kwarg))
+        context['page_title'] = str(tv_season_review) \
+                                + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            tv_season_review.mov_review_page_description
+        context['directors'] = return_mov_participation_data(
+            tv_season_review.reviewed_tv_season, 'Director')
+        context['cast'] = return_mov_participation_data(
+            tv_season_review.reviewed_tv_season, 'Actor')
+        context['tvseason_review'] = substitute_links_in_text(
+            tv_season_review.review_text)
+        return context
+
+
+class TVEpisodeReviewDetailView(generic.DetailView):
+    model = TelevisionEpisodeReview
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(TVEpisodeReviewDetailView, self).get_context_data(
+            **kwargs)
+        # Create any data and add it to the context
+        tv_episode_review = TelevisionEpisodeReview.objects.get(
+            pk=self.kwargs.get(self.pk_url_kwarg))
+        context['page_title'] = str(tv_episode_review) \
+                                + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            tv_episode_review.mov_review_page_description
+        context['directors'] = return_mov_participation_data(
+            tv_episode_review.reviewed_tv_episode, 'Director')
+        context['cast'] = return_mov_participation_data(
+            tv_episode_review.reviewed_tv_episode, 'Actor')
+        context['tvepisode_review'] = substitute_links_in_text(
+            tv_episode_review.review_text)
         return context
