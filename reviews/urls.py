@@ -28,7 +28,7 @@ urlpatterns = [
             views.TVSeriesDetailView.as_view(), name='tv-series-detail'),
         url(r'^tv-seasons/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
             views.TVSeasonDetailView.as_view(), name='tv-season-detail'),
-        url(r'^tv-seasons/', RedirectView.as_view(
+        url(r'^tv-seasons/?', RedirectView.as_view(
                 pattern_name='tv_series', permanent=False)),
         url(r'^tv-reviews/', include([
             url(r'season-reviews/(?P<pk>\d+)/(?P<human_readable_url>['
@@ -39,9 +39,9 @@ urlpatterns = [
                 name='tv-episode-review'),
             url(r'^$', RedirectView.as_view(
                 pattern_name='tv_series', permanent=False)),
-            url(r'^season-reviews/$', RedirectView.as_view(
+            url(r'^season-reviews/?$', RedirectView.as_view(
                 pattern_name='tv_series', permanent=False)),
-            url(r'^episode-reviews/$', RedirectView.as_view(
+            url(r'^episode-reviews/?$', RedirectView.as_view(
                 pattern_name='tv_series', permanent=False)),
             ]),
             ),
