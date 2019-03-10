@@ -2,11 +2,33 @@
 <div class="media">
       <a href="{{ review.get_absolute_url }}">
         <div class="media-left">
+            {% if review.reviewed_tv_season.tv_series.poster %}
+                {% if review.reviewed_tv_season.poster_thumbnail %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_season.poster_thumbnail }}" alt="{{ review.reviewed_tv_season }} poster" height="100" width="100"/>
+                {% elif review.reviewed_tv_season.poster %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_season.poster }}" alt="{{ review.reviewed_tv_season }} poster" height="100" width="100"/>
+                {% elif review.reviewed_tv_season.tv_series.poster_thumbnail %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_season.tv_series.poster_thumbnail }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="100" width="100"/>
+                {% else %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_season.tv_series.poster }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="100" width="100"/>
+                {% endif %}
+            {% elif review.reviewed_tv_episode.tv_season.tv_series.poster %}
+                {% if review.reviewed_tv_episode.poster_thumbnail %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_episode.poster_thumbnail }}" alt="{{ review.reviewed_tv_episode }} poster" height="100" width="100"/>
+                {% elif review.reviewed_tv_episode.poster %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_episode.poster }}" alt="{{ review.reviewed_tv_episode }} poster" height="100" width="100"/>
+                {% elif review.reviewed_tv_episode.tv_season.tv_series.poster_thumbnail %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_episode.tv_season.tv_series.poster_thumbnail }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="100" width="100"/>
+                {% else %}
+                <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_tv_episode.tv_season.tv_series.poster }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="100" width="100"/>
+                {% endif %}
+            {% else %}
                 {% if review.reviewed_movie.poster_thumbnail %}
                 <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_movie.poster_thumbnail }}" alt="{{ review.reviewed_movie.main_title}} poster" height="100" width="100"/>
                 {% else %}
                 <img class="media-object img-rounded" src="{% static '' %}{{ review.reviewed_movie.poster }}" alt="{{ review.reviewed_movie.main_title}} poster" height="100" width="100"/>
                 {% endif %}
+            {% endif %}
         </div>
         <div class="media-body">
           <h4 class="media-heading text-left">{{ review }}</h4>
