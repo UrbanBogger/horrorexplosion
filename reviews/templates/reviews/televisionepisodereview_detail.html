@@ -10,6 +10,9 @@
 
 {% block main_content %}
 {% include "tv_episode_review_header.html" with televisionepisode=televisionepisodereview.reviewed_tv_episode %}
+{% if televisionepisodereview.mov_review_page_description %}
+<p><strong>Summary: </strong>{{ televisionepisodereview.mov_review_page_description }}</p>
+{% endif %}
 {% load static %}
 <img id="star-rating-review" src="{% static '' %}{{ televisionepisodereview.grade.grade_depiction }}" alt="{{ televisionepisodereview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ televisionepisodereview.grade.grade_description }}]</strong></span>
 <div id="review_body">{{ tvepisode_review|safe }}</div>
