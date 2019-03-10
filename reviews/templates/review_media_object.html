@@ -2,29 +2,29 @@
   <div class="media-left">
             {% if review.reviewed_tv_season.tv_series.poster %}
                 {% if review.reviewed_tv_season.poster_thumbnail %}
-                <img class="media-object" src="{{ review.reviewed_tv_season.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_season }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_season.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_season }} poster" height="80" width="60"/>
                 {% elif review.reviewed_tv_season.poster %}
-                <img class="media-object" src="{{ review.reviewed_tv_season.poster.url }}" alt="{{ review.reviewed_tv_season }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_season.poster.url }}" alt="{{ review.reviewed_tv_season }} poster" height="80" width="60"/>
                 {% elif review.reviewed_tv_season.tv_series.poster_thumbnail %}
-                <img class="media-object" src="{{ review.reviewed_tv_season.tv_series.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_season.tv_series.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="80" width="60"/>
                 {% else %}
-                <img class="media-object" src="{{ review.reviewed_tv_season.tv_series.poster.url }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_season.tv_series.poster.url }}" alt="{{ review.reviewed_tv_season.tv_series }} poster" height="80" width="60"/>
                 {% endif %}
             {% elif review.reviewed_tv_episode.tv_season.tv_series.poster %}
                 {% if review.reviewed_tv_episode.poster_thumbnail %}
-                <img class="media-object" src="{{ review.reviewed_tv_episode.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_episode }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_episode.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_episode }} poster" height="80" width="60"/>
                 {% elif review.reviewed_tv_episode.poster %}
-                <img class="media-object" src="{{ review.reviewed_tv_episode.poster.url }}" alt="{{ review.reviewed_tv_episode }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_episode.poster.url }}" alt="{{ review.reviewed_tv_episode }} poster" height="80" width="60"/>
                 {% elif review.reviewed_tv_episode.tv_season.tv_series.poster_thumbnail %}
-                <img class="media-object" src="{{ review.reviewed_tv_episode.tv_season.tv_series.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_episode.tv_season.tv_series.poster_thumbnail.url }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="80" width="60"/>
                 {% else %}
-                <img class="media-object" src="{{ review.reviewed_tv_episode.tv_season.tv_series.poster.url }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_tv_episode.tv_season.tv_series.poster.url }}" alt="{{ review.reviewed_tv_episode.tv_season.tv_series }} poster" height="80" width="60"/>
                 {% endif %}
             {% else %}
                 {% if review.reviewed_movie.poster_thumbnail %}
-                <img class="media-object" src="{{ review.reviewed_movie.poster_thumbnail.url }}" alt="{{ review.reviewed_movie.main_title}} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_movie.poster_thumbnail.url }}" alt="{{ review.reviewed_movie.main_title}} poster" height="80" width="60"/>
                 {% else %}
-                <img class="media-object" src="{{ review.reviewed_movie.poster.url }}" alt="{{ review.reviewed_movie.main_title}} poster" height="100" width="100"/>
+                <img class="media-object" src="{{ review.reviewed_movie.poster.url }}" alt="{{ review.reviewed_movie.main_title}} poster" height="80" width="60"/>
                 {% endif %}
             {% endif %}
   </div>
