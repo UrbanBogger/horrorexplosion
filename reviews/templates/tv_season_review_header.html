@@ -7,7 +7,7 @@
       {% endif %}
     </div>
     <div class="media-body">
-        <h1 class="media-heading"><em><strong>TV Series Title</strong></em>:{{ televisionseason.tv_series.main_title }}</h1>
+        <h1 class="media-heading">{{ televisionseason.tv_series.main_title }}</h1>
         <h2 class="media-heading"><em><strong>TV Series Type</strong></em>: {{ televisionseason.tv_series.tv_series_type }}</h2>
       <h2 class="media-heading"><em><strong>Season</strong></em>: {{ televisionseason.season_title }} (S{{ televisionseason.season_number }})</h2>
         <h2 class="media-heading">({% for country in televisionseason.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionseason.year_of_release }}{% if televisionseason.duration %}, {{ televisionseason.duration }} min.){% else %}){% endif %}</h2>
