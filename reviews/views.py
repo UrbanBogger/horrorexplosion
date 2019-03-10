@@ -139,20 +139,32 @@ def index(request):
     random_review = get_random_review(latest_review,
                                       featured_review)
     latest_tv_review = None
-    latest_tvepisode_review = TelevisionEpisodeReview.objects.latest('id')
-    latest_tvseason_review = TelevisionSeasonReview.objects.latest('id')
+    try:
+        latest_tvepisode_review = TelevisionEpisodeReview.objects.latest('id')
+    except TelevisionEpisodeReview.DoesNotExist:
+        latest_tvepisode_review = None
+    try:
+        latest_tvseason_review = TelevisionSeasonReview.objects.latest('id')
+    except TelevisionSeasonReview.DoesNotExist:
+        latest_tvseason_review = None
 
-    if latest_tvepisode_review.first_created > \
-            latest_tvseason_review.first_created:
-        latest_tv_review = latest_tvepisode_review
-    elif latest_tvepisode_review.first_created == \
-            latest_tvseason_review.first_created:
-        if random.getrandbits(1):
+    if not latest_tvepisode_review or not latest_tvseason_review:
+        if latest_tvepisode_review:
             latest_tv_review = latest_tvepisode_review
-        else:
+        elif latest_tvseason_review:
             latest_tv_review = latest_tvseason_review
     else:
-        latest_tv_review = latest_tvseason_review
+        if latest_tvepisode_review.first_created > \
+                latest_tvseason_review.first_created:
+            latest_tv_review = latest_tvepisode_review
+        elif latest_tvepisode_review.first_created == \
+                latest_tvseason_review.first_created:
+            if random.getrandbits(1):
+                latest_tv_review = latest_tvepisode_review
+            else:
+                latest_tv_review = latest_tvseason_review
+        else:
+            latest_tv_review = latest_tvseason_review
 
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor.\
