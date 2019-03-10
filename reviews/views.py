@@ -1,5 +1,6 @@
 import sys
 import re
+import random
 from bs4 import BeautifulSoup
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -136,6 +137,34 @@ def index(request):
         featured_review = None
     random_review = get_random_review(latest_review,
                                       featured_review)
+    latest_tv_review = None
+    try:
+        latest_tvepisode_review = TelevisionEpisodeReview.objects.latest('id')
+    except TelevisionEpisodeReview.DoesNotExist:
+        latest_tvepisode_review = None
+    try:
+        latest_tvseason_review = TelevisionSeasonReview.objects.latest('id')
+    except TelevisionSeasonReview.DoesNotExist:
+        latest_tvseason_review = None
+
+    if not latest_tvepisode_review or not latest_tvseason_review:
+        if latest_tvepisode_review:
+            latest_tv_review = latest_tvepisode_review
+        elif latest_tvseason_review:
+            latest_tv_review = latest_tvseason_review
+    else:
+        if latest_tvepisode_review.first_created > \
+                latest_tvseason_review.first_created:
+            latest_tv_review = latest_tvepisode_review
+        elif latest_tvepisode_review.first_created == \
+                latest_tvseason_review.first_created:
+            if random.getrandbits(1):
+                latest_tv_review = latest_tvepisode_review
+            else:
+                latest_tv_review = latest_tvseason_review
+        else:
+            latest_tv_review = latest_tvseason_review
+
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor. \
         objects.get().landing_page_description
@@ -146,7 +175,8 @@ def index(request):
                            'number_of_movies': number_of_movies,
                            'latest_review': latest_review,
                            'random_review': random_review,
-                           'featured_review': featured_review},)
+                           'featured_review': featured_review,
+                           'latest_tv_review': latest_tv_review},)
 
 
 def about(request):

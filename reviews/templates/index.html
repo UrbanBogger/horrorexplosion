@@ -17,17 +17,22 @@
 <p><strong>Current number of movies in our database: </strong><a href="{% url 'movies' %}">{{ number_of_movies }}</a></p>
 
 {% if latest_review %}
-<p><strong>Latest review: </strong></p>
+<h3>Latest Film Review</h3>
     {% include "review_media_object.html" with review=latest_review %}
 {% endif %}
 
+{% if latest_tv_review %}
+<h3>Latest TV Series Review</h3>
+    {% include "review_media_object.html" with review=latest_tv_review %}
+{% endif %}
+
 {% if random_review %}
-<p><strong>Random review: </strong></p>
+<h3>Random Film Review</h3>
     {% include "review_media_object.html" with review=random_review %}
 {% endif %}
 
 {% if featured_review %}
-<p><strong>Featured review (editor's weekly pick):</strong></p>
+<h3>Featured Review</h3><strong>(editor's weekly pick):</strong>
     {% include "review_media_object.html" with review=featured_review %}
 {% endif %}
 {% endblock %}
