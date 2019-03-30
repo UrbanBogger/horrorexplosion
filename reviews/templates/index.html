@@ -16,14 +16,14 @@
 <p><strong>Current number of reviews: </strong><a href="{% url 'movie_reviews' %}">{{ number_of_reviews }}</a></p>
 <p><strong>Current number of movies in our database: </strong><a href="{% url 'movies' %}">{{ number_of_movies }}</a></p>
 
-{% if latest_review %}
-<h3>Latest Film Review</h3>
-    {% include "review_media_object.html" with review=latest_review %}
+{% if latest_review.1 %}
+<h3>{{ latest_review.0 }}</h3>
+    {% include "review_media_object.html" with review=latest_review.1 %}
 {% endif %}
 
-{% if latest_tv_review %}
-<h3>Latest TV Series Review</h3>
-    {% include "review_media_object.html" with review=latest_tv_review %}
+{% if second_latest_review.1 %}
+<h3>{{ second_latest_review.0 }}</h3>
+    {% include "review_media_object.html" with review=second_latest_review.1 %}
 {% endif %}
 
 {% if random_review %}

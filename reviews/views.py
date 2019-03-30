@@ -130,13 +130,12 @@ def get_mov_title_and_release_year(mov_link):
 def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
-    latest_review = MovieReview.objects.latest('id')
+    latest_mov_review = MovieReview.objects.latest('id')
     try:
         featured_review = PickedReview.objects.latest('id').picked_review
     except PickedReview.DoesNotExist:
         featured_review = None
-    random_review = get_random_review(latest_review,
-                                      featured_review)
+    random_review = get_random_review(latest_mov_review, featured_review)
     latest_tv_review = None
     try:
         latest_tvepisode_review = TelevisionEpisodeReview.objects.latest('id')
@@ -165,6 +164,16 @@ def index(request):
         else:
             latest_tv_review = latest_tvseason_review
 
+    latest_review = None
+    second_latest_review = None
+
+    if latest_tv_review.first_created > latest_mov_review.first_created:
+        latest_review = ("Latest TV Series Review", latest_tv_review)
+        second_latest_review = ("Latest Film Review", latest_mov_review)
+    else:
+        latest_review = ("Latest Film Review", latest_mov_review)
+        second_latest_review = ("Latest TV Series Review", latest_tv_review)
+
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor. \
         objects.get().landing_page_description
@@ -174,6 +183,7 @@ def index(request):
                            'number_of_reviews': number_of_reviews,
                            'number_of_movies': number_of_movies,
                            'latest_review': latest_review,
+                           'second_latest_review': second_latest_review,
                            'random_review': random_review,
                            'featured_review': featured_review,
                            'latest_tv_review': latest_tv_review},)
