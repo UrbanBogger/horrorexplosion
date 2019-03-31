@@ -38,10 +38,10 @@ def determine_similarity_level(similarity_exponent):
 def calculate_bonus_similarity_pts(similar_mov_list, movie):
     keywords_and_points = [
         ('anthology film', 4), ('atmospheric', 2), ('bizarre', 2),
-        ('Christmas season', 3), ('found footage narrative', 3),
-        ('H. P. Lovecraft related', 3), ('Krampus', 3), ('Leatherface', 3),
-        ('literary adaptation', 2), ('lovecraftian', 3),
-        ('low budget (>$100,000 but <=$1,000,000)', 3),
+        ('Charles Band related', 3), ('Christmas season', 3),
+        ('found footage narrative', 3), ('H. P. Lovecraft related', 3),
+        ('Krampus', 3), ('Leatherface', 3), ('literary adaptation', 2),
+        ('lovecraftian', 3), ('low budget (>$100,000 but <=$1,000,000)', 3),
         ('micro budget (<=$100,000)', 3), ('Netflix Original Film', 2),
         ('Platinum Dunes', 2), ('regional horror film', 3), ('remake [a]', 2),
         ('Santa Claus', 2), ('shot on video (SOV)', 2), ('Splat Pack', 3),
