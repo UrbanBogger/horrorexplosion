@@ -8,5 +8,10 @@
   </div>
   <div class="media-body">
     <a href="{{ mov.get_absolute_url }}"><h4 class="media-heading text-left">{{ mov }}</h4></a>
+    {% if movie.moviereview_set.all %}
+    <p><strong>Our Review(s)</strong>: {% for mov_rev in movie.moviereview_set.all %}<a href="{{ mov_rev.get_absolute_url }}">{{ mov_rev }}</a>{% if not forloop.last %},{% endif %}{% endfor %}</p>
+    {% else %}
+    <p><strong>Our Review(s)</strong>: None yet</p>
+    {% endif %}
   </div>
 </div>
