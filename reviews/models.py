@@ -307,6 +307,38 @@ class Movie(MotionPicture):
         return reverse('movie-detail', args=[str(self.id),
                                              str(self.human_readable_url)])
 
+    def get_meta_string(self):
+        title = 'Main Title:{title}|'.format(title=str(self.main_title))
+        year = 'Year:{year}|'.format(year=str(self.year_of_release))
+        length = 'Length:{length} min.|'.format(length=str(self.duration))
+        country = 'Country:{country}|'.format(
+            country='/'.join([country.name for country in
+                              self.country_of_origin.all()]))
+        genre = 'Genre:{genre}|'.format(genre=','.join([genre.name for genre in
+                                                       self.genre.all()]))
+        subgenre = ''
+        if self.subgenre.all():
+            subgenre = 'Subgenre:{subgenre}|'.format(
+                subgenre=','.join([subgenre.name for subgenre in
+                                   self.subgenre.all()]))
+        microgenre = ''
+        if self.microgenre.all():
+            microgenre = 'Microgenre:{microgenre}|'.format(
+                microgenre=','.join([microgenre.name for microgenre in
+                                   self.microgenre.all()]))
+        if self.moviereview_set.all():
+             review = 'Our Review:{review}|'.format(
+                 review=','.join([str(review) for review in
+                                 self.moviereview_set.all()]))
+        else:
+            review = 'Our Review:{review}|'.format(review='None Yet')
+        director = 'Dir.:{director}'.format(director=','.join(
+            [str(mov_participation.person) for mov_participation in
+             self.movie_participation.filter(
+                 creative_role__role_name='Director')]))
+        return f'{title}{year}{length}{country}{genre}{subgenre}{microgenre}' \
+            f'{review}{director}'
+
 
 class MovieReview(Review):
     reviewed_movie = models.ForeignKey(

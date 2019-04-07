@@ -395,9 +395,7 @@ class MovieDetailView(generic.DetailView):
         # Create any data and add it to the context
         movie = Movie.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
         context['page_title'] = str(movie) + ' | The Horror Explosion'
-        context['meta_content_description'] = \
-            'Data and metadata about ' + str(movie) + ' like genre/subgenre ' \
-            'affiliation and plot keywords'
+        context['meta_content_description'] = movie.get_meta_string()
         context['movie_directors'] = return_mov_participation_data(movie,
                                                                    'Director')
         context['movie_cast'] = return_mov_participation_data(movie, 'Actor')
