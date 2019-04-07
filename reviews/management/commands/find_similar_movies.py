@@ -8,7 +8,7 @@ from reviews.models import Movie, MovieSeries, MovieRemake, SimilarMovie
 #  similarity percentage (as a prime number series - except for 1)
 BONUS_POINT_SCALE = {1: 1, 2: 2, 3: 3, 4: 5, 5: 7, 6: 11, 7: 13, 8: 17,
                      9: 19, 10: 23, 11: 29, 12: 31, 13: 37, 14: 41, 15: 43,
-                     16: 47, 17: 47, 18: 47, 19: 47, 20: 47}
+                     16: 47, 17: 47, 18: 47, 19: 47, 20: 47, 21: 48, 22: 49}
 OVERALL_SIMILARITY_PERCENTAGE_MAX = 100
 
 
