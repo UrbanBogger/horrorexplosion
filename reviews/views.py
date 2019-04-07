@@ -463,9 +463,7 @@ class TVSeriesDetailView(generic.DetailView):
         tv_series = TelevisionSeries.objects.get(pk=self.kwargs.get(
             self.pk_url_kwarg))
         context['page_title'] = str(tv_series) + ' | The Horror Explosion'
-        context['page_title'] = str(tv_series) + ' | The Horror Explosion'
-        context['meta_content_description'] = \
-            'Data and metadata about TV series: ' + str(tv_series)
+        context['meta_content_description'] = tv_series.get_meta_string()
         context['seasons'] = tv_series.televisionseason_set.all()
         context['tvseries_description'] = substitute_links_in_text(
             tv_series.description)

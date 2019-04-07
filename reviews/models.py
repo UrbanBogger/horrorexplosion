@@ -527,6 +527,24 @@ class TelevisionSeries(models.Model):
             main_title=self.main_title,
             series_type=self.tv_series_type)
 
+    def get_meta_string(self):
+        title = 'Title:{title}|'.format(title=str(self.main_title.title))
+        tv_series_type = 'TV Series Type:{series_type}|'.format(
+            series_type=str(self.tv_series_type))
+        if self.is_still_running:
+            is_still_running = 'Still Running:Yes|'
+        else:
+            is_still_running = 'Still Running:No|'
+        start_year, end_year = self.get_year_range
+        start_year_str = 'Start Year:{start_year}|'.format(
+            start_year=str(start_year))
+        end_year_str = ''
+        if end_year:
+            end_year_str = 'End Year:{end_year}|'.format(
+                end_year=str(end_year))
+        return f'{title}{tv_series_type}{is_still_running}{start_year_str}' \
+            f'{end_year_str}'
+
 
 class TelevisionSeason(models.Model):
     tv_series = models.ForeignKey(TelevisionSeries, on_delete=models.SET_NULL,
