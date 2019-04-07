@@ -618,6 +618,43 @@ class TelevisionSeason(models.Model):
         return '{tv_series}, Season #{season_num}'.format(
             tv_series=self.tv_series, season_num=self.season_number)
 
+    def get_meta_string(self):
+        title = 'Title:{title}|'.format(
+            title=str(self.tv_series.main_title.title))
+        season_title = 'Season:{season_title}|'.format(
+            season_title=str(self.season_title))
+        season_number = 'Season Nr.:#{season_nr}|'.format(
+            season_nr=str(self.season_number))
+        release_year = 'Year:{release_year}|'.format(
+            release_year=str(self.year_of_release))
+        season_end_year = ''
+        if self.season_end_year:
+            season_end_year = 'Season End Year:{season_end_year}|'.format(
+                season_end_year=str(self.season_end_year))
+        country = 'Country:{country}|'.format(country='/'.join(
+            [country.name for country in self.country_of_origin.all()]))
+        genre = ''
+        if self.genre.all():
+            genre = 'Genre:{genre}|'.format(genre=','.join(
+                [genre.name for genre in self.genre.all()]))
+        subgenre = ''
+        if self.subgenre.all():
+            subgenre = 'Subgenre:{subgenre}|'.format(subgenre=','.join(
+                [subgenre.name for subgenre in self.subgenre.all()]))
+        microgenre = ''
+        if self.microgenre.all():
+            microgenre = 'Microgenre:{microgenre}|'.format(
+                microgenre=','.join([microgenre.name for microgenre in
+                                     self.microgenre.all()]))
+        review = ''
+        if self.televisionseasonreview_set.all():
+            review = 'Our Review:{review}|'.format(
+                review=','.join([str(review) for review in
+                                 self.televisionseasonreview_set.all()]))
+
+        return f'{title}{season_title}{season_number}{release_year}' \
+            f'{season_end_year}{country}{genre}{subgenre}{microgenre}{review}'
+
 
 class TelevisionEpisode(models.Model):
     tv_season = models.ForeignKey(

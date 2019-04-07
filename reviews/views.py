@@ -480,8 +480,7 @@ class TVSeasonDetailView(generic.DetailView):
         tv_season = TelevisionSeason.objects.get(pk=self.kwargs.get(
             self.pk_url_kwarg))
         context['page_title'] = str(tv_season) + ' | The Horror Explosion'
-        context['meta_content_description'] = \
-            'Data and metadata about TV series: ' + str(tv_season)
+        context['meta_content_description'] = tv_season.get_meta_string()
         context['directors'] = return_mov_participation_data(tv_season,
                                                              'Director')
         context['cast'] = return_mov_participation_data(tv_season, 'Actor')
