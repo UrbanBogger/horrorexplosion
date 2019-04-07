@@ -327,7 +327,7 @@ class Movie(MotionPicture):
                 microgenre=','.join([microgenre.name for microgenre in
                                    self.microgenre.all()]))
         if self.moviereview_set.all():
-             review = 'Our Review:{review}|'.format(
+            review = 'Our Review:{review}|'.format(
                  review=','.join([str(review) for review in
                                  self.moviereview_set.all()]))
         else:
