@@ -308,7 +308,7 @@ class Movie(MotionPicture):
                                              str(self.human_readable_url)])
 
     def get_meta_string(self):
-        title = 'Main Title:{title}|'.format(title=str(self.main_title))
+        title = 'Main Title:{title}|'.format(title=str(self.main_title.title))
         year = 'Year:{year}|'.format(year=str(self.year_of_release))
         length = 'Length:{length} min.|'.format(length=str(self.duration))
         country = 'Country:{country}|'.format(
