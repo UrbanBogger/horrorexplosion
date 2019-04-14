@@ -138,6 +138,9 @@ def get_mov_title_and_release_year(mov_link):
 def index(request):
     number_of_reviews = MovieReview.objects.all().count()
     number_of_movies = Movie.objects.all().count()
+    num_of_tv_season_reviews = TelevisionSeasonReview.objects.all().count()
+    num_of_tv_episode_reviews = TelevisionEpisodeReview.objects.all().count()
+    num_of_tv_reviews = num_of_tv_season_reviews + num_of_tv_episode_reviews
     latest_mov_review = MovieReview.objects.latest('id')
     try:
         featured_review = PickedReview.objects.latest('id').picked_review
@@ -189,6 +192,7 @@ def index(request):
                   context={'page_title': home_page_title,
                            'meta_content_description': content_metadescription,
                            'number_of_reviews': number_of_reviews,
+                           'num_of_tv_reviews': num_of_tv_reviews,
                            'number_of_movies': number_of_movies,
                            'latest_review': latest_review,
                            'second_latest_review': second_latest_review,

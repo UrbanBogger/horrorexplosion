@@ -13,10 +13,10 @@
 <p>Welcome to The Horror Explosion - a website dedicated to horror movie reviews with a special focus on post-1999
     genre output.<br/>
     It's very basic at the moment but we'll aim to expand it by adding new content and features.</p>
-<p><strong>Current number of reviews: </strong><a href="{% url 'movie_reviews' %}">{{ number_of_reviews }}</a></p>
+<p><strong>Current number of film reviews: </strong><a href="{% url 'movie_reviews' %}">{{ number_of_reviews }}</a></p>
 <p><strong>Current number of movies in our database: </strong><a href="{% url 'movies' %}">{{ number_of_movies }}</a></p>
-
-{% if latest_review.1 %}
+<p><strong>Current number of TV show reviews in our database: </strong><a href="{% url 'tv_series' %}">{{ num_of_tv_reviews }}</a></p>
+{% if latest_review %}
 <h3>{{ latest_review.0 }}</h3>
     {% include "review_media_object.html" with review=latest_review.1 %}
 {% endif %}
