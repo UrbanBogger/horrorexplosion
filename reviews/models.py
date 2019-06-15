@@ -316,6 +316,15 @@ class Movie(MotionPicture):
                               self.country_of_origin.all()]))
         genre = 'Genre:{genre}|'.format(genre=','.join([genre.name for genre in
                                                        self.genre.all()]))
+        og_title = ''
+        if self.original_title:
+            og_title = 'OG Title:{og_title}|'.format(og_title=str(
+                self.original_title.title))
+        alt_title = ''
+        if self.alternative_title.all():
+            alt_title = 'Alt Title:{alt_title}|'.format(alt_title=','.join(
+                [alt_title.title for alt_title in
+                 self.alternative_title.all()]))
         subgenre = ''
         if self.subgenre.all():
             subgenre = 'Subgenre:{subgenre}|'.format(
@@ -336,8 +345,8 @@ class Movie(MotionPicture):
             [str(mov_participation.person) for mov_participation in
              self.movie_participation.filter(
                  creative_role__role_name='Director')]))
-        return f'{title}{year}{length}{country}{genre}{subgenre}{microgenre}' \
-            f'{review}{director}'
+        return f'{title}{og_title}{alt_title}{year}{length}{country}{genre}' \
+            f'{subgenre}{microgenre}{review}{director}'
 
 
 class MovieReview(Review):
