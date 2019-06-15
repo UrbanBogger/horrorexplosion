@@ -78,6 +78,12 @@ def substitute_links_in_text(text):
                     main_title__title=mov_title).exists():
                 mov_title_link['href'] = TelevisionSeries.objects.filter(
                     main_title__title=mov_title)[0].get_absolute_url()
+            elif TelevisionEpisodeReview.objects.filter(
+                    reviewed_tv_episode__episode_title=mov_title).exists():
+                mov_title_link['href'] = \
+                    TelevisionEpisodeReview.objects.filter(
+                        reviewed_tv_episode__episode_title=mov_title)[0].\
+                        get_absolute_url()
 
         else:
             if Movie.objects.filter(
@@ -89,6 +95,12 @@ def substitute_links_in_text(text):
                     main_title__title=mov_title).exists():
                 mov_title_link['href'] = TelevisionSeries.objects.filter(
                     main_title__title=mov_title)[0].get_absolute_url()
+            elif TelevisionEpisodeReview.objects.filter(
+                    reviewed_tv_episode__episode_title=mov_title).exists():
+                mov_title_link['href'] = \
+                    TelevisionEpisodeReview.objects.filter(
+                        reviewed_tv_episode__episode_title=mov_title)[0].\
+                        get_absolute_url()
 
     return str(html_to_be_modified)
 
