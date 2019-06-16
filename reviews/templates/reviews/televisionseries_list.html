@@ -23,7 +23,7 @@
       {% endif %}
   </div>
   <div class="media-body">
-    <a href="{{ tv_series.get_absolute_url }}"><h4 class="media-heading text-left">{{ tv_series }} {% if tv_series.get_year_range %}({{ tv_series.get_year_range.0 }}{% if tv_series.get_year_range.1 %}&ndash;{{ tv_series.get_year_range.1 }}{% elif tv_series.is_still_running %}&ndash; {% endif %}){% endif %}</h4></a>
+    <a href="{{ tv_series.get_absolute_url }}"><h4 class="media-heading text-left">{{ tv_series }} {% if tv_series.get_year_range and tv_series.get_year_range.0 %}({{ tv_series.get_year_range.0 }}{% if tv_series.get_year_range.1 %}&ndash;{{ tv_series.get_year_range.1 }}{% elif tv_series.is_still_running %}&ndash; {% endif %}){% endif %}</h4></a>
       <p><em><strong>TV Series Type</strong></em>: {{ tv_series.tv_series_type }}</p>
       <p><em><strong>TV Series Review(s)</strong></em>:
           {% if tv_series.get_season_reviews %}

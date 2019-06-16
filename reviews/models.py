@@ -504,17 +504,20 @@ class TelevisionSeries(models.Model):
 
     @property
     def get_year_range(self):
-        start_year = self.televisionseason_set.all().aggregate(
-            Min('year_of_release'))['year_of_release__min']
-        latest_season = self.televisionseason_set.get(
-            season_number=self.televisionseason_set.all().aggregate(
-                Max('season_number'))['season_number__max'])
-        end_year = latest_season.season_end_year if \
-            latest_season.season_end_year else \
-            latest_season.year_of_release
+        start_year = ''
+        end_year = ''
+        if self.televisionseason_set.all().exists():
+            start_year = self.televisionseason_set.all().aggregate(
+                Min('year_of_release'))['year_of_release__min']
+            latest_season = self.televisionseason_set.get(
+                season_number=self.televisionseason_set.all().aggregate(
+                    Max('season_number'))['season_number__max'])
+            end_year = latest_season.season_end_year if \
+                latest_season.season_end_year else \
+                latest_season.year_of_release
 
         if not start_year and not end_year:
-            return None
+            return 0, 0
         elif self.is_still_running:
             end_year = ''
         elif start_year == end_year:
@@ -543,8 +546,10 @@ class TelevisionSeries(models.Model):
         else:
             is_still_running = 'Still Running:No|'
         start_year, end_year = self.get_year_range
-        start_year_str = 'Start Year:{start_year}|'.format(
-            start_year=str(start_year))
+        start_year_str = ''
+        if start_year:
+            start_year_str = 'Start Year:{start_year}|'.format(
+                start_year=str(start_year))
         end_year_str = ''
         if end_year:
             end_year_str = 'End Year:{end_year}|'.format(
