@@ -462,6 +462,7 @@ class MovieReviewDetailView(generic.DetailView):
             movie_review.reviewed_movie, 'Director')
         context['movie_cast'] = return_mov_participation_data(
             movie_review.reviewed_movie, 'Actor')
+        context['absolute_uri'] = get_absolute_url(movie_review)
         return context
 
 

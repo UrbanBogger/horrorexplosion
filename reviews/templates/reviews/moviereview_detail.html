@@ -15,3 +15,29 @@
 <p><strong>Author: </strong>{{ moviereview.review_author }}</p>
 <p><strong>Written on: </strong>{{ moviereview.date_created }}; <strong>Added to the Database: </strong>{{ moviereview.first_created }}; <strong>Last Modified: </strong>{{ moviereview.last_modified }}</p>
 {% endblock %}
+
+{% block user_comments %}
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES:
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = '{{ absolute_uri }}';  // your page's canonical URL variable
+{% if televisionseasonreview.human_readable_url %}
+this.page.identifier = '{{ televisionseasonreview.human_readable_url }}'; // your page's unique identifier variable
+{% else %}
+this.page.identifier = '{{ televisionseasonreview }}';
+{% endif %}
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://horror-explosion.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+{% endblock %}
