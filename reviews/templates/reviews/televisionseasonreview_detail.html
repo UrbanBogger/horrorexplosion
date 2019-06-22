@@ -24,3 +24,25 @@
 <p><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span><span style="font-size:18px"><strong>Next review</strong>:{% for review in televisionseasonreview.previous_and_next_season_review.1 %} <a href="{{ review.get_absolute_url }}">{{ review }}</a>{% if not forloop.last %}<strong>;</strong> {% endif %}{% endfor %}</span><span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="font-size:25px"></span></p>
 {% endif %}
 {% endblock %}
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES:
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = '{{ absolute_uri }}';  // your page's canonical URL variable
+{% if televisionseasonreview.human_readable_url %}
+this.page.identifier = '{{ televisionseasonreview.human_readable_url }}'; // your page's unique identifier variable
+{% else %}
+this.page.identifier = '{{ televisionseasonreview }}';
+{% endif %}
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://horror-explosion.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+{% endblock %}

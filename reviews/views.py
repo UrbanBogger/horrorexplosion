@@ -531,6 +531,7 @@ class TVSeasonReviewDetailView(generic.DetailView):
             tv_season_review.reviewed_tv_season, 'Actor')
         context['tvseason_review'] = substitute_links_in_text(
             tv_season_review.review_text)
+        context['absolute_uri'] = get_absolute_url(tv_season_review)
         return context
 
 
