@@ -530,6 +530,7 @@ class TVEpisodeReviewDetailView(generic.DetailView):
     model = TelevisionEpisodeReview
 
     def get_context_data(self, **kwargs):
+        request = HttpRequest()
         # Call the base implementation first to get the context
         context = super(TVEpisodeReviewDetailView, self).get_context_data(
             **kwargs)
@@ -546,6 +547,6 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.reviewed_tv_episode, 'Actor')
         context['tvepisode_review'] = substitute_links_in_text(
             tv_episode_review.review_text)
-        context['absolute_uri'] = HttpRequest.build_absolute_uri(
+        context['absolute_uri'] = request.build_absolute_uri(
             location=tv_episode_review.get_absolute_url)
         return context
