@@ -25,10 +25,10 @@
 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
 var disqus_config = function () {
 this.page.url = '{{ absolute_uri }}';  // your page's canonical URL variable
-{% if televisionseasonreview.human_readable_url %}
-this.page.identifier = '{{ televisionseasonreview.human_readable_url }}'; // your page's unique identifier variable
+{% if moviereview.human_readable_url %}
+this.page.identifier = '{{ moviereview.human_readable_url }}'; // your page's unique identifier variable
 {% else %}
-this.page.identifier = '{{ televisionseasonreview }}';
+this.page.identifier = '{{ moviereview }}';
 {% endif %}
 };
 
