@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
+from django.contrib.sites.models import Site
 from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
@@ -15,7 +16,7 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     return_mov_participation_data
 
 # Create your views here.
-
+HTTP_PROTOCOL = 'http://'
 ENGLISH_ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                     'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
                     'W', 'X', 'Y', 'Z']
@@ -46,6 +47,13 @@ MOVREV_ORDERING_DICT = {
 }
 MOVREV_ORDERING_CATEGORIES = ['alphabetical', 'date_added', 'rating',
                               'author']
+
+
+def get_absolute_url(db_object):
+    absolute_url = '{http}{domain}{object_url}'.format(
+        http=HTTP_PROTOCOL, domain=Site.objects.get_current().domain,
+        object_url=db_object.get_absolute_url())
+    return absolute_url
 
 
 def substitute_links_in_text(text):
@@ -546,7 +554,5 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.reviewed_tv_episode, 'Actor')
         context['tvepisode_review'] = substitute_links_in_text(
             tv_episode_review.review_text)
-        context['absolute_uri'] = \
-            'http://www.horrorexplosion.com{url}'.format(
-                url=tv_episode_review.get_absolute_url())
+        context['absolute_uri'] = get_absolute_url(tv_episode_review)
         return context
