@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from .forms import ContactForm
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
@@ -546,4 +546,6 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.reviewed_tv_episode, 'Actor')
         context['tvepisode_review'] = substitute_links_in_text(
             tv_episode_review.review_text)
+        context['absolute_uri'] = HttpRequest.build_absolute_uri(
+            location=tv_episode_review.get_absolute_url)
         return context
