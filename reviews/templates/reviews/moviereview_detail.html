@@ -9,8 +9,10 @@
 {% endblock %}
 
 {% block mov_rev_structured_data %}
+{% if mov_rev_sd %}
 {% load render_json_ld from json_ld %}
 {% render_json_ld mov_rev_sd %}
+{% endif %}
 {% endblock %}
 
 {% block main_content %}
