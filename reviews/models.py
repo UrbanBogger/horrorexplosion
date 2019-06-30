@@ -302,6 +302,8 @@ class Movie(MotionPicture):
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the movie", unique=True, null=True)
+    imdb_link = models.CharField(max_length=250, null=True, blank=True,
+                                 help_text='Enter the link to the IMDb')
 
     def get_absolute_url(self):
         return reverse('movie-detail', args=[str(self.id),
@@ -356,6 +358,10 @@ class MovieReview(Review):
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the movie review", unique=True, null=True)
+    review_snippet = models.TextField(
+        unique=True, null=True, max_length=800,
+        help_text='Enter the Review snippet for Google Structured Data '
+                  '[OPTIONAL]')
 
     class Meta:
         ordering = ['reviewed_movie']

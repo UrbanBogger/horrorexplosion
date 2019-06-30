@@ -9,6 +9,7 @@ from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
 from django.contrib.sites.models import Site
 from .forms import ContactForm
+from .google_structured_data import mov_review_sd
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
@@ -451,6 +452,11 @@ class MovieReviewDetailView(generic.DetailView):
         context = super(MovieReviewDetailView, self).get_context_data(**kwargs)
         movie_review = MovieReview.objects.get(pk=self.kwargs.get(
             self.pk_url_kwarg))
+        if movie_review.reviewed_movie.imdb_link and \
+                movie_review.review_snippet:
+            context['mov_rev_sd'] = mov_review_sd(
+                movie_review,
+                db_object_absolute_url=get_absolute_url(movie_review))
         context['review_text'] = substitute_links_in_text(
             movie_review.review_text)
         context['page_title'] = str(movie_review.reviewed_movie) + \

@@ -8,6 +8,11 @@
 <meta name="description" content="{{ meta_content_description }}">
 {% endblock %}
 
+{% block mov_rev_structured_data %}
+{% load render_json_ld from json_ld %}
+{% render_json_ld mov_rev_sd %}
+{% endblock %}
+
 {% block main_content %}
 {% include "movie_header.html" %}
 <img id="star-rating-review" src="{{ moviereview.grade.grade_depiction.url }}" alt="{{ moviereview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ moviereview.grade.grade_description }}]</strong></span>
