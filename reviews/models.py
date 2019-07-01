@@ -359,7 +359,7 @@ class MovieReview(Review):
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the movie review", unique=True, null=True)
     review_snippet = models.TextField(
-        unique=True, null=True, max_length=800,
+        null=True, blank=True, max_length=800,
         help_text='Enter the Review snippet for Google Structured Data '
                   '[OPTIONAL]')
 
