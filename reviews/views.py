@@ -9,7 +9,7 @@ from django.core.mail import EmailMessage, BadHeaderError
 from django.http import HttpResponse
 from django.contrib.sites.models import Site
 from .forms import ContactForm
-from .google_structured_data import mov_review_sd
+from .google_structured_data import mov_review_sd, tv_episode_rev_sd
 from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
     Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
@@ -552,6 +552,12 @@ class TVEpisodeReviewDetailView(generic.DetailView):
         # Create any data and add it to the context
         tv_episode_review = TelevisionEpisodeReview.objects.get(
             pk=self.kwargs.get(self.pk_url_kwarg))
+        if tv_episode_review.reviewed_tv_episode.tv_season.tv_series \
+                .imdb_link and tv_episode_review.reviewed_tv_episode \
+                .imdb_link and tv_episode_review.review_snippet:
+            context['tv_ep_rev_sd'] = tv_episode_rev_sd(
+                tv_episode_review,
+                db_object_absolute_url=get_absolute_url(tv_episode_review))
         context['page_title'] = str(tv_episode_review) \
                                 + ' | The Horror Explosion'
         context['meta_content_description'] = \

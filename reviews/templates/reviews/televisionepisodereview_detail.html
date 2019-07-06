@@ -8,6 +8,13 @@
 <meta name="description" content="{{ meta_content_description }}">
 {% endblock %}
 
+{% block tv_ep_rev_structured_data %}
+{% if tv_ep_rev_sd %}
+{% load render_json_ld from json_ld %}
+{% render_json_ld tv_ep_rev_sd %}
+{% endif %}
+{% endblock %}
+
 {% block main_content %}
 {% include "tv_episode_review_header.html" with televisionepisode=televisionepisodereview.reviewed_tv_episode %}
 {% if televisionepisodereview.mov_review_page_description %}
