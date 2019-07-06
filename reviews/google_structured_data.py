@@ -75,7 +75,7 @@ def mov_review_sd(mov_rev, db_object_absolute_url=''):
                       'sameAs': ORGANIZATION_HOME_URL},
         'description': mov_rev.mov_review_page_description,
         'inLanguage': 'en',
-        'itemReviewed': {TYPE_KEY: TV_SERIES_TYPE,
+        'itemReviewed': {TYPE_KEY: MOVIE_TYPE,
                          'name': str(mov_rev.reviewed_movie.main_title),
                          'sameAs': mov_rev.reviewed_movie.imdb_link,
                          'image': mov_rev.reviewed_movie.poster.url,
@@ -90,6 +90,37 @@ def mov_review_sd(mov_rev, db_object_absolute_url=''):
                          'bestRating': 4.0,
                          'ratingValue': float(mov_rev.grade.grade_numerical)},
         'reviewBody': mov_rev.review_snippet
+    }
+    return structured_data
+
+
+def mov_sd(movie):
+    mov_directors = [str(mov_participation.person) for mov_participation in
+                     return_mov_participation_data(movie, 'Director')]
+    mov_cast = [str(mov_participation.person) for mov_participation in
+                return_mov_participation_data(movie, 'Actor')]
+
+    dir_key, director = get_director_key(mov_directors)
+
+    country_of_origin = [str(country) for country in
+                         movie.country_of_origin.all()]
+
+    if country_of_origin and len(country_of_origin) == 1:
+        country_of_origin = country_of_origin[0]
+
+    if not (mov_cast and director and country_of_origin):
+        return None
+
+    structured_data = {
+        CONTEXT_KEY: CONTEXT,
+        TYPE_KEY: MOVIE_TYPE,
+        'name': str(movie.main_title),
+        'sameAs': movie.imdb_link,
+        'image': movie.poster.url,
+        dir_key: director,
+        'actors': mov_cast,
+        'countryOfOrigin': country_of_origin,
+        'dateCreated': str(movie.year_of_release)
     }
     return structured_data
 

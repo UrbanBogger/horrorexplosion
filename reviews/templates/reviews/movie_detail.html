@@ -8,6 +8,13 @@
 <meta name="description" content="{{ meta_content_description }}">
 {% endblock %}
 
+{% block mov_structured_data %}
+{% if mov_sd %}
+{% load render_json_ld from json_ld %}
+{% render_json_ld mov_sd %}
+{% endif %}
+{% endblock %}
+
 {% block main_content %}
 {% include "movie_header.html" %}
 {% if remakes %}
