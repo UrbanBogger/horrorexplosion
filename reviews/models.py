@@ -494,6 +494,8 @@ class TelevisionSeries(models.Model):
     human_readable_url = models.SlugField(
         help_text="Enter the 'slug',i.e., the human-readable "
                   "URL for the TV series", unique=True, null=True)
+    imdb_link = models.CharField(max_length=250, null=True, blank=True,
+                                 help_text='Enter the link to the IMDb')
 
     @property
     def get_season_reviews(self):
@@ -714,6 +716,8 @@ class TelevisionEpisode(models.Model):
         MovieParticipation, blank=True,
         help_text='Add the name of the TV episode creator, their role and the '
                   'position you want them to appear in the credits')
+    imdb_link = models.CharField(max_length=250, null=True, blank=True,
+                                 help_text='Enter the link to the IMDb')
 
     class Meta:
         ordering = ['tv_season', 'episode_number']
@@ -783,6 +787,10 @@ class TelevisionEpisodeReview(Review):
     human_readable_url = models.SlugField(
         null=True, help_text='Enter the "slug",i.e., the human-readable URL '
                              'for the TV episode review')
+    review_snippet = models.TextField(
+        blank=True, null=True, max_length=800,
+        help_text='Enter the Review snippet for Google Structured Data '
+                  '[OPTIONAL]')
 
     @property
     def previous_and_next_episode_review(self):
