@@ -516,6 +516,8 @@ class TVSeasonDetailView(generic.DetailView):
         context['meta_content_description'] = tv_season.get_meta_string()
         context['directors'] = return_mov_participation_data(tv_season,
                                                              'Director')
+        context['showrunners'] = return_mov_participation_data(
+            tv_season, 'Showrunner')
         context['cast'] = return_mov_participation_data(tv_season, 'Actor')
         return context
 
@@ -536,6 +538,8 @@ class TVSeasonReviewDetailView(generic.DetailView):
             tv_season_review.mov_review_page_description
         context['directors'] = return_mov_participation_data(
             tv_season_review.reviewed_tv_season, 'Director')
+        context['showrunners'] = return_mov_participation_data(
+            tv_season_review.reviewed_tv_season, 'Showrunner')
         context['cast'] = return_mov_participation_data(
             tv_season_review.reviewed_tv_season, 'Actor')
         context['tvseason_review'] = substitute_links_in_text(

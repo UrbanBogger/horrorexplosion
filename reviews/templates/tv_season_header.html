@@ -9,13 +9,17 @@
     <div class="media-body">
 <h1 class="media-heading">{{ televisionseason }}</h1>
         <h2 class="media-heading">({% for country in televisionseason.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionseason.year_of_release }}{% if televisionseason.season_end_year %}&ndash;{{ televisionseason.season_end_year }}{% endif %}{% if televisionseason.duration %}, {{ televisionseason.duration }} min.){% else %}){% endif %}</h2>
-      {% if directors %}
-<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
+<h3 class="media-heading">
+    {% if directors %}
+    <em><strong>Dir.</strong></em>: {% for movie_participation in directors %}{{ movie_participation.person }}{% if not forloop.last %},{% else %}.{% endif %}{% endfor %}
+    {% endif%}
+    {% if showrunners %}
+    <em><strong>Showrunner(s)</strong></em>: {% for movie_participation in showrunners %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
+    {% endif %}
     {% if cast %}
 <em><strong>Cast</strong></em>: {% for movie_participation in cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% endif %}
 </h3>
-      {% endif %}
       {% if televisionseason.genre.all %}
 <p><strong>Genre(s)</strong>: {% for genre in televisionseason.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
