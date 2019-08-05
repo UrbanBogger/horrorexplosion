@@ -627,6 +627,21 @@ class TelevisionSeason(models.Model):
              self.televisionepisode_set.all() for tv_episode_review
              in tv_episode.televisionepisodereview_set.all()])
 
+    @property
+    def nr_of_episodes_in_season(self):
+        return len(self.televisionepisode_set.all())
+
+    def get_episode_durations(self):
+        all_durations = [tv_ep.duration for tv_ep
+                         in self.televisionepisode_set.all()
+                         if tv_ep.duration]
+        unique_durations = list(set(all_durations))
+        unique_durations.sort()
+
+        if len(unique_durations) > 2:
+            del unique_durations[1:len(unique_durations) - 1]
+        return unique_durations
+
     class Meta:
         ordering = ['tv_series', 'season_number']
 

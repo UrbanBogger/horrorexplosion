@@ -519,6 +519,7 @@ class TVSeasonDetailView(generic.DetailView):
         context['showrunners'] = return_mov_participation_data(
             tv_season, 'Showrunner')
         context['cast'] = return_mov_participation_data(tv_season, 'Actor')
+        context['episode_durations'] = tv_season.get_episode_durations()
         return context
 
 
