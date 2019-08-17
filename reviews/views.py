@@ -137,7 +137,7 @@ def get_mov_title_and_release_year(mov_link):
         mov_title = mov_link.find('em').string
 
         if len(mov_link.contents) == 2:
-            if mov_year_pattern.match(mov_link.contents[1]):
+            if mov_year_pattern.match(mov_link.contents[1].strip()):
                 mov_year = mov_year_pattern.search(mov_link.contents[
                                                       1]).group(1)
 
