@@ -109,3 +109,7 @@ venv.bak/
 # database
 *.sqlite3
 
+*.idea
+reviews/static/
+staticfiles/
+
