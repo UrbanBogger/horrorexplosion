@@ -88,7 +88,9 @@ def substitute_links_in_text(text):
                 mov_title_link['href'] = TelevisionSeries.objects.filter(
                     main_title__title=mov_title)[0].get_absolute_url()
             elif TelevisionEpisodeReview.objects.filter(
-                    reviewed_tv_episode__episode_title=mov_title).exists():
+                    reviewed_tv_episode__episode_title=mov_title,
+                    reviewed_tv_episode__tv_season__year_of_release=mov_year
+            ).exists():
                 mov_title_link['href'] = \
                     TelevisionEpisodeReview.objects.filter(
                         reviewed_tv_episode__episode_title=mov_title)[0].\
