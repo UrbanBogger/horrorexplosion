@@ -15,7 +15,7 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
-    get_random_review, return_mov_participation_data
+    MovSeriesEntry, get_random_review, return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -66,13 +66,38 @@ def substitute_links_in_text(text):
     if not links:
         return text
 
+    mov_franchise_links = list(
+        filter(bool, [link if 'franchise' in link.attrs.get(
+            'href') or 'film_series' in link.attrs.get(
+            'href') else '' for link in links]))
+
+    if mov_franchise_links:
+        franchise_name = None
+        for mf_link in mov_franchise_links:
+            mf_matches = re.findall(
+                r'(.+?)_\(franchise\)|(.+?)_\(film_series\)',
+                mf_link.attrs.get('href').split('/')[-1])
+
+            if mf_matches[0][0]:
+                franchise_name = mf_matches[0][0].replace('_', ' ')
+            else:
+                franchise_name = mf_matches[0][1].replace('_', ' ')
+
+            if franchise_name:
+                if MovieFranchise.objects.filter(
+                        franchise_name__icontains=franchise_name).exists():
+                    mov_franchise = MovieFranchise.objects.get(
+                        franchise_name__icontains=franchise_name)
+                    if mov_franchise.is_publishable:
+                        mf_link['href'] = mov_franchise.get_absolute_url()
+
     mov_title_links = list(filter(
         bool, [mov_title_link if mov_title_pattern.match(
             mov_title_link.attrs.get('href')) else '' for mov_title_link in
                links]))
 
     if not mov_title_links:
-        return text
+        return str(html_to_be_modified)
 
     for mov_title_link in mov_title_links:
         mov_title, mov_year = get_mov_title_and_release_year(mov_title_link)
@@ -96,6 +121,21 @@ def substitute_links_in_text(text):
                     TelevisionEpisodeReview.objects.filter(
                         reviewed_tv_episode__episode_title=mov_title)[0].\
                         get_absolute_url()
+            elif MovSeriesEntry.objects.filter(
+                    mov_in_series_title__title=mov_title,
+                    year_of_release=mov_year).exists():
+                series_entry = MovSeriesEntry.objects.filter(
+                    mov_in_series_title__title=mov_title,
+                    year_of_release=mov_year).get()
+                associated_franchises = [
+                    franchise for franchise in
+                    series_entry.franchise_association.all() if
+                    franchise.is_publishable]
+                if associated_franchises:
+                    mov_title_link['href'] = \
+                        associated_franchises[0].get_absolute_url() + '#' \
+                        + str(''.join(
+                            series_entry.mov_in_series_title.title.split()))
 
         else:
             if Movie.objects.filter(
@@ -113,6 +153,26 @@ def substitute_links_in_text(text):
                     TelevisionEpisodeReview.objects.filter(
                         reviewed_tv_episode__episode_title=mov_title)[0].\
                         get_absolute_url()
+            elif MovSeriesEntry.objects.filter(
+                    mov_in_series_title__title=mov_title).exists():
+                series_entry = MovSeriesEntry.objects.filter(
+                    mov_in_series_title__title=mov_title).get()
+                associated_franchises = [
+                    franchise for franchise in
+                    series_entry.franchise_association.all() if
+                    franchise.is_publishable]
+                if associated_franchises:
+                    mov_title_link['href'] = \
+                        associated_franchises[0].get_absolute_url() + '#' \
+                        + str(''.join(
+                            series_entry.mov_in_series_title.title.split()))
+            # to catch franchises mentioned in comments
+            elif MovieFranchise.objects.filter(
+                    franchise_name__icontains=mov_title).exists():
+                mov_franchise = MovieFranchise.objects.get(
+                    franchise_name__icontains=mov_title)
+                if mov_franchise.is_publishable:
+                    mov_title_link['href'] = mov_franchise.get_absolute_url()
 
     return str(html_to_be_modified)
 
@@ -126,7 +186,7 @@ def get_mov_title_and_release_year(mov_link):
     mov_year = None
 
     if html_comment_pattern.match(str(mov_link)):
-        html_comment_content = mov_link.contents[1].string.strip()
+        html_comment_content = mov_link.contents[-1].string.strip()
         if mov_title_w_year_pattern.match(html_comment_content):
             mov_title = mov_year_split_pattern.split(
                 html_comment_content)[0].strip()
@@ -140,9 +200,9 @@ def get_mov_title_and_release_year(mov_link):
         mov_title = mov_link.find('em').string
 
         if len(mov_link.contents) == 2:
-            if mov_year_pattern.match(mov_link.contents[1].strip()):
-                mov_year = mov_year_pattern.search(mov_link.contents[
-                                                      1]).group(1)
+            if mov_year_pattern.match(mov_link.contents[-1].strip()):
+                mov_year = mov_year_pattern.search(
+                    mov_link.contents[-1]).group(1)
 
     elif mov_title_w_year_pattern.match(mov_link.string):
         mov_title = mov_year_split_pattern.split(
