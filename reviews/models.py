@@ -230,7 +230,59 @@ class Title(models.Model):
 
 class MovieFranchise(models.Model):
     franchise_name = models.CharField(
-        max_length=50, help_text='Enter the name of the movie franchise')
+        max_length=50, unique=True,
+        help_text='Enter the name of the movie franchise or series')
+    title_for_sorting = models.CharField(max_length=250, null=True,
+                                         help_text='Enter the title for '
+                                                   'sorting: Remove all stop '
+                                                   'words such '
+                                                   'as "A", "An" and "The" '
+                                                   'and word all numbers')
+    num_of_entries_in_franchise = models.IntegerField(
+        default=2, help_text='Enter the number of entries in the horror '
+                             'franchise or series')
+    is_publishable = models.NullBooleanField(
+        default=False,
+        help_text='Should this horror movie franchise or series be published?')
+    franchise_image = models.ImageField(
+        upload_to='franchise_related_images/', blank=True,
+        help_text='Upload the image that best describes the horror '
+                  'movie franchise or series [OPTIONAL]')
+    franchise_image_thumb = models.ImageField(
+        upload_to='franchise_related_images/', blank=True,
+        help_text='Upload the image that best describes the horror '
+                  'movie franchise or series [OPTIONAL]')
+    human_readable_url = models.SlugField(
+        help_text="Enter the 'slug',i.e., the human-readable "
+                  "URL for the film franchise or series",
+        unique=True, null=True, blank=True)
+    overview = RichTextField(
+        blank=True, help_text='Provide an introductory text about the '
+                              'franchise or series [OPTIONAL]')
+    franchise_genre = models.ManyToManyField(
+        Genre, blank=True, help_text='Enter the film franchise\'s or series\''
+                                     'genre [OPTIONAL]')
+    franchise_subgenre = models.ManyToManyField(
+        Subgenre, blank=True,
+        help_text='Enter the film franchise\'s or series\''
+                  'subgenre [OPTIONAL]')
+    franchise_microgenre = models.ManyToManyField(
+        Microgenre, blank=True,
+        help_text='Enter the film franchise\'s or series\' '
+                  'microgenre [OPTIONAL]')
+    franchise_keyword = models.ManyToManyField(
+        Keyword, blank=True, help_text='Enter the keyword(s) that best ' \
+                                       'describe the film franchise or series'
+                                       '[OPTIONAL]')
+    last_modified = models.DateField(auto_now=True)
+    first_created = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    class Meta:
+        ordering = ['title_for_sorting']
+
+    def get_absolute_url(self):
+        return reverse('mov-franchise-detail', args=[
+            str(self.id), str(self.human_readable_url)])
 
     def __str__(self):
         return '{franchise_name}'.format(franchise_name=self.franchise_name)
@@ -845,6 +897,55 @@ class TelevisionEpisodeReview(Review):
             return '{tv_episode}, by {reviewer}'.format(
                 tv_episode=self.reviewed_tv_episode,
                 reviewer=self.review_author)
+
+
+class MovSeriesEntry(models.Model):
+    movie_in_series = models.ForeignKey(
+        Movie, blank=True, null=True,
+        help_text='Enter the movie that\'s part of this series [OPTIONAL]')
+    tv_series_entry = models.ForeignKey(
+        TelevisionSeries, blank=True, null=True,
+        help_text='Enter the TV series that\'s part of this series [OPTIONAL]')
+    mov_in_series_title = models.ForeignKey(
+        Title, on_delete=models.SET_NULL, null=True, blank=True,
+        help_text='Enter the entry\'s main title')
+    franchise_association = models.ManyToManyField(
+        MovieFranchise, default=1,
+        help_text='Enter the franchise(s) or series this entry belongs to')
+    position_in_series = models.IntegerField(
+        default=1,
+        help_text='Enter the movie\'s chronological position in the series as '
+                  'an integer, e.g. "1" for the first film in the franchise, '
+                  '"2" for the second one, etc.')
+    year_of_release = models.IntegerField(
+        choices=create_release_year_range(), blank=True, null=True,
+        help_text='Choose the movie series entry\'s release year')
+    mov_series_entry_image = models.ImageField(
+        upload_to='franchise_related_images/', blank=True, null=True,
+        help_text='Upload the poster of this movie series entry [OPTIONAL]')
+    mov_series_entry_image_thumb = models.ImageField(
+        upload_to='franchise_related_images/', blank=True, null=True,
+        help_text='Upload the poster thumb of this movie series entry '
+                  '[OPTIONAL]')
+    review_grade = models.ForeignKey(
+        Grade, on_delete=models.SET_NULL, blank=True, null=True,
+        help_text='Choose the franchise entry\'s grade [OPTIONAL]')
+    short_review = RichTextField(blank=True, null=True,
+                                 help_text='Enter a short review of movie '
+                                           'franchise/series entry [OPTIONAL]')
+    review_author = models.ManyToManyField(
+        Reviewer, blank=True,
+        help_text='Enter the name of the short review\'s author(s)[OPTIONAL]')
+
+    class Meta:
+        ordering = ['franchise_association__title_for_sorting',
+                    'position_in_series']
+
+    def __str__(self):
+        return 'Franchise: {franchise_name}; Entry No.: {position}'.format(
+            franchise_name=', '.join([str(mov_franchise) for mov_franchise in
+                                     self.franchise_association.all()]),
+            position=str(self.position_in_series))
 
 
 class PickedReview(models.Model):

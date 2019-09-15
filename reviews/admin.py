@@ -5,7 +5,7 @@ from .models import Genre, Subgenre, Microgenre, Keyword, \
     MovieReview, ReferencedMovie, Grade, Contributor, Article, MovieRemake, \
     MovieInMovSeries, MovieSeries, SimilarMovie, PickedReview, \
     TelevisionSeries, TelevisionSeason, TelevisionEpisode, \
-    TelevisionSeasonReview, TelevisionEpisodeReview
+    TelevisionSeasonReview, TelevisionEpisodeReview, MovSeriesEntry
 
 # Register your models here.
 
@@ -37,3 +37,4 @@ admin.site.register(TelevisionEpisode)
 admin.site.register(TelevisionSeasonReview)
 admin.site.register(TelevisionEpisodeReview)
 admin.site.register(PickedReview)
+admin.site.register(MovSeriesEntry)
