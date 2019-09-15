@@ -47,4 +47,8 @@ urlpatterns = [
             ),
     ]),
     ),
+    url(r'^film-franchises/$', view=views.MovieFranchiseListView.as_view(),
+        name='mov_franchises'),
+    url(r'film-franchise-detail/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
+        views.MovieFranchiseDetailView.as_view(), name='mov-franchise-detail'),
 ]

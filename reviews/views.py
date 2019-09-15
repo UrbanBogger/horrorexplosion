@@ -6,15 +6,16 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.contrib.sites.models import Site
 from .forms import ContactForm
 from .google_structured_data import mov_review_sd, tv_episode_rev_sd, mov_sd
-from .models import Movie, MovieReview, WebsiteMetadescriptor,ReferencedMovie, \
-    Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
+from .models import Movie, MovieReview, WebsiteMetadescriptor, \
+    ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
-    TelevisionSeasonReview, TelevisionEpisodeReview, get_random_review, \
-    return_mov_participation_data
+    TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
+    get_random_review, return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -579,3 +580,52 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.review_text)
         context['absolute_uri'] = get_absolute_url(tv_episode_review)
         return context
+
+
+class MovieFranchiseListView(generic.ListView):
+    model = MovieFranchise
+    mov_franchise_list_page_title = 'Horror Franchises | The Horror Explosion'
+    mov_franchise_metadescriptor = 'The list of horror film franchises ' \
+                                   'in our database'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            MovieFranchiseListView, self).get_context_data(**kwargs)
+        context['moviefranchise_list'] = MovieFranchise.objects.filter(
+            is_publishable=True)
+        context['page_title'] = self.mov_franchise_list_page_title
+        context['meta_content_description'] = \
+            self.mov_franchise_metadescriptor
+        return context
+
+
+class MovieFranchiseDetailView(generic.DetailView):
+    model = MovieFranchise
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(MovieFranchiseDetailView, self).get_context_data(
+            **kwargs)
+        # Create any data and add it to the context
+        mov_franchise = MovieFranchise.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        if not mov_franchise.is_publishable:
+            raise PermissionDenied
+        all_entries = mov_franchise.movseriesentry_set.all()
+        context['page_title'] = str(mov_franchise) + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            'Franchise ' + str(mov_franchise) + ' overview'
+        context['franchise_entries'] = replace_links_in_franchise_entries(
+            mov_franchise.movseriesentry_set.all())
+        context['tv_series'] = [mov_series_entry.tv_series_entry for
+                                mov_series_entry in all_entries
+                                if mov_series_entry.tv_series_entry]
+        return context
+
+
+def replace_links_in_franchise_entries(franchise_entries):
+    for franchise_entry in franchise_entries:
+        if franchise_entry.short_review:
+            franchise_entry.short_review = substitute_links_in_text(
+                franchise_entry.short_review)
+    return franchise_entries
