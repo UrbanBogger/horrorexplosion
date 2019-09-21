@@ -83,6 +83,18 @@ div.media-body {
     width: auto;
 }
 
+#franchise_entry_poster {
+    border-style: solid;
+    border-width: 2px;
+    padding: 5px;
+    height: 250px;
+    width: 200px;
+}
+
+#franchise_grade_img {
+    height: 25px;
+}
+
 similar-mov-div {
     padding: 3px;
 }
