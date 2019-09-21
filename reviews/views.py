@@ -490,6 +490,18 @@ class MovieDetailView(generic.DetailView):
                                                                    'Director')
         context['movie_cast'] = return_mov_participation_data(movie, 'Actor')
         context['associated_reviews'] = movie.moviereview_set.all()
+        associated_franchises = None
+        if MovSeriesEntry.objects.filter(movie_in_series=movie).exists():
+            series_entry = MovSeriesEntry.objects.filter(
+                movie_in_series=movie).get()
+            associated_franchises = [
+                franchise for franchise in
+                series_entry.franchise_association.all() if
+                franchise.is_publishable]
+            if associated_franchises and series_entry.short_review:
+                context['short_review'] = (
+                    ''.join(str(movie.main_title).split()),
+                    associated_franchises)
         referenced_in_reviews = ReferencedMovie.objects.filter(
             referenced_movie=movie)
         context['referenced_in_reviews'] = referenced_in_reviews
@@ -502,6 +514,7 @@ class MovieDetailView(generic.DetailView):
         preceding_mov, following_mov = get_preceding_and_following_movies(
             movie)
         context['preceding_movie'] = preceding_mov
+        context['mov_franchise'] = associated_franchises
         context['following_movie'] = following_mov
         context['similar_movies'] = SimilarMovie.objects.filter(
             compared_mov=Movie.objects.get(
