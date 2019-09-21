@@ -450,8 +450,41 @@ class ContributorListView (generic.ListView):
 
 
 def get_preceding_and_following_movies(movie):
-    preceding_mov = None
-    following_mov = None
+    preceding_mov = []
+    following_mov = []
+    mov_franchises = None
+
+    if MovSeriesEntry.objects.filter(movie_in_series=movie).exists():
+        mov_series_entry = MovSeriesEntry.objects.filter(
+            movie_in_series=movie)[0]
+        mov_franchises = [
+            mov_franchise for mov_franchise in
+            mov_series_entry.franchise_association.all()]
+        movs_position_in_series = mov_series_entry.position_in_series
+
+        for mov_franchise in mov_franchises:
+            entries_in_franchise = MovSeriesEntry.objects.filter(
+                franchise_association=mov_franchise).all()
+
+            if entries_in_franchise.filter(
+                    position_in_series=movs_position_in_series - 1).exists() \
+                    and entries_in_franchise.filter(
+                position_in_series=movs_position_in_series - 1).get(). \
+                    movie_in_series:
+                pm = entries_in_franchise.filter(
+                    position_in_series=movs_position_in_series - 1).get(). \
+                    movie_in_series
+                preceding_mov.append(pm)
+
+            if entries_in_franchise.filter(
+                    position_in_series=movs_position_in_series + 1).exists() \
+                    and entries_in_franchise.filter(
+                position_in_series=movs_position_in_series + 1).get(). \
+                    movie_in_series:
+                fv = entries_in_franchise.filter(
+                    position_in_series=movs_position_in_series + 1).get(). \
+                    movie_in_series
+                following_mov.append(fv)
 
     if MovieSeries.objects.filter(mov_series__movie_in_series=movie).exists():
         relevant_mov_series = MovieSeries.objects.get(
@@ -460,14 +493,16 @@ def get_preceding_and_following_movies(movie):
             movie_in_series=movie).position_in_series
 
         try:
-            preceding_mov = relevant_mov_series.mov_series.get(
-                position_in_series=mov_position_in_series - 1).movie_in_series
+            pm = list(relevant_mov_series.mov_series.get(
+                position_in_series=mov_position_in_series - 1).movie_in_series)
+            preceding_mov.append(pm)
         except MovieInMovSeries.DoesNotExist:
             pass
 
         try:
-            following_mov = relevant_mov_series.mov_series.get(
+            fm = relevant_mov_series.mov_series.get(
                 position_in_series=mov_position_in_series + 1).movie_in_series
+            following_mov.append(fm)
         except MovieInMovSeries.DoesNotExist:
             pass
 

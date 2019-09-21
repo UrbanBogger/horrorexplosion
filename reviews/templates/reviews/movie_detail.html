@@ -31,14 +31,20 @@
 {% endif %}
 {% if preceding_movie %}
 <p><span class="glyphicon glyphicon-step-backward" aria-hidden="true" style="font-size:15px"></span>
-    <span style="font-size:20px"><strong>Preceded by:</strong> <a href="{{ preceding_movie.get_absolute_url }}">{{ preceding_movie }}</a></span>
+    <span style="font-size:20px"><strong>Preceded by:</strong> {% for preceding_movie in preceding_movie %}<a href="{{ preceding_movie.get_absolute_url }}">{{ preceding_movie }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
     <span class="glyphicon glyphicon-step-backward" aria-hidden="true" style="font-size:15px"></span>
 </p>
 {% endif %}
 {% if following_movie %}
 <p><span class="glyphicon glyphicon-step-forward" aria-hidden="true" style="font-size:15px"></span>
-    <span style="font-size:20px"><strong>Followed by:</strong> <a href="{{ following_movie.get_absolute_url }}">{{ following_movie }}</a></span>
+    <span style="font-size:20px"><strong>Followed by:</strong> {% for following_movie in following_movie %}<a href="{{ following_movie.get_absolute_url }}">{{ following_movie }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
     <span class="glyphicon glyphicon-step-forward" aria-hidden="true" style="font-size:15px"></span>
+</p>
+{% endif %}
+{% if mov_franchise %}
+<p><span class="glyphicon glyphicon-film" aria-hidden="true" style="font-size:15px"></span>
+    <span style="font-size:20px"><strong>Franchise association:</strong> {% for mov_franchise in mov_franchise %}<a href="{{ mov_franchise.get_absolute_url }}">{{ mov_franchise }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+    <span class="glyphicon glyphicon-film" aria-hidden="true" style="font-size:15px"></span>
 </p>
 {% endif %}
 {% if associated_reviews %}
