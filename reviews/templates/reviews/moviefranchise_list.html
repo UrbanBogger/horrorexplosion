@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Horror Film Franchises and Series</h1>
+{% if moviefranchise_list %}
+<ul class="list-group">
+    {% for mov_franchise in moviefranchise_list %}
+    <li class="list-group-item">
+        <div class="media">
+  <div class="media-left media-middle">
+      {% if mov_franchise.franchise_image_thumb %}
+    <img class="media-object" src="{{ mov_franchise.franchise_image_thumb.url }}" alt="{{ mov_franchise.franchise_name }} poster" width="100"/>
+      {% else %}
+     <img class="media-object" src="{{ mov_franchise.franchise_image.url }}" alt="{{ mov_franchise.franchise_name }} poster" width="100"/>
+      {% endif %}
+  </div>
+  <div class="media-body">
+      <a href="{{ mov_franchise.get_absolute_url }}"><h4 class="media-heading text-left">{{ mov_franchise }}</h4></a>
+      <p><em><strong>Number of franchise entries</strong></em>: {{ mov_franchise.num_of_entries_in_franchise }}</p>
+  </div>
+</div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No available horror film franchises</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<div class="media" style="margin-bottom: 10px;">
+    <div class="media-left pull-left">
+    <img id="mov_franchise_img" class="media-object img-rounded" src="{{ moviefranchise.franchise_image.url }}" alt="{{ moviefranchise.franchise_name }} poster" />
+    </div>
+    <div class="media-body">
+    <h1 class="media-heading">{{ moviefranchise.franchise_name }}</h1>
+    <h3 class="media-heading"><em><strong>Number of Entries</strong></em>: {{ moviefranchise.num_of_entries_in_franchise }}</h3>
+    {% if moviefranchise.franchise_genre.all %}
+      <p><strong>Genre(s)</strong>: {% for genre in moviefranchise.franchise_genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+    {% endif %}
+    {% if moviefranchise.franchise_subgenre.all %}
+      <p><strong>Subgenre(s)</strong>: {% for subgenre in moviefranchise.franchise_subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+    {% endif %}
+    {% if moviefranchise.franchise_microgenre.all %}
+      <p><strong>Microgenre(s)</strong>: {% for microgenre in moviefranchise.franchise_microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+    {% endif %}
+    {% if moviefranchise.franchise_keyword.all %}
+      <p><strong>Keyword(s)</strong>: {% for kw in moviefranchise.franchise_keyword.all %}{{ kw }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+    {% endif %}
+    </div>
+</div>
+{% if moviefranchise.overview %}
+<h3>Introduction</h3>
+{{ moviefranchise.overview|safe }}
+{% endif %}
+{% if  franchise_entries %}
+<h3>Franchise Entry Overview</h3>
+{% for franchise_entry in franchise_entries %}
+<div class="media">
+    {% if forloop.counter0|divisibleby:2 %}
+    <div class="media-left pull-left">
+    {% else %}
+    <div class="media-right pull-right">
+    {% endif %}
+    {% if franchise_entry.movie_in_series %}
+    <img id="franchise_entry_poster" class="media-object img-rounded" src="{{ franchise_entry.movie_in_series.poster.url }}" alt="{{ franchise_entry.movie_in_series.main_title }} poster" />
+	{% elif franchise_entry.mov_series_entry_image %}
+	<img id="franchise_entry_poster" class="media-object img-rounded" src="{{ franchise_entry.mov_series_entry_image.url }}" alt="{{ franchise_entry.mov_in_series_title }} poster" />
+	{% endif %}
+    </div>
+    <div class="media-body">
+	{% if franchise_entry.movie_in_series %}
+        <h3 class="media-heading"><span id="{{ franchise_entry.movie_in_series.main_title|cut:' ' }}">{{ franchise_entry.movie_in_series.main_title }} ({{ franchise_entry.movie_in_series.year_of_release }})</span></h3>
+        <h4>Position in Series: {{ franchise_entry.position_in_series }}</h4>
+	{% endif %}
+    {% if franchise_entry.movie_in_series.moviereview_set.all %}
+    <h4>Read Our Full Review(s): {% for mov_rev in franchise_entry.movie_in_series.moviereview_set.all %}<a href="{{ mov_rev.get_absolute_url }}">{{ mov_rev }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</h4>
+    <p><strong>Full Review(s)</strong>: {% for mov_rev in franchise_entry.movie_in_series.moviereview_set.all %}Reviewer <strong>{{ mov_rev.review_author }}</strong> rates it: <img id="franchise_grade_img" src="{{ mov_rev.grade.grade_depiction.url }}" alt="{{ mov_rev.grade.grade_numerical }} stars" /> = [{{ mov_rev.grade.grade_description }}] and summarizes their feelings as follows: "{{ mov_rev.mov_review_page_description }}" {% endfor %}</p>
+	{% if franchise_entry.short_review %}
+        <h4>Our Short Review:</h4>
+        {% if franchise_entry.review_grade %}
+    <strong>Short Review Rating: <img id="franchise_grade_img" src="{{ franchise_entry.review_grade.grade_depiction.url }}" alt="{{ franchise_entry.review_grade.grade_numerical }} stars" /> = [{{ franchise_entry.review_grade.grade_description }}]</strong>
+	{% endif %}
+    <p>{{ franchise_entry.short_review|safe }}</p>
+	{% endif %}
+	{% endif %}
+	{% if franchise_entry.mov_in_series_title %}
+    <h3 class="media-heading"><span id="{{ franchise_entry.mov_in_series_title|cut:' ' }}">{{ franchise_entry.mov_in_series_title }}{% if franchise_entry.year_of_release %} ({{ franchise_entry.year_of_release }}){% endif %}</span></h3>
+        <h4>Position in Series: {{ franchise_entry.position_in_series }}</h4>
+	{% endif %}
+    {% if franchise_entry.review_grade and not franchise_entry.movie_in_series.moviereview_set.all %}<h4>Our Rating: <img id="franchise_grade_img" src="{{ franchise_entry.review_grade.grade_depiction.url }}" alt="{{ franchise_entry.review_grade.grade_numerical }} stars" /> = [{{ franchise_entry.review_grade.grade_description }}]</h4>
+     <p>{{ franchise_entry.short_review|safe }}</p>
+        {% endif %}
+        {% if franchise_entry.review_author.all and franchise_entry.short_review %}
+        <strong>Author(s)</strong>: {% for author in franchise_entry.review_author.all %}{{ author }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+    {% if tv_series %}
+    {% for series in tv_series %}
+    <div class="media">
+        {% if forloop.counter0|divisibleby:2 %}
+        <div class="media-left pull-left">
+            {% else %}
+            <div class="media-right pull-right">
+                {% endif %}
+            {% if series.poster %}
+            <img id="franchise_entry_poster" class="media-object img-rounded" src="{{ series.poster.url }}" alt="{{ series.main_title }} poster" />
+            {% endif %}
+        </div>
+        <div class="media-body">
+            <h3>Associated TV Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h3>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+{% endblock %}
