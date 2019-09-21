@@ -493,8 +493,8 @@ def get_preceding_and_following_movies(movie):
             movie_in_series=movie).position_in_series
 
         try:
-            pm = list(relevant_mov_series.mov_series.get(
-                position_in_series=mov_position_in_series - 1).movie_in_series)
+            pm = relevant_mov_series.mov_series.get(
+                position_in_series=mov_position_in_series - 1).movie_in_series
             preceding_mov.append(pm)
         except MovieInMovSeries.DoesNotExist:
             pass
