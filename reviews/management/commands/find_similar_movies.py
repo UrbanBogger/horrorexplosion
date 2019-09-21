@@ -2,7 +2,8 @@ import math
 from operator import itemgetter
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from reviews.models import Movie, MovieSeries, MovieRemake, SimilarMovie
+from reviews.models import Movie, MovieSeries, MovieRemake, SimilarMovie, \
+    MovSeriesEntry
 
 # key: bonus points as exponents of number 2; value: increase in the overall
 #  similarity percentage (as a prime number series - except for 1)
@@ -58,7 +59,15 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
                      movie.movie_participation.filter(
                          creative_role__role_name='Director')]
     mov_series = None
+    mov_franchises = None
     mov_similarity_list = []
+
+    # check if mov  is part of a franchise
+    if MovSeriesEntry.objects.filter(movie_in_series=movie).exists():
+        mov_franchises = [mov_franchise for mov_series_entry in
+                          MovSeriesEntry.objects.filter(movie_in_series=movie)
+                          for mov_franchise in
+                          mov_series_entry.franchise_association.all()]
 
     if MovieSeries.objects.filter(mov_series__movie_in_series=movie).exists():
         mov_series = MovieSeries.objects.filter(
@@ -97,6 +106,12 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
             if mov_series.filter(
                     mov_series__movie_in_series=mov_tuple_as_list[1]).exists():
                 bonus_similarity_exponent += 3
+        # do the 2 movies belong to the same Franchise or Series
+        if mov_franchises:
+            for mov_franchise in mov_franchises:
+                if mov_franchise.movseriesentry_set.filter(
+                        movie_in_series=mov_tuple_as_list[1]).exists():
+                            bonus_similarity_exponent += 3
         # check for special keywords last
         for keyword_point_tuple in keywords_and_points:
             if movie.keyword.filter(name=keyword_point_tuple[0]).exists() and \
