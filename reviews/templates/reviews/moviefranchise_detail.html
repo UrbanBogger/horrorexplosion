@@ -49,7 +49,7 @@
 	<img id="franchise_entry_poster" class="media-object img-rounded" src="{{ franchise_entry.mov_series_entry_image.url }}" alt="{{ franchise_entry.mov_in_series_title }} poster" />
 	{% endif %}
     </div>
-    <div class="media-body">
+    <div class="media-body" id="review_body">
 	{% if franchise_entry.movie_in_series %}
         <h3 class="media-heading"><span id="{{ franchise_entry.movie_in_series.main_title|cut:' ' }}">{{ franchise_entry.movie_in_series.main_title }} ({{ franchise_entry.movie_in_series.year_of_release }})</span></h3>
         <h4>Position in Series: {{ franchise_entry.position_in_series }}</h4>
