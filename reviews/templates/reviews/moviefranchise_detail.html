@@ -62,7 +62,7 @@
         {% if franchise_entry.review_grade %}
     <strong>Short Review Rating: <img id="franchise_grade_img" src="{{ franchise_entry.review_grade.grade_depiction.url }}" alt="{{ franchise_entry.review_grade.grade_numerical }} stars" /> = [{{ franchise_entry.review_grade.grade_description }}]</strong>
 	{% endif %}
-    <p>{{ franchise_entry.short_review|safe }}</p>
+        <div id="review_body"><p>{{ franchise_entry.short_review|safe }}</p></div>
 	{% endif %}
 	{% endif %}
 	{% if franchise_entry.mov_in_series_title %}
@@ -70,7 +70,7 @@
         <h4>Position in Series: {{ franchise_entry.position_in_series }}</h4>
 	{% endif %}
     {% if franchise_entry.review_grade and not franchise_entry.movie_in_series.moviereview_set.all %}<h4>Our Rating: <img id="franchise_grade_img" src="{{ franchise_entry.review_grade.grade_depiction.url }}" alt="{{ franchise_entry.review_grade.grade_numerical }} stars" /> = [{{ franchise_entry.review_grade.grade_description }}]</h4>
-     <p>{{ franchise_entry.short_review|safe }}</p>
+        <div id="review_body"><p>{{ franchise_entry.short_review|safe }}</p></div>
         {% endif %}
         {% if franchise_entry.review_author.all and franchise_entry.short_review %}
         <strong>Author(s)</strong>: {% for author in franchise_entry.review_author.all %}{{ author }}{% if not forloop.last %}, {% endif %}{% endfor %}
