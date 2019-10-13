@@ -722,7 +722,7 @@ class MovieFranchiseDetailView(generic.DetailView):
         all_entries = mov_franchise.movseriesentry_set.all()
         context['page_title'] = str(mov_franchise) + ' | The Horror Explosion'
         context['meta_content_description'] = \
-            'Franchise ' + str(mov_franchise) + ' overview'
+            'Overview of: ' + str(mov_franchise)
         context['franchise_entries'] = replace_links_in_franchise_entries(
             mov_franchise.movseriesentry_set.all())
         context['tv_series'] = [mov_series_entry.tv_series_entry for
