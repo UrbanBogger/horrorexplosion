@@ -23,7 +23,8 @@ from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
     HomePageSitemap, StaticPagesSitemap, ListViewSitemap, TVSeriesSitemap, \
-    TVSeasonSitemap, TVSeasonRevSitemap, TVEpisodeRevSitemap
+    TVSeasonSitemap, TVSeasonRevSitemap, TVEpisodeRevSitemap, \
+    MovFranchiseSitemap
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -40,6 +41,7 @@ sitemaps = {
     'tv-season-detail': TVSeasonSitemap,
     'tv-season-review': TVSeasonRevSitemap,
     'tv-episode-review': TVEpisodeRevSitemap,
+    'mov-franchise-detail': MovFranchiseSitemap,
     'landing_page': HomePageSitemap,
     'static': StaticPagesSitemap,
     'list_views': ListViewSitemap,
