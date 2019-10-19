@@ -284,6 +284,35 @@ class MovieFranchise(models.Model):
         return reverse('mov-franchise-detail', args=[
             str(self.id), str(self.human_readable_url)])
 
+    def get_metadata_string(self):
+        franchise_name = 'Overview of:{name}|'.format(
+            name=str(self.franchise_name))
+        franchise_entries = 'Franchise entries:{entries}|'.format(
+            entries=','.join(
+                [str(franchise_entry.movie_in_series) for franchise_entry in
+                 self.movseriesentry_set.all()
+                 if franchise_entry.movie_in_series]))
+        franchise_keywords = ''
+        if self.franchise_keyword.exists():
+            franchise_keywords = 'Keywords:{kws}|'.format(kws=','.join(
+                [str(kw) for kw in self.franchise_keyword.all()]))
+        franchise_microgenres = ''
+        if self.franchise_microgenre.exists():
+            franchise_microgenres = 'Microgenres:{microgs}|'.format(
+                microgs=','.join([str(mg) for mg in
+                                  self.franchise_microgenre.all()]))
+        franchise_subgenres = ''
+        if self.franchise_subgenre.exists():
+            franchise_subgenres = 'Subgenres:{subgs}|'.format(
+                subgs=','.join([str(sg) for sg in
+                                self.franchise_subgenre.all()]))
+        franchise_genres = ''
+        if self.franchise_genre.exists():
+            franchise_genres = 'Genres:{gs}|'.format(
+                gs=','.join([str(g) for g in self.franchise_genre.all()]))
+        return f'{franchise_name}{franchise_entries}{franchise_keywords}' \
+            f'{franchise_microgenres}{franchise_subgenres}{franchise_genres}'
+
     def __str__(self):
         return '{franchise_name}'.format(franchise_name=self.franchise_name)
 
