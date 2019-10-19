@@ -699,11 +699,13 @@ class MovieFranchiseListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(
             MovieFranchiseListView, self).get_context_data(**kwargs)
-        context['moviefranchise_list'] = MovieFranchise.objects.filter(
-            is_publishable=True)
+        movie_franchises = MovieFranchise.objects.filter(is_publishable=True)
+        context['moviefranchise_list'] = movie_franchises
         context['page_title'] = self.mov_franchise_list_page_title
-        context['meta_content_description'] = \
-            self.mov_franchise_metadescriptor
+        franchise_list = ','.join([str(mov_franchise) for mov_franchise
+                                   in movie_franchises])
+        context['meta_content_description'] = '{intro}:{list}'.format(
+            intro=self.mov_franchise_metadescriptor, list=franchise_list)
         return context
 
 
@@ -722,7 +724,7 @@ class MovieFranchiseDetailView(generic.DetailView):
         all_entries = mov_franchise.movseriesentry_set.all()
         context['page_title'] = str(mov_franchise) + ' | The Horror Explosion'
         context['meta_content_description'] = \
-            'Overview of: ' + str(mov_franchise)
+            mov_franchise.get_metadata_string()
         context['franchise_entries'] = replace_links_in_franchise_entries(
             mov_franchise.movseriesentry_set.all())
         context['tv_series'] = [mov_series_entry.tv_series_entry for
