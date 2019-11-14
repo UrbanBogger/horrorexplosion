@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +25,9 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = os.environ.get('DEBUG', False)
-
+DEBUG = os.environ.get('DJANGO_DEBUG', False)
+sys.stdout.write('DEBUG value: ' + str(DEBUG))
+sys.stdout.write('DJANGO_DEBUG value: ' + str(os.environ.get('DJANGO_DEBUG')))
 ALLOWED_HOSTS = ['www.horrorexplosion.com', 'horrorexplosion.herokuapp.com',
                  '127.0.0.1']
 
