@@ -17,17 +17,17 @@
         <div class="media">
             <div class="media-left">
                  {% if tv_series_rev.episode_thumb %}
-                <img src="{{ tv_series_rev.episode_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.episode_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% elif tv_series_rev.episode_poster %}
-                <img src="{{ tv_series_rev.episode_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.episode_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% elif tv_series_rev.season_thumb %}
-                <img src="{{ tv_series_rev.season_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.season_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% elif tv_series_rev.season_poster %}
-                <img src="{{ tv_series_rev.season_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.season_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% elif tv_series_rev.series_thumb %}
-                <img src="{{ tv_series_rev.series_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.series_thumb.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% else %}
-                <img src="{{ tv_series_rev.series_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}">
+                <img src="{{ tv_series_rev.series_poster.url }}" alt="poster for review: {{ tv_series_rev.rev_name }}" height="80">
                 {% endif %}
             </div>
             <div class="media-body">
