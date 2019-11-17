@@ -47,14 +47,15 @@ def calculate_bonus_similarity_pts(similar_mov_list, movie):
         ('literary adaptation', 2), ('lovecraftian', 3),
         ('low budget (>$100,000 but <=$1,000,000)', 3),
         ('micro budget (<=$100,000)', 3), ('Netflix Original Film', 2),
-        ('Pamela Voorhees', 2), ('Platinum Dunes', 2), ('Polonia brothers', 3),
+        ('Pamela Voorhees', 2), ('Pennywise the Clown', 3),
+        ('Platinum Dunes', 2), ('Polonia brothers', 3),
         ('regional horror film', 3), ('remake [a]', 2),
         ('Santa Claus', 2), ('shot on video (SOV)', 2), ('Splat Pack', 3),
         ('splatter', 2), ('Stephen King related', 3),
         ('Sterling Entertainment production', 3), ('stylized', 2),
         ('Sub Rosa', 3), ('surreal', 2), ('toilet humour', 3),
         ('Troma-distributed', 3), ('Troma production', 3),
-        ('underground horror', 4),
+        ('underground horror', 4), ('Victor Crowley', 3)
     ]
     mov_directors = [mov_participation.person for mov_participation in
                      movie.movie_participation.filter(
