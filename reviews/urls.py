@@ -31,7 +31,7 @@ urlpatterns = [
         url(r'^tv-seasons/?', RedirectView.as_view(
                 pattern_name='tv_series', permanent=False)),
         url(r'^review-list/$', views.orderable_tvseriesreview_list,
-            name='review-list'),
+            name='tv-series-review-list'),
         url(r'^tv-reviews/', include([
             url(r'season-reviews/(?P<pk>\d+)/(?P<human_readable_url>['
                 r'-\w]+)$', views.TVSeasonReviewDetailView.as_view(),
