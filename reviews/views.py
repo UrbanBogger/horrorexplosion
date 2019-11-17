@@ -2,6 +2,7 @@ import sys
 import re
 import random
 from bs4 import BeautifulSoup
+from operator import itemgetter
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -434,6 +435,87 @@ def orderable_movreview_list(request):
                    'ordering_category': ordering_req[0],
                    'ordering_sequence': ordering_req[1],
                    'ordering_msg': ordering_msg})
+
+
+def orderable_tvseriesreview_list(request):
+    tv_series_review_list = "TV Series Review List | The Horror Explosion"
+    content_metadescription = "The list of all TV series reviews in our " \
+                              "database"
+
+    all_tv_series = TelevisionSeries.objects.all()
+    tv_season_revs = [(tv_series.title_for_sorting, tv_season_rev)
+                      for tv_series in all_tv_series
+                      for tv_season in tv_series.televisionseason_set.all()
+                      for tv_season_rev in
+                      tv_season.televisionseasonreview_set.all()]
+    tv_episode_revs = [(tv_series.title_for_sorting, tv_episode_rev) for
+                       tv_series in all_tv_series for tv_season in
+                       tv_series.televisionseason_set.all() for tv_episode in
+                       tv_season.televisionepisode_set.all() for
+                       tv_episode_rev in
+                       tv_episode.televisionepisodereview_set.all()]
+
+    all_tv_revs_sorted = [tv_rev_tuple[1] for tv_rev_tuple in
+                          sorted(tv_season_revs + tv_episode_revs,
+                                 key=itemgetter(0))]
+
+    tv_series_revs = []
+    for tv_rev in all_tv_revs_sorted:
+        season_thumb = None
+        season_poster = None
+        series_thumb = None
+        series_poster = None
+        episode_thumb = None
+        episode_poster = None
+        try:
+            if tv_rev.reviewed_tv_season:
+                if tv_rev.reviewed_tv_season.poster_thumbnail:
+                    season_thumb = tv_rev.reviewed_tv_season.poster_thumbnail
+                elif tv_rev.reviewed_tv_season.poster:
+                    season_poster = tv_rev.reviewed_tv_season.poster
+                elif tv_rev.reviewed_tv_season.tv_series.poster_thumbnail:
+                    series_thumb = \
+                        tv_rev.reviewed_tv_season.tv_series.poster_thumbnail
+                else:
+                    series_poster = tv_rev.reviewed_tv_season.tv_series.poster
+        except AttributeError:
+            pass
+        try:
+            if tv_rev.reviewed_tv_episode:
+                if tv_rev.reviewed_tv_episode.poster_thumbnail:
+                    episode_thumb = tv_rev.reviewed_tv_episode.poster_thumbnail
+                elif tv_rev.reviewed_tv_episode.poster:
+                    episode_poster = tv_rev.reviewed_tv_episode.poster
+                elif tv_rev.reviewed_tv_episode.tv_season.tv_series.\
+                        poster_thumbnail:
+                    series_thumb = tv_rev.reviewed_tv_episode.tv_season.\
+                        tv_series.poster_thumbnail
+                else:
+                    series_poster = tv_rev.reviewed_tv_episode.tv_season.\
+                        tv_series.poster
+        except AttributeError:
+            pass
+
+        mov_rev_dict = {'rev_name': str(tv_rev),
+                        'rev_link': tv_rev.get_absolute_url(),
+                        'rev_summary': tv_rev.mov_review_page_description,
+                        'season_thumb': season_thumb,
+                        'season_poster': season_poster,
+                        'episode_thumb': episode_thumb,
+                        'episode_poster': episode_poster,
+                        'series_thumb': series_thumb,
+                        'series_poster': series_poster,
+                        'grade': tv_rev.grade}
+        tv_series_revs.append(mov_rev_dict)
+    print('All reviews as dicts: ' + str(tv_series_revs))
+
+    page = request.GET.get('page', 1)
+    tvseriesreviews = paginate_qs(tv_series_revs, page)
+
+    return render(request, 'tv_series_review_list.html',
+                  {'page_title': tv_series_review_list,
+                   'meta_content_description': content_metadescription,
+                   'review_list': tvseriesreviews})
 
 
 class ContributorListView (generic.ListView):
