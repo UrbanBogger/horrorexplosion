@@ -86,7 +86,8 @@ class ListViewSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return ['movies', 'movie_reviews', 'tv_series', 'mov_franchises']
+        return ['movies', 'movie_reviews', 'tv_series', 'mov_franchises',
+                'tv-series-review-list']
 
     def location(self, item):
         return reverse(item)
