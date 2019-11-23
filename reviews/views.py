@@ -79,10 +79,12 @@ def substitute_links_in_text(text):
                 r'(.+?)_\(franchise\)|(.+?)_\(film_series\)',
                 mf_link.attrs.get('href').split('/')[-1])
 
-            if mf_matches[0][0]:
-                franchise_name = mf_matches[0][0].replace('_', ' ')
-            else:
-                franchise_name = mf_matches[0][1].replace('_', ' ')
+            if mf_matches:
+                # access the franchise name tuple
+                if mf_matches[0][0]:
+                    franchise_name = mf_matches[0][0].replace('_', ' ')
+                else:
+                    franchise_name = mf_matches[0][1].replace('_', ' ')
 
             if franchise_name:
                 if MovieFranchise.objects.filter(
