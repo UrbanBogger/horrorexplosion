@@ -25,9 +25,18 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = os.environ.get('DJANGO_DEBUG', False)
-sys.stdout.write('DEBUG value: ' + str(DEBUG))
-sys.stdout.write('DJANGO_DEBUG value: ' + str(os.environ.get('DJANGO_DEBUG')))
+#DEBUG = os.environ.get('DJANGO_DEBUG', False)
+#sys.stdout.write('DEBUG value: ' + str(DEBUG))
+#sys.stdout.write('DJANGO_DEBUG value: ' + str(os.environ.get('DJANGO_DEBUG')))
+DEBUG = False
+env_debug_var = os.environ.get('DJANGO_DEBUG')
+if env_debug_var == 'True':
+    DEBUG = True
+else:
+    DEBUG = False
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
 ALLOWED_HOSTS = ['www.horrorexplosion.com', 'horrorexplosion.herokuapp.com',
                  '127.0.0.1']
 
