@@ -509,7 +509,6 @@ def orderable_tvseriesreview_list(request):
                         'series_poster': series_poster,
                         'grade': tv_rev.grade}
         tv_series_revs.append(mov_rev_dict)
-    print('All reviews as dicts: ' + str(tv_series_revs))
 
     page = request.GET.get('page', 1)
     tvseriesreviews = paginate_qs(tv_series_revs, page)
