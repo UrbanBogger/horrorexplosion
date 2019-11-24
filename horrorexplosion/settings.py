@@ -24,16 +24,11 @@ SECRET_KEY = os.environ.get(
     'DJANGO_SECRET_KEY', 't4ug%c*kqqt#_a-9i)krzou2igqpv$jc)ryn!y1w@7#tun+p^h')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-#DEBUG = os.environ.get('DJANGO_DEBUG', False)
-#sys.stdout.write('DEBUG value: ' + str(DEBUG))
-#sys.stdout.write('DJANGO_DEBUG value: ' + str(os.environ.get('DJANGO_DEBUG')))
+# DEBUG set to False by default
 DEBUG = False
 env_debug_var = os.environ.get('DJANGO_DEBUG')
 if env_debug_var == 'True':
     DEBUG = True
-else:
-    DEBUG = False
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
