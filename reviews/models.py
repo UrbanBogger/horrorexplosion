@@ -110,7 +110,13 @@ class Reviewer(Person):
 
 
 class MovieCreator(Person):
-    pass
+    CREATOR_SEX = (('male', 'male'), ('female', 'female'))
+    creator_sex = models.CharField(
+        choices=CREATOR_SEX, max_length=12, default='male',
+        help_text='Choose the movie creator\'s biological sex')
+
+    def get_absolute_url(self):
+        return reverse('creator-detail', args=[str(self.id)])
 
 
 class Contributor(Person):
@@ -1013,6 +1019,21 @@ class PickedReview(models.Model):
     def __str__(self):
         return 'review: {picked_review} picked on: {date}'.format(
             picked_review=self.picked_review, date=self.date_added)
+
+
+class DefaultImage(models.Model):
+    DEFAULT_IMG_TYPES = (('person', 'person'), ('male', 'male'),
+                         ('female', 'female'), ('motion_pic', 'motion_pic'))
+    default_img_type = models.CharField(
+        choices=DEFAULT_IMG_TYPES, max_length=12, default=None,
+        help_text='Choose the type of the default image')
+    default_img = models.ImageField(
+        upload_to='generic_images/', default=None,
+        help_text='Upload the default photo')
+
+    def __str__(self):
+        return 'Generic img for: {default_img_type}'.format(
+            default_img_type=self.default_img_type)
 
 
 def get_random_review(latest_review, featured_review):
