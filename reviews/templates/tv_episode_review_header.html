@@ -13,9 +13,9 @@
         <h2 class="media-heading"><em><strong>Episode</strong></em>: {{ televisionepisode.episode_title }} (E{{ televisionepisode.episode_number }})</h2>
         <h2 class="media-heading">({% for country in televisionepisode.tv_season.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionepisode.tv_season.year_of_release }}{% if televisionepisode.duration %}, {{ televisionepisode.duration }} min.){% else %}){% endif %}</h2>
       {% if directors %}
-<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
+<h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% if cast %}
-<em><strong>Cast</strong></em>: {% for movie_participation in cast %}{{ movie_participation.person }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
+<em><strong>Cast</strong></em>: {% for movie_participation in cast %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% endif %}
 </h3>
       {% endif %}
