@@ -909,11 +909,14 @@ class MovieCreatorDetailView(generic.DetailView):
                                 poster_thumbnail
                         else:
                             img = tv_episode.tv_season.tv_series.poster
+
                         tv_episode_link = '#'
-                        if tv_episode.televisionepisodereview_set.get()[0]:
+                        if tv_episode.televisionepisodereview_set.all(). \
+                                exists():
                             tv_episode_link = \
-                                tv_episode.televisionepisodereview_set.get()[
+                                tv_episode.televisionepisodereview_set.all()[
                                     0].get_absolute_url()
+
                         media_dict = {
                             'media_object': tv_episode_link,
                             'title':
