@@ -35,7 +35,7 @@
             {% elif default_motion_pic_img %}
                 <img id="list-thumb" src="{{ default_motion_pic_img.url }}" alt="generic motion picture poster" />
             {% endif %}
-            <a href="{{ media_dict.media_object.get_absolute_url }}">{{ media_dict.display_title }}</a>
+            <a href="{{ media_dict.media_object }}">{{ media_dict.display_title }}</a>
         <br/>
         Release Year: <strong>{{ media_dict.year }}</strong>
         <br/>

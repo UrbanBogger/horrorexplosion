@@ -860,7 +860,7 @@ class MovieCreatorDetailView(generic.DetailView):
                             img = film.poster
                         else:
                             img = film.poster_thumbnail
-                        media_dict= {'media_object': film,
+                        media_dict= {'media_object': film.get_absolute_url(),
                                      'year': film.year_of_release,
                                      'title': film.title_for_sorting,
                                      'display_title': film.main_title,
@@ -885,7 +885,8 @@ class MovieCreatorDetailView(generic.DetailView):
                         else:
                             year = None
                         media_dict = {
-                            'media_object': tv_season, 'year': year,
+                            'media_object': tv_season.get_absolute_url(),
+                            'year': year,
                             'title': tv_season.tv_series.title_for_sorting,
                             'display_title': str(tv_season),
                             'type': 'TV Series',
@@ -908,9 +909,13 @@ class MovieCreatorDetailView(generic.DetailView):
                                 poster_thumbnail
                         else:
                             img = tv_episode.tv_season.tv_series.poster
-
+                        tv_episode_link = '#'
+                        if tv_episode.televisionepisodereview_set.get()[0]:
+                            tv_episode_link = \
+                                tv_episode.televisionepisodereview_set.get()[
+                                    0].get_absolute_url()
                         media_dict = {
-                            'media_object': tv_episode,
+                            'media_object': tv_episode_link,
                             'title':
                                 tv_episode.tv_season.tv_series.
                                     title_for_sorting,
