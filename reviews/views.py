@@ -860,12 +860,12 @@ class MovieCreatorDetailView(generic.DetailView):
                             img = film.poster
                         else:
                             img = film.poster_thumbnail
-                        media_dict= {'media_object': film.get_absolute_url(),
-                                     'year': film.year_of_release,
-                                     'title': film.title_for_sorting,
-                                     'display_title': film.main_title,
-                                     'type': 'Full-length Film',
-                                     'image': img}
+                        media_dict = {'media_object': film.get_absolute_url(),
+                                      'year': film.year_of_release,
+                                      'title': film.title_for_sorting,
+                                      'display_title': film.main_title,
+                                      'type': 'Full-length Film',
+                                      'image': img}
                         media_objects_per_role.append(media_dict)
             if creators_tv_season_roles:
                 for qs in creators_tv_season_roles:
