@@ -83,6 +83,14 @@ div.media-body {
     width: auto;
 }
 
+#mov_creator_poster{
+    border-style: solid;
+    border-width: 2px;
+    padding: 5px;
+    height: 350px;
+    width: 250px;
+}
+
 #mov_franchise_img {
     border-style: solid;
     border-width: 2px;
