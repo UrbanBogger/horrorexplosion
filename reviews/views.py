@@ -16,7 +16,8 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
-    MovSeriesEntry, get_random_review, return_mov_participation_data
+    MovSeriesEntry, MovieCreator, DefaultImage, get_random_review, \
+    return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -813,6 +814,159 @@ class MovieFranchiseDetailView(generic.DetailView):
         context['tv_series'] = [mov_series_entry.tv_series_entry for
                                 mov_series_entry in all_entries
                                 if mov_series_entry.tv_series_entry]
+        return context
+
+
+class MovieCreatorDetailView(generic.DetailView):
+    model = MovieCreator
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(MovieCreatorDetailView, self).get_context_data(
+            **kwargs)
+        mov_creator = MovieCreator.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        mov_participations = mov_creator.movieparticipation_set.all()
+        roles = list(set([mov_participation.creative_role for
+                          mov_participation in mov_participations]))
+        roles_updated = []
+
+        roles_with_media_objects = []
+        for role in roles:
+            creators_film_roles = [
+                mov_participation.movie_set.filter(
+                    movie_participation__creative_role=role)
+                for mov_participation in mov_participations
+                if mov_participation.movie_set.filter(
+                    movie_participation__creative_role=role).exists()]
+            creators_tv_season_roles = [
+                mov_participation.televisionseason_set.filter(
+                    movie_participation__creative_role=role) for
+                mov_participation in mov_participations
+                if mov_participation.televisionseason_set.filter(
+                    movie_participation__creative_role=role).exists()]
+            creators_tv_episode_roles = [
+                mov_participation.televisionepisode_set.filter(
+                    movie_participation__creative_role=role)
+                for mov_participation in mov_participations
+                if mov_participation.televisionepisode_set.filter(
+                    movie_participation__creative_role=role).exists()]
+            media_objects_per_role = []
+            if creators_film_roles:
+                for qs in creators_film_roles:
+                    for film in qs:
+                        img = None
+                        if film.poster:
+                            img = film.poster
+                        else:
+                            img = film.poster_thumbnail
+                        media_dict= {'media_object': film,
+                                     'year': film.year_of_release,
+                                     'title': film.title_for_sorting,
+                                     'display_title': film.main_title,
+                                     'type': 'Full-length Film',
+                                     'image': img}
+                        media_objects_per_role.append(media_dict)
+            if creators_tv_season_roles:
+                for qs in creators_tv_season_roles:
+                    for tv_season in qs:
+                        img = None
+                        if tv_season.poster_thumbnail:
+                            img = tv_season.poster_thumbnail
+                        elif tv_season.poster:
+                            img = tv_season.poster
+                        elif tv_season.tv_series.poster_thumbnail:
+                            img = tv_season.tv_series.poster_thumbnail
+                        else:
+                            img = tv_season.tv_series.poster
+
+                        if tv_season.year_of_release:
+                            year = tv_season.year_of_release
+                        else:
+                            year = None
+                        media_dict = {
+                            'media_object': tv_season, 'year': year,
+                            'title': tv_season.tv_series.title_for_sorting,
+                            'display_title': str(tv_season),
+                            'type': 'TV Series',
+                            'image': img}
+                        media_objects_per_role.append(media_dict)
+            if creators_tv_episode_roles:
+                for qs in creators_tv_episode_roles:
+                    for tv_episode in qs:
+                        img = None
+                        if tv_episode.poster_thumbnail:
+                            img = tv_episode.poster_thumbnail
+                        elif tv_episode.poster:
+                            img = tv_episode.poster
+                        elif tv_episode.tv_season.poster_thumbnail:
+                            img = tv_episode.tv_season.poster_thumbnail
+                        elif tv_episode.tv_season.poster:
+                            img = tv_episode.tv_season.poster
+                        elif tv_episode.tv_season.tv_series.poster_thumbnail:
+                            img = tv_episode.tv_season.tv_series.\
+                                poster_thumbnail
+                        else:
+                            img = tv_episode.tv_season.tv_series.poster
+
+                        media_dict = {
+                            'media_object': tv_episode,
+                            'title':
+                                tv_episode.tv_season.tv_series.
+                                    title_for_sorting,
+                            'display_title': str(tv_episode),
+                            'year': tv_episode.tv_season.year_of_release,
+                            'type': 'TV Series', 'image': img}
+                        media_objects_per_role.append(media_dict)
+            media_objects_per_role.sort(key=itemgetter('year', 'title'),
+                                        reverse=True)
+
+            if role.role_name.lower() == 'actor' and \
+                    mov_creator.creator_sex == 'female':
+                role_name = 'Actress'
+            else:
+                role_name = role.role_name
+            role_and_media ={'role': role_name,
+                             'media': media_objects_per_role}
+            roles_with_media_objects.append(role_and_media)
+        roles_with_media_objects.sort(key=itemgetter('role'))
+
+        role_strings = [role.role_name for role in roles]
+        for role in role_strings:
+            if mov_creator.creator_sex == 'female' and role.lower() == 'actor':
+                role = 'Actress'
+                roles_updated.append(role)
+            else:
+                roles_updated.append(role)
+
+        all_creative_roles = ', '.join([role for role
+                                        in roles_updated])
+
+        if mov_creator.photograph:
+            creator_img = mov_creator.photograph
+        elif mov_creator.creator_sex == 'female' \
+                and DefaultImage.objects.filter(
+            default_img_type='female').exists():
+            creator_img = DefaultImage.objects.get(
+                default_img_type='female').default_img
+        elif DefaultImage.objects.filter(default_img_type='male').exists():
+            creator_img = DefaultImage.objects.get(
+                default_img_type='male').default_img
+        default_motion_pic_img = None
+        if DefaultImage.objects.filter(
+                default_img_type='motion_pic').exists():
+            default_motion_pic_img = DefaultImage.objects.get(
+                default_img_type='motion_pic').default_img
+
+        context['page_title'] = str(mov_creator) + ' | The Horror Explosion'
+        context['meta_content_description'] = \
+            'Creator name:{name}|Creative Roles:{roles}'.format(
+                name=str(mov_creator), roles=all_creative_roles)
+        context['creative_roles'] = all_creative_roles
+        context['creator_name'] = str(mov_creator)
+        context['creator_img'] = creator_img
+        context['default_motion_pic_img'] = default_motion_pic_img
+        context['filmography'] = roles_with_media_objects
         return context
 
 

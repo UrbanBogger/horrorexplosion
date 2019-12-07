@@ -16,6 +16,8 @@ urlpatterns = [
         name='movie_reviews'),
     url(r'^movie_review/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
         views.MovieReviewDetailView.as_view(), name='moviereview-detail'),
+    url(r'^creator/(?P<pk>\d+)$', views.MovieCreatorDetailView.as_view(),
+        name='creator-detail'),
     url(r'^movie_index/', include([
         url(r'^$', views.movie_index, name='movie_index'),
         url(r'^(?P<first_letter>[A-Z]{1})$', views.movie_index,

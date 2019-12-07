@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="some page description">
+{% endblock %}
+
+{% block main_content %}
+<div class="media" style="margin-bottom: 10px;">
+    <div class="media-left pull-left">
+        {% if creator_img %}
+    <img id="review_mov_poster" class="media-object img-rounded" src="{{ creator_img.url }}" alt="creator {{ creator_name }} photo" />
+        {% endif %}
+    </div>
+    <div class="media-body">
+    <h1 class="media-heading">{{ creator_name }}</h1>
+        <h2 class="media-heading"><strong>Creative Roles</strong>: {% for creative_role in creative_roles %}{{ creative_role }}{% endfor %}</h2>
+        {% if moviecreator.biography %}
+        <p><strong>About</strong>: {{ moviecreator.biography|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+{% if filmography %}
+<h2>Filmographic Entries in our Database:</h2>
+{% for role_media_dict in filmography %}
+<h3>{{ role_media_dict.role|title }}</h3>
+<ul class="list-group">
+    {% for media_dict in role_media_dict.media %}
+    <li class="list-group-item">
+            {% if media_dict.image %}
+                <img id="list-thumb" src="{{ media_dict.image.url }}" alt="{{ media_dict.display_title }} poster" />
+            {% elif default_motion_pic_img %}
+                <img id="list-thumb" src="{{ default_motion_pic_img.url }}" alt="generic motion picture poster" />
+            {% endif %}
+            <a href="{{ media_dict.media_object.get_absolute_url }}">{{ media_dict.display_title }}</a>
+        <br/>
+        Release Year: <strong>{{ media_dict.year }}</strong>
+        <br/>
+        Type: <strong>{{ media_dict.type }}</strong>
+    </li>
+    {% endfor %}
+</ul>
+{% endfor %}
+{% else %}
+No filmographic data found for creator {{ creator_name }}
+{% endif %}
+{% endblock %}
