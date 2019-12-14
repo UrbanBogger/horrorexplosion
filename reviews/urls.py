@@ -24,6 +24,10 @@ urlpatterns = [
             name='movie_index_letter'),
             ])
         ),
+    url(r'^creator-index/', include([
+        url(r'^$', views.creator_index, name='creator-index'),
+        url(r'^(?P<first_letter>[A-Z]{1})$', views.creator_index,
+            name='creator-index-letter')])),
     url(r'^tv-series/', include([
         url(r'^$', views.TVSeriesListView.as_view(),name='tv_series'),
         url(r'^(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',

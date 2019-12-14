@@ -1,0 +1,46 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Creator Index</h1>
+{% if creators_dict %}
+<div class="alert alert-info" role="alert"><strong>Note</strong>: Sorted by surname (where applicable)</div>
+    {% if creators_dict.items %}
+<ul class="list-inline">
+        {% for letter, creators in creators_dict.items %}
+            {% if creators %}
+    <li class="mov_index"><a href="{% url 'creator-index' %}{{ letter }}" class="btn btn-info" role="button">{{ letter }}</a></li>
+            {% else %}
+    <li><a href="#" class="btn disabled" role="button" tabindex="-1">{{ letter }}</a></li>
+            {% endif %}
+        {% endfor %}
+</ul>
+    {% else %}
+<p>No movie creators found in the database.</p>
+    {% endif %}
+{% endif %}
+
+{% if creators_per_letter %}
+    {% for letter, creators in creators_per_letter.items %}
+
+        {% if creators %}
+            <h2>Creators whose name starts with the letter "{{ letter }}":</h2>
+            <div class="list-group">
+
+                {% for creator in creators %}<a href="{{ creator.creator_link }}" class="list-group-item list-group-item-action"><strong>{{ creator.display_name }}</strong></a>{% endfor %}
+            </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <strong>No movie creators starting with the letter "{{ letter }}" exist in our database.</strong>
+        </div>
+        {% endif %}
+   {% endfor %}
+{% endif %}
+{% endblock %}

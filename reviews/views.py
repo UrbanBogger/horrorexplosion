@@ -361,6 +361,78 @@ def movie_index(request, first_letter=''):
                       'movies_per_letter': movies_per_letter})
 
 
+def creator_index(request, first_letter=''):
+    creator_index_page_title = "Creator Index | The Horror Explosion"
+    content_metadescription = 'An alphabetical index of the movie creators ' \
+                              'in our database'
+    all_creators = MovieCreator.objects.all()
+    creator_dict_list = []
+
+    for creator in all_creators:
+        primary_orderable_name = ''
+        secondary_orderable_name = ''
+        tertiary_orderable_name = ''
+
+        if creator.last_name:
+            primary_orderable_name = str(creator.last_name)
+        else:
+            primary_orderable_name = str(creator.first_name)
+
+        if creator.first_name and creator.last_name:
+            secondary_orderable_name = creator.first_name
+
+        tertiary_orderable_name = creator.middle_name
+
+        if creator.first_name and creator.last_name:
+            display_name = '{last_name}, {first_name} {middle_name}'.format(
+                last_name=str(creator.last_name),
+                first_name=str(creator.first_name),
+                middle_name=str(creator.middle_name))
+        else:
+            display_name = '{last_name}'.format(
+                last_name=primary_orderable_name)
+
+        creator_dict = {'primary_orderable_name': primary_orderable_name,
+                        'secondary_orderable_name': secondary_orderable_name,
+                        'tertiary_orderable_name': tertiary_orderable_name,
+                        'display_name': display_name.strip(),
+                        'creator_link': creator.get_absolute_url()}
+        creator_dict_list.append(creator_dict)
+
+    creator_dict_list.sort(
+        key=itemgetter('primary_orderable_name', 'secondary_orderable_name',
+                       'tertiary_orderable_name'))
+
+    letter_creator_dict = {}
+    if not first_letter:
+        for letter in ENGLISH_ALPHABET:
+            letter_creator_dict[letter] = [
+                creator_dict['display_name'] for creator_dict in
+                creator_dict_list if
+                creator_dict['primary_orderable_name'][0] == letter]
+
+    creators_per_letter = {}
+    creators = []
+    if first_letter:
+        creators = [
+            creator_dict for creator_dict in creator_dict_list if
+            creator_dict['primary_orderable_name'][0] == first_letter]
+        creators_per_letter[first_letter] = creators
+
+    if not letter_creator_dict:
+        letter_creator_dict = None
+
+    if not creators_per_letter:
+        creators_per_letter = None
+
+    return render(request, 'creator-index.html',
+                  context={
+                      'page_title': creator_index_page_title,
+                      'meta_content_description': content_metadescription,
+                      'creators_dict': letter_creator_dict,
+                      'creators_per_letter': creators_per_letter})
+
+
 def process_ordering_req(ordering_request, ordering_dict, ordering_categories):
     if not ordering_request:
         ordering_request = ['alphabetical', 'ascending']
