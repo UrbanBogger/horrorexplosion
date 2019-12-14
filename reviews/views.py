@@ -1022,8 +1022,10 @@ class MovieCreatorDetailView(generic.DetailView):
         all_creative_roles = ', '.join([role for role
                                         in roles_updated])
 
+        creator_img_styling = None
         if mov_creator.photograph:
             creator_img = mov_creator.photograph
+            creator_img_styling = 'mov_creator_img_auto'
         elif mov_creator.creator_sex == 'female' \
                 and DefaultImage.objects.filter(
             default_img_type='female').exists():
@@ -1032,6 +1034,9 @@ class MovieCreatorDetailView(generic.DetailView):
         elif DefaultImage.objects.filter(default_img_type='male').exists():
             creator_img = DefaultImage.objects.get(
                 default_img_type='male').default_img
+        if not creator_img_styling:
+            creator_img_styling = 'mov_creator_poster'
+
         default_motion_pic_img = None
         if DefaultImage.objects.filter(
                 default_img_type='motion_pic').exists():
@@ -1045,6 +1050,7 @@ class MovieCreatorDetailView(generic.DetailView):
         context['creative_roles'] = all_creative_roles
         context['creator_name'] = str(mov_creator)
         context['creator_img'] = creator_img
+        context['creator_img_styling'] = creator_img_styling
         context['default_motion_pic_img'] = default_motion_pic_img
         context['filmography'] = roles_with_media_objects
         return context
