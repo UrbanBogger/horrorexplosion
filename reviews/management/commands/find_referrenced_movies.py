@@ -5,6 +5,10 @@ from django.db.models import Q
 from reviews.models import Movie, ReferencedMovie, MovieReview
 
 
+MOV_TITLE_V1 = r'<((?!.*wiki.*)a.*|em).*>{mov_title}<\/(a|em).*>'
+MOV_TITLE_V2 = r'<!--.*{mov_title}\s*\([0-9]*\)-->'
+
+
 class Command(BaseCommand):
     help = 'Adds recently added Movies to the Referenced Movies DB table'
 
@@ -38,12 +42,11 @@ class Command(BaseCommand):
                         Q(referenced_movie=movie) & Q(
                             review=mov_rev_id)).exists():
                     continue
-                elif re.search(r'<(a.*|em).*>{mov_title}<\/(a|em).*>'.format(
+                elif re.search(MOV_TITLE_V1.format(
                         mov_title=mov_main_title_modified),
-                        mov_rev_txt_modified, re.MULTILINE) or \
-                        re.search(r'<!--.*{mov_title}\s*\([0-9]*\)-->'.format(
-                            mov_title=mov_main_title_modified),
-                            mov_rev_txt_modified, re.MULTILINE):
+                        mov_rev_txt_modified, re.MULTILINE) or re.search(
+                    MOV_TITLE_V2.format(mov_title=mov_main_title_modified),
+                        mov_rev_txt_modified, re.MULTILINE):
                         # update referenced mov object
                         if ReferencedMovie.objects.filter(
                                 review=mov_rev_id).exists():
