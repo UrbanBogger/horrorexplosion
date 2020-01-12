@@ -467,13 +467,16 @@ class ReferencedMovie(models.Model):
         Movie, help_text='Add the referenced movie(s)')
     review = models.ForeignKey(
         MovieReview, null=True, help_text='Add the review where the movie '
-                                     'was referenced')
+                                          'was referenced')
+
+    class Meta:
+        ordering = ['review']
 
     def __str__(self):
         return 'review {movie_review} references: {referenced_movie}'.format(
             movie_review=self.review,
-            referenced_movie=', '.join(str(movie) for movie in \
-                self.referenced_movie.all()))
+            referenced_movie=', '.join(str(movie) for
+                                       movie in self.referenced_movie.all()))
 
 
 class MovieRemake(models.Model):
