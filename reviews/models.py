@@ -63,6 +63,7 @@ class WebsiteMetadescriptor(models.Model):
     contact_info = models.EmailField(
         max_length=50, help_text='Enter a contact email')
     mission_statement = RichTextField(blank=True)
+    landing_page_intro_txt = RichTextField(null=True, blank=True)
     landing_page_title = models.CharField(max_length=50,
                                           default='The Horror Explosion')
     landing_page_description = models.CharField(
