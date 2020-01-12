@@ -276,9 +276,11 @@ def index(request):
     home_page_title = WebsiteMetadescriptor.objects.get().landing_page_title
     content_metadescription = WebsiteMetadescriptor. \
         objects.get().landing_page_description
+    intro_txt = WebsiteMetadescriptor.objects.get().landing_page_intro_txt
     return render(request, 'index.html',
                   context={'page_title': home_page_title,
                            'meta_content_description': content_metadescription,
+                           'intro_txt': intro_txt,
                            'number_of_reviews': number_of_reviews,
                            'num_of_tv_reviews': num_of_tv_reviews,
                            'number_of_movies': number_of_movies,
