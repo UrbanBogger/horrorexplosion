@@ -5,22 +5,19 @@ from django.db.models import Q
 from reviews.models import Movie, ReferencedMovie, MovieReview
 
 
-MOV_TITLE_V1 = r'<((?!.*wiki.*)a.*|em).*>{mov_title}<\/(a|em).*>'
+MOV_TITLE_V1 = r'<a\s*href=\".*title.*\".*><em>?{mov_title}</em>?<\/a>'
 MOV_TITLE_V2 = r'<!--\s?{mov_title}\s?.*-->'
-YEAR_REGEX_V1 = \
-    r'<((?!.*wiki.*)a.*|em).*>%s<\/(a|em).*>\s*\(\s?([0-9]{4})\s?\)'
+YEAR_REGEX_V1 = r'<a\s*href=\".*title.*\".*>%s.*\(\s?([0-9]{4})\s?\)<\/a>'
 YEAR_REGEX_V2 = r'<!--\s?%s\s*\(\s?([0-9]{4})\s?\)-->'
-YEAR_REGEX_V1_MATCH_GROUP_NR = 3
-YEAR_REGEX_V2_MATCH_GROUP_NR = 1
+YEAR_REGEX_MATCH_GROUP_NR = 1
 
 
-def does_release_year_match(movie, regex_pattern, match_group,
-                            main_title='', rev_txt=''):
+def does_release_year_match(movie, regex_pattern, main_title='', rev_txt=''):
     # extract and check year of release
     release_year_search = re.search(regex_pattern % main_title, rev_txt,
                                     re.MULTILINE)
     if release_year_search:
-        year = int(release_year_search.group(match_group))
+        year = int(release_year_search.group(YEAR_REGEX_MATCH_GROUP_NR))
         if movie.year_of_release == year:
             return True
     else:
@@ -57,13 +54,13 @@ class Command(BaseCommand):
                 elif re.search(YEAR_REGEX_V1 % mov_main_title_modified,
                                mov_rev_txt_modified, re.MULTILINE):
                     mov_referenced = does_release_year_match(
-                        movie, YEAR_REGEX_V1, YEAR_REGEX_V1_MATCH_GROUP_NR,
+                        movie, YEAR_REGEX_V1,
                         main_title=mov_main_title_modified,
                         rev_txt=mov_rev_txt_modified)
                 elif re.search(YEAR_REGEX_V2 % mov_main_title_modified,
                                mov_rev_txt_modified, re.MULTILINE):
                     mov_referenced = does_release_year_match(
-                        movie, YEAR_REGEX_V2,YEAR_REGEX_V2_MATCH_GROUP_NR,
+                        movie, YEAR_REGEX_V2,
                         main_title=mov_main_title_modified,
                         rev_txt=mov_rev_txt_modified)
                 elif re.search(MOV_TITLE_V1.format(
