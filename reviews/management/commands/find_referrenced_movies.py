@@ -6,7 +6,25 @@ from reviews.models import Movie, ReferencedMovie, MovieReview
 
 
 MOV_TITLE_V1 = r'<((?!.*wiki.*)a.*|em).*>{mov_title}<\/(a|em).*>'
-MOV_TITLE_V2 = r'<!--.*{mov_title}\s*\([0-9]*\)-->'
+MOV_TITLE_V2 = r'<!--\s?{mov_title}\s?.*-->'
+YEAR_REGEX_V1 = \
+    r'<((?!.*wiki.*)a.*|em).*>%s<\/(a|em).*>\s*\(\s?([0-9]{4})\s?\)'
+YEAR_REGEX_V2 = r'<!--\s?%s\s*\(\s?([0-9]{4})\s?\)-->'
+YEAR_REGEX_V1_MATCH_GROUP_NR = 3
+YEAR_REGEX_V2_MATCH_GROUP_NR = 1
+
+
+def does_release_year_match(movie, regex_pattern, match_group,
+                            main_title='', rev_txt=''):
+    # extract and check year of release
+    release_year_search = re.search(regex_pattern % main_title, rev_txt,
+                                    re.MULTILINE)
+    if release_year_search:
+        year = int(release_year_search.group(match_group))
+        if movie.year_of_release == year:
+            return True
+    else:
+        return False
 
 
 class Command(BaseCommand):
@@ -25,14 +43,8 @@ class Command(BaseCommand):
             mov_main_title_modified = str(movie.main_title).replace(
                 '’', '').replace('\'', '')
 
-            # check if there's another film with the same title
-            mov_w_same_title = None
-            if Movie.objects.exclude(id=movie_id).filter(
-                    main_title=movie.main_title).exists():
-                mov_w_same_title = Movie.objects.exclude(id=movie_id).filter(
-                    main_title=movie.main_title).all()
-
             for mov_rev_id in all_mov_revs:
+                mov_referenced = False
                 mov_rev_txt_unescaped = html.unescape(MovieReview.objects.get(
                     id=mov_rev_id).review_text)
                 mov_rev_txt_modified = mov_rev_txt_unescaped.replace(
@@ -42,68 +54,45 @@ class Command(BaseCommand):
                         Q(referenced_movie=movie) & Q(
                             review=mov_rev_id)).exists():
                     continue
+                elif re.search(YEAR_REGEX_V1 % mov_main_title_modified,
+                               mov_rev_txt_modified, re.MULTILINE):
+                    mov_referenced = does_release_year_match(
+                        movie, YEAR_REGEX_V1, YEAR_REGEX_V1_MATCH_GROUP_NR,
+                        main_title=mov_main_title_modified,
+                        rev_txt=mov_rev_txt_modified)
+                elif re.search(YEAR_REGEX_V2 % mov_main_title_modified,
+                               mov_rev_txt_modified, re.MULTILINE):
+                    mov_referenced = does_release_year_match(
+                        movie, YEAR_REGEX_V2,YEAR_REGEX_V2_MATCH_GROUP_NR,
+                        main_title=mov_main_title_modified,
+                        rev_txt=mov_rev_txt_modified)
                 elif re.search(MOV_TITLE_V1.format(
                         mov_title=mov_main_title_modified),
                         mov_rev_txt_modified, re.MULTILINE) or re.search(
                     MOV_TITLE_V2.format(mov_title=mov_main_title_modified),
                         mov_rev_txt_modified, re.MULTILINE):
-                        # update referenced mov object
-                        if ReferencedMovie.objects.filter(
-                                review=mov_rev_id).exists():
-                            ref_mov = ReferencedMovie.objects.filter(
-                                review=mov_rev_id).get()
-                            if mov_w_same_title:
-                                if re.search(r'\({release_year}\)'.format(
-                                        release_year=str(
-                                            movie.year_of_release)),
-                                        mov_rev_txt_modified, re.MULTILINE):
-                                    ref_mov.referenced_movie.add(movie)
-                                else:
-                                    for mov_st in mov_w_same_title:
-                                        if re.search(
-                                                r'\({release_year}\)'.format(
-                                                    release_year=
-                                                    str(mov_st.year_of_release)
-                                                ), mov_rev_txt_modified,
-                                                re.MULTILINE):
-                                            ref_mov.referenced_movie.add(
-                                                mov_st)
-                            else:
-                                self.stdout.write(
-                                    'UPDATING Referenced Movie object for '
-                                    'movie: '
-                                    + str(movie) + ' and movie review: ' +
-                                    str(MovieReview.objects.get(
-                                        id=mov_rev_id)))
-                                ref_mov.referenced_movie.add(movie)
-                        # create a new referenced movie object
-                        else:
-                            self.stdout.write(
-                                 'CREATING Referenced Movie object for movie: '
-                                 + str(movie) + ' and movie review: ' + str(
-                                     MovieReview.objects.get(id=mov_rev_id)))
-                            ref_mov = ReferencedMovie()
-                            ref_mov.review = MovieReview.objects.get(
-                                id=mov_rev_id)
-                            ref_mov.save()
-                            if mov_w_same_title:
-                                if re.search(r'\({release_year}\)'.format(
-                                        release_year=str(
-                                            movie.year_of_release)),
-                                        mov_rev_txt_modified, re.MULTILINE):
-                                    ref_mov.referenced_movie.add(movie)
-                                else:
-                                    for mov_st in mov_w_same_title:
-                                        if re.search(
-                                                r'\({release_year}\)'.format(
-                                                    release_year=
-                                                    str(mov_st.year_of_release)
-                                                ), mov_rev_txt_modified,
-                                                re.MULTILINE):
-                                            ref_mov.referenced_movie.add(
-                                                mov_st)
-                            else:
-                                ref_mov.referenced_movie.add(movie)
+                    mov_referenced = True
+
+                # update referenced mov object
+                if mov_referenced and ReferencedMovie.objects.filter(
+                        review=mov_rev_id).exists():
+                    ref_mov = ReferencedMovie.objects.filter(
+                        review=mov_rev_id).get()
+                    self.stdout.write(
+                        'UPDATING Referenced Movie object for movie: '
+                        + str(movie) + ' and movie review: '
+                        + str(MovieReview.objects.get(id=mov_rev_id)))
+                    ref_mov.referenced_movie.add(movie)
+                # create a new referenced movie object
+                elif mov_referenced:
+                    self.stdout.write(
+                        'CREATING Referenced Movie object for movie: '
+                        + str(movie) + ' and movie review: ' + str(
+                            MovieReview.objects.get(id=mov_rev_id)))
+                    ref_mov = ReferencedMovie()
+                    ref_mov.review = MovieReview.objects.get(id=mov_rev_id)
+                    ref_mov.save()
+                    ref_mov.referenced_movie.add(movie)
 
         self.stdout.write(
             'Have finished adding entries for movies in the Referenced '
