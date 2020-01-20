@@ -1,27 +1,11 @@
 import re
 import html
+from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from reviews.models import Movie, ReferencedMovie, MovieReview
 
-
-MOV_TITLE_V1 = r'<a\s*href=\".*title.*\".*><em>?{mov_title}</em>?<\/a>'
-MOV_TITLE_V2 = r'<!--\s?{mov_title}\s?.*-->'
-YEAR_REGEX_V1 = r'<a\s*href=\".*title.*\".*>%s.*\(\s?([0-9]{4})\s?\)<\/a>'
-YEAR_REGEX_V2 = r'<!--\s?%s\s*\(\s?([0-9]{4})\s?\)-->'
-YEAR_REGEX_MATCH_GROUP_NR = 1
-
-
-def does_release_year_match(movie, regex_pattern, main_title='', rev_txt=''):
-    # extract and check year of release
-    release_year_search = re.search(regex_pattern % main_title, rev_txt,
-                                    re.MULTILINE)
-    if release_year_search:
-        year = int(release_year_search.group(YEAR_REGEX_MATCH_GROUP_NR))
-        if movie.year_of_release == year:
-            return True
-    else:
-        return False
+RELEASE_YEAR_REGEX_PATTERN = r'.*\(\s?([0-9]{4})\s?\)'
 
 
 class Command(BaseCommand):
@@ -46,29 +30,48 @@ class Command(BaseCommand):
                     id=mov_rev_id).review_text)
                 mov_rev_txt_modified = mov_rev_txt_unescaped.replace(
                     '’', '').replace('\'', '')
+                html_to_be_inspected = BeautifulSoup(mov_rev_txt_modified,
+                                                     'html.parser')
+                links = html_to_be_inspected.find_all('a')
 
                 if ReferencedMovie.objects.filter(
                         Q(referenced_movie=movie) & Q(
                             review=mov_rev_id)).exists():
                     continue
-                elif re.search(YEAR_REGEX_V1 % mov_main_title_modified,
-                               mov_rev_txt_modified, re.MULTILINE):
-                    mov_referenced = does_release_year_match(
-                        movie, YEAR_REGEX_V1,
-                        main_title=mov_main_title_modified,
-                        rev_txt=mov_rev_txt_modified)
-                elif re.search(YEAR_REGEX_V2 % mov_main_title_modified,
-                               mov_rev_txt_modified, re.MULTILINE):
-                    mov_referenced = does_release_year_match(
-                        movie, YEAR_REGEX_V2,
-                        main_title=mov_main_title_modified,
-                        rev_txt=mov_rev_txt_modified)
-                elif re.search(MOV_TITLE_V1.format(
-                        mov_title=mov_main_title_modified),
-                        mov_rev_txt_modified, re.MULTILINE) or re.search(
-                    MOV_TITLE_V2.format(mov_title=mov_main_title_modified),
-                        mov_rev_txt_modified, re.MULTILINE):
-                    mov_referenced = True
+                elif mov_main_title_modified in mov_rev_txt_modified:
+                    for link in links:
+                        print(link.attrs)
+                        print(link.contents)
+                        # check if link points to a IMDb Movie page
+                        if 'title' in link.attrs['href']:
+                            if any(mov_main_title_modified in link_txt for
+                                   link_txt in link.contents) and any(
+                                str(movie.year_of_release) in link_txt for
+                                    link_txt in link.contents):
+                                print('HAVE FOUND A MOVIE TITLE AND YEAR MATCH FOR:')
+                                print(str(movie))
+                                mov_referenced = True
+                            elif any(mov_main_title_modified in link_txt for
+                                   link_txt in link.contents):
+                                print('HAVE ONLY FOUND THE MATCHING MOV TITLE FOR:')
+                                print(str(movie))
+                                # check if there any any release years present in the link
+                                if not any(re.match(RELEASE_YEAR_REGEX_PATTERN, str(link_txt)) for link_txt in link.contents):
+                                    print(
+                                        'DID NOT FIND THE YEAR - ASSUMING '
+                                        'IT\'S THE CORRECT MOV REFERENCE')
+                                    mov_referenced = True
+                                # check if there exists a year pattern
+                                # anywhere in the link text
+                                else:
+                                    for link_txt in link.contents:
+                                        # extract the release year
+                                        if re.match(RELEASE_YEAR_REGEX_PATTERN, str(link_txt)):
+                                            match = re.match(RELEASE_YEAR_REGEX_PATTERN, link_txt)
+                                            year = match.group(1)
+                                            print('HAVE FOUND THE FOLLOWING RELEASE YEAR: ' + str(year))
+                                            if str(movie.year_of_release) == year:
+                                                mov_referenced = True
 
                 # update referenced mov object
                 if mov_referenced and ReferencedMovie.objects.filter(
