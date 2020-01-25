@@ -5,7 +5,41 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from reviews.models import Movie, ReferencedMovie, MovieReview
 
-RELEASE_YEAR_REGEX_PATTERN = r'.*\(\s?([0-9]{4})\s?\)'
+RELEASE_YEAR_REGEX = r'^\(([0-9]{4})\)$'
+MOV_TITLE_REGEX = r'^([a-zA-Z0-9\s]+)$'
+MOV_TITLE_AND_YEAR_REGEX = r'^([a-zA-Z0-9\s]+)\s?\(([0-9]{4})\)$'
+MOV_TITLE_HTML_TAG_REGEX = r'<.*>([a-zA-Z0-9\s]+)<\/.*>'
+
+
+def get_mov_title_and_year_from_link(link, mov_title_modified):
+    mov_title = None
+    release_year = None
+
+    for link_txt in link.contents:
+        if re.match(MOV_TITLE_REGEX, str(link_txt).strip()):
+            if mov_title_modified in re.match(MOV_TITLE_REGEX,
+                                              str(link_txt)).group(1).strip():
+                mov_title = re.match(MOV_TITLE_REGEX,
+                                     str(link_txt)).group(1).strip()
+
+        if re.match(MOV_TITLE_AND_YEAR_REGEX, str(link_txt).strip()):
+            if mov_title_modified in re.match(MOV_TITLE_AND_YEAR_REGEX,
+                                              str(link_txt)).group(1).strip():
+                mov_title = re.match(MOV_TITLE_AND_YEAR_REGEX,
+                                     str(link_txt)).group(1).strip()
+
+            release_year = re.match(MOV_TITLE_AND_YEAR_REGEX,
+                                    str(link_txt).strip()).group(2).strip()
+
+        if re.match(RELEASE_YEAR_REGEX, str(link_txt).strip()):
+            release_year = re.match(RELEASE_YEAR_REGEX,
+                                    str(link_txt).strip()).group(1).strip()
+
+        if re.match(MOV_TITLE_HTML_TAG_REGEX, str(link_txt).strip()):
+            mov_title = re.match(MOV_TITLE_HTML_TAG_REGEX,
+                                 str(link_txt).strip()).group(1).strip()
+
+    return mov_title, release_year
 
 
 class Command(BaseCommand):
@@ -25,7 +59,6 @@ class Command(BaseCommand):
                 '’', '').replace('\'', '')
 
             for mov_rev_id in all_mov_revs:
-                mov_referenced = False
                 mov_rev_txt_unescaped = html.unescape(MovieReview.objects.get(
                     id=mov_rev_id).review_text)
                 mov_rev_txt_modified = mov_rev_txt_unescaped.replace(
@@ -40,59 +73,42 @@ class Command(BaseCommand):
                     continue
                 elif mov_main_title_modified in mov_rev_txt_modified:
                     for link in links:
-                        print(link.attrs)
-                        print(link.contents)
+                        mov_referenced = False
                         # check if link points to a IMDb Movie page
                         if 'title' in link.attrs['href']:
-                            if any(mov_main_title_modified in link_txt for
-                                   link_txt in link.contents) and any(
-                                str(movie.year_of_release) in link_txt for
-                                    link_txt in link.contents):
-                                print('HAVE FOUND A MOVIE TITLE AND YEAR MATCH FOR:')
-                                print(str(movie))
-                                mov_referenced = True
-                            elif any(mov_main_title_modified in link_txt for
-                                   link_txt in link.contents):
-                                print('HAVE ONLY FOUND THE MATCHING MOV TITLE FOR:')
-                                print(str(movie))
-                                # check if there any any release years present in the link
-                                if not any(re.match(RELEASE_YEAR_REGEX_PATTERN, str(link_txt)) for link_txt in link.contents):
-                                    print(
-                                        'DID NOT FIND THE YEAR - ASSUMING '
-                                        'IT\'S THE CORRECT MOV REFERENCE')
-                                    mov_referenced = True
-                                # check if there exists a year pattern
-                                # anywhere in the link text
-                                else:
-                                    for link_txt in link.contents:
-                                        # extract the release year
-                                        if re.match(RELEASE_YEAR_REGEX_PATTERN, str(link_txt)):
-                                            match = re.match(RELEASE_YEAR_REGEX_PATTERN, link_txt)
-                                            year = match.group(1)
-                                            print('HAVE FOUND THE FOLLOWING RELEASE YEAR: ' + str(year))
-                                            if str(movie.year_of_release) == year:
-                                                mov_referenced = True
+                            mov_title, release_year = \
+                                get_mov_title_and_year_from_link(
+                                    link, mov_main_title_modified)
 
-                # update referenced mov object
-                if mov_referenced and ReferencedMovie.objects.filter(
-                        review=mov_rev_id).exists():
-                    ref_mov = ReferencedMovie.objects.filter(
-                        review=mov_rev_id).get()
-                    self.stdout.write(
-                        'UPDATING Referenced Movie object for movie: '
-                        + str(movie) + ' and movie review: '
-                        + str(MovieReview.objects.get(id=mov_rev_id)))
-                    ref_mov.referenced_movie.add(movie)
-                # create a new referenced movie object
-                elif mov_referenced:
-                    self.stdout.write(
-                        'CREATING Referenced Movie object for movie: '
-                        + str(movie) + ' and movie review: ' + str(
-                            MovieReview.objects.get(id=mov_rev_id)))
-                    ref_mov = ReferencedMovie()
-                    ref_mov.review = MovieReview.objects.get(id=mov_rev_id)
-                    ref_mov.save()
-                    ref_mov.referenced_movie.add(movie)
+                            if release_year == str(movie.year_of_release) \
+                                    and mov_title == mov_main_title_modified:
+                                mov_referenced = True
+
+                            if mov_title == mov_main_title_modified and not \
+                                    release_year:
+                                mov_referenced = True
+
+                        # update referenced mov object
+                        if mov_referenced and ReferencedMovie.objects.filter(
+                                review=mov_rev_id).exists():
+                            ref_mov = ReferencedMovie.objects.filter(
+                                review=mov_rev_id).get()
+                            self.stdout.write(
+                                'UPDATING Referenced Movie object for movie: '
+                                '%s and movie review: %s' % (str(movie),
+                                str(MovieReview.objects.get(id=mov_rev_id))))
+                            ref_mov.referenced_movie.add(movie)
+                        # create a new referenced movie object
+                        elif mov_referenced:
+                            self.stdout.write(
+                                'CREATING Referenced Movie object for movie: '
+                                '%s and movie review: %s' % (str(movie), str(
+                                    MovieReview.objects.get(id=mov_rev_id))))
+                            ref_mov = ReferencedMovie()
+                            ref_mov.review = MovieReview.objects.get(
+                                id=mov_rev_id)
+                            ref_mov.save()
+                            ref_mov.referenced_movie.add(movie)
 
         self.stdout.write(
             'Have finished adding entries for movies in the Referenced '
