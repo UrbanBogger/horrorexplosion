@@ -6,7 +6,7 @@ from .models import Genre, Subgenre, Microgenre, Keyword, \
     MovieInMovSeries, MovieSeries, SimilarMovie, PickedReview, \
     TelevisionSeries, TelevisionSeason, TelevisionEpisode, \
     TelevisionSeasonReview, TelevisionEpisodeReview, MovSeriesEntry, \
-    DefaultImage
+    DefaultImage, AlternateLength
 
 # Register your models here.
 
@@ -40,3 +40,4 @@ admin.site.register(TelevisionEpisodeReview)
 admin.site.register(PickedReview)
 admin.site.register(MovSeriesEntry)
 admin.site.register(DefaultImage)
+admin.site.register(AlternateLength)

@@ -324,6 +324,42 @@ class MovieFranchise(models.Model):
         return '{franchise_name}'.format(franchise_name=self.franchise_name)
 
 
+class AlternateLength(models.Model):
+    alternative_duration = models.IntegerField(
+        default=90, help_text='Enter the duration of the motion picture in '
+                              'minutes')
+    alt_duration_reason = models.CharField(
+        max_length=100, null=True, blank=True,
+        choices=(
+            ('theatrical cut', 'theatrical cut'),
+            ('director\'s cut', 'director\'s cut'),
+            ('home video cut: VHS', 'home video cut: VHS'),
+            ('home video cut: DVD', 'home video cut: DVD'),
+            ('home video cut: Blu-ray', 'home video cut: Blu-ray'),
+            ('extended cut', 'extended cut'),
+            ('unrated cut', 'unrated cut'),
+            ('R-Rated cut', 'R-Rated cut'),
+        ),
+        help_text='Choose the type of the alternative length')
+    other_reason = models.CharField(
+        max_length=250, null=True, blank=True,
+        help_text='Add an explanation for the alternative running time if not '
+                  'found in the list of options')
+
+    def __str__(self):
+        if self.alt_duration_reason:
+            return '{alt_length} min. ({reason})'.format(
+                alt_length=str(self.alternative_duration),
+                reason=self.alt_duration_reason)
+        elif self.other_reason:
+            return '{alt_length} min. ({reason})'.format(
+                alt_length=str(self.alternative_duration),
+                reason=self.other_reason)
+        else:
+            return '{alt_length} min.'.format(
+                alt_length=str(self.alternative_duration))
+
+
 class MotionPicture(models.Model):
     release_year_options = []
 
@@ -347,6 +383,9 @@ class MotionPicture(models.Model):
     duration = models.IntegerField(
         default=90, help_text='Enter the duration of the motion picture in '
                               'minutes')
+    alternative_duration = models.ManyToManyField(
+        AlternateLength, blank=True,
+        help_text='Add alternative film length [OPTIONAL]')
     genre = models.ManyToManyField(
         Genre, help_text='Enter the motion picture\'s genre(s)')
     subgenre = models.ManyToManyField(
