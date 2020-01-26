@@ -675,6 +675,12 @@ class MovieDetailView(generic.DetailView):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
         # Create any data and add it to the context
         movie = Movie.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        alt_durations_str = ''
+        if movie.alternative_duration:
+            alt_durations_str = '/{alt_durations}'.format(
+                alt_durations='/'.join(
+                    str(alt_duration) for alt_duration in
+                    movie.alternative_duration.all()))
         if movie.imdb_link:
             context['mov_sd'] = mov_sd(movie)
         context['page_title'] = str(movie) + ' | The Horror Explosion'
@@ -713,6 +719,7 @@ class MovieDetailView(generic.DetailView):
             compared_mov=Movie.objects.get(
                 pk=self.kwargs.get(self.pk_url_kwarg))).order_by(
             '-overall_similarity_percentage')
+        context['alt_durations'] = alt_durations_str
         return context
 
 
