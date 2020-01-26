@@ -735,6 +735,12 @@ class MovieReviewDetailView(generic.DetailView):
             context['mov_rev_sd'] = mov_review_sd(
                 movie_review,
                 db_object_absolute_url=get_absolute_url(movie_review))
+        alt_durations_str = ''
+        if movie_review.reviewed_movie.alternative_duration:
+            alt_durations_str = '/{alt_durations}'.format(
+                alt_durations='/'.join(
+                    str(alt_duration) for alt_duration in
+                    movie_review.reviewed_movie.alternative_duration.all()))
         context['review_text'] = substitute_links_in_text(
             movie_review.review_text)
         context['page_title'] = str(movie_review.reviewed_movie) + \
@@ -747,6 +753,7 @@ class MovieReviewDetailView(generic.DetailView):
         context['movie_cast'] = return_mov_participation_data(
             movie_review.reviewed_movie, 'Actor')
         context['absolute_uri'] = get_absolute_url(movie_review)
+        context['alt_durations'] = alt_durations_str
         return context
 
 
