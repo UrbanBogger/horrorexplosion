@@ -736,7 +736,7 @@ class MovieReviewDetailView(generic.DetailView):
                 movie_review,
                 db_object_absolute_url=get_absolute_url(movie_review))
         alt_durations_str = ''
-        if movie_review.reviewed_movie.alternative_duration:
+        if movie_review.reviewed_movie.alternative_durationif.all().exists():
             alt_durations_str = '/{alt_durations}'.format(
                 alt_durations='/'.join(
                     str(alt_duration) for alt_duration in
