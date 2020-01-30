@@ -676,7 +676,7 @@ class MovieDetailView(generic.DetailView):
         # Create any data and add it to the context
         movie = Movie.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
         alt_durations_str = ''
-        if movie.alternative_duration:
+        if movie.alternative_duration.all().exists():
             alt_durations_str = '/{alt_durations}'.format(
                 alt_durations='/'.join(
                     str(alt_duration) for alt_duration in
