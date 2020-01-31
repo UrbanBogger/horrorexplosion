@@ -346,6 +346,9 @@ class AlternateLength(models.Model):
         help_text='Add an explanation for the alternative running time if not '
                   'found in the list of options')
 
+    class Meta:
+        ordering = ['alternative_duration']
+
     def __str__(self):
         if self.alt_duration_reason:
             return '{alt_length} min. ({reason})'.format(
