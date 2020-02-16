@@ -59,4 +59,6 @@ urlpatterns = [
         name='mov_franchises'),
     url(r'film-franchise-detail/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
         views.MovieFranchiseDetailView.as_view(), name='mov-franchise-detail'),
+    url(r'^keyword/(?P<pk>\d+)/(?P<name>[-\w]+)$',
+        views.KeywordDetailView.as_view(), name='keyword-detail')
 ]

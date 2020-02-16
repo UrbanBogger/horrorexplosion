@@ -15,9 +15,9 @@ from .google_structured_data import mov_review_sd, tv_episode_rev_sd, mov_sd
 from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
-    TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
-    MovSeriesEntry, MovieCreator, DefaultImage, get_random_review, \
-    return_mov_participation_data
+    TelevisionEpisode, TelevisionSeasonReview, TelevisionEpisodeReview, \
+    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Keyword, \
+    get_random_review, return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -1089,6 +1089,62 @@ class MovieCreatorDetailView(generic.DetailView):
         context['creator_img_styling'] = creator_img_styling
         context['default_motion_pic_img'] = default_motion_pic_img
         context['filmography'] = roles_with_media_objects
+        return context
+
+
+class KeywordDetailView(generic.DetailView):
+    model = Keyword
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(KeywordDetailView, self).get_context_data(
+            **kwargs)
+        keyword = Keyword.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        all_movs = Movie.objects.filter(keyword=keyword)
+        all_tv_seasons = TelevisionSeason.objects.filter(keyword=keyword)
+        all_tv_episodes = TelevisionEpisode.objects.filter(keyword=keyword)
+
+        mov_dicts = []
+        for mov in all_movs:
+            mov_dicts.append(create_mov_dict(mov))
+        mov_dicts.sort(key=itemgetter('title'))
+
+        items_from_mov_dict = mov_dicts[:6]
+        mov_titles_sample = ','.join(str(film_dict['display_title']) for
+                                     film_dict in items_from_mov_dict)
+
+        tv_series_dict = []
+        for tv_season in all_tv_seasons:
+            tv_series_dict.append(create_tv_season_dict(tv_season))
+
+        for tv_episode in all_tv_episodes:
+            tv_series_dict.append(create_tv_episode_dict(tv_episode))
+
+        tv_series_dict.sort(key=itemgetter('title', 'season_number',
+                                           'tv_episode_number'))
+
+        items_from_tv_series_dict = tv_series_dict[:3]
+        tv_series_titles_sample = ','.join(str(tv_series_dict['display_title'])
+                                           for tv_series_dict in
+                                           items_from_tv_series_dict)
+
+        default_motion_pic_img = None
+        if DefaultImage.objects.filter(
+                default_img_type='motion_pic').exists():
+            default_motion_pic_img = DefaultImage.objects.get(
+                default_img_type='motion_pic').default_img
+        page_metadescriptor = \
+            'Page for keyword: "{kw}".Films with the keyword:{mov_sample}.' \
+            'TV series with the keyword:{tv_series_sample}'.format(
+                kw=str(keyword), mov_sample=mov_titles_sample,
+                tv_series_sample=tv_series_titles_sample)
+        context['page_title'] = \
+            'Keyword: "{kw}" | The Horror Explosion'.format(kw=str(keyword))
+        context['meta_content_description'] = page_metadescriptor
+        context['default_motion_pic_img'] = default_motion_pic_img
+        context['features'] = mov_dicts
+        context['tv_series'] = tv_series_dict
         return context
 
 
