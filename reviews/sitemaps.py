@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from .models import MovieReview, Movie, TelevisionSeries, TelevisionSeason, \
     TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
-    MovieCreator
+    MovieCreator, Keyword
 from django.core.urlresolvers import reverse
 
 
@@ -88,6 +88,14 @@ class MovCreatorSitemap(Sitemap):
 
     def items(self):
         return MovieCreator.objects.all()
+
+
+class KeywordSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.7
+
+    def items(self):
+        return Keyword.objects.all()
 
 
 class ListViewSitemap(Sitemap):
