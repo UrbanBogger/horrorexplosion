@@ -30,7 +30,7 @@
 <p><strong>Microgenre(s)</strong>: {% for microgenre in televisionseason.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
       {% if televisionseason.keyword.all %}
-<p><strong>Keyword(s)</strong>: {% for keyword in televisionseason.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+<p><strong>Keyword(s)</strong>: {% for keyword in televisionseason.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
     </div>
     </div>
