@@ -904,6 +904,86 @@ class MovieFranchiseDetailView(generic.DetailView):
                                 if mov_series_entry.tv_series_entry]
         return context
 
+def create_mov_dict(film):
+    image = None
+
+    if film.poster:
+        image = film.poster
+    else:
+        image = film.poster_thumbnail
+
+    media_dict = {'media_object': film.get_absolute_url(),
+                  'year': film.year_of_release,
+                  'title': film.title_for_sorting,
+                  'display_title': film.main_title,
+                  'type': 'Full-length Film',
+                  'image': image}
+
+    return media_dict
+
+
+def create_tv_season_dict(tv_season):
+    image = None
+
+    if tv_season.poster_thumbnail:
+        image = tv_season.poster_thumbnail
+    elif tv_season.poster:
+        image = tv_season.poster
+    elif tv_season.tv_series.poster_thumbnail:
+        image = tv_season.tv_series.poster_thumbnail
+
+    else:
+        image = tv_season.tv_series.poster
+
+    if tv_season.year_of_release:
+        year = tv_season.year_of_release
+    else:
+        year = None
+
+    media_dict = {'media_object': tv_season.get_absolute_url(),
+                  'year': year,
+                  'season_number': tv_season.season_number,
+                  'tv_episode_number': 0,
+                  'title': tv_season.tv_series.title_for_sorting,
+                  'display_title': str(tv_season),
+                  'type': 'TV Series',
+                  'image': image}
+    return media_dict
+
+
+def create_tv_episode_dict(tv_episode):
+    image = None
+
+    if tv_episode.poster_thumbnail:
+        image = tv_episode.poster_thumbnail
+    elif tv_episode.poster:
+        image = tv_episode.poster
+
+    elif tv_episode.tv_season.poster_thumbnail:
+        image = tv_episode.tv_season.poster_thumbnail
+    elif tv_episode.tv_season.poster:
+        image = tv_episode.tv_season.poster
+    elif tv_episode.tv_season.tv_series.poster_thumbnail:
+        image = tv_episode.tv_season.tv_series.poster_thumbnail
+    else:
+        image = tv_episode.tv_season.tv_series.poster
+
+    tv_episode_link = '#'
+
+    if tv_episode.televisionepisodereview_set.all().exists():
+        tv_episode_link = tv_episode.televisionepisodereview_set.all()[
+            0].get_absolute_url()
+
+    media_dict = {'media_object': tv_episode_link,
+                  'title': tv_episode.tv_season.tv_series.title_for_sorting,
+                  'display_title': str(tv_episode),
+                  'year': tv_episode.tv_season.year_of_release,
+                  'season_number': tv_episode.tv_season.season_number,
+                  'tv_episode_number': tv_episode.episode_number,
+                  'type': 'TV Series', 'image': image}
+
+    return media_dict
+
 
 class MovieCreatorDetailView(generic.DetailView):
     model = MovieCreator
@@ -943,77 +1023,17 @@ class MovieCreatorDetailView(generic.DetailView):
             if creators_film_roles:
                 for qs in creators_film_roles:
                     for film in qs:
-                        img = None
-                        if film.poster:
-                            img = film.poster
-                        else:
-                            img = film.poster_thumbnail
-                        media_dict = {'media_object': film.get_absolute_url(),
-                                      'year': film.year_of_release,
-                                      'title': film.title_for_sorting,
-                                      'display_title': film.main_title,
-                                      'type': 'Full-length Film',
-                                      'image': img}
-                        media_objects_per_role.append(media_dict)
+                        media_objects_per_role.append(create_mov_dict(film))
             if creators_tv_season_roles:
                 for qs in creators_tv_season_roles:
                     for tv_season in qs:
-                        img = None
-                        if tv_season.poster_thumbnail:
-                            img = tv_season.poster_thumbnail
-                        elif tv_season.poster:
-                            img = tv_season.poster
-                        elif tv_season.tv_series.poster_thumbnail:
-                            img = tv_season.tv_series.poster_thumbnail
-                        else:
-                            img = tv_season.tv_series.poster
-
-                        if tv_season.year_of_release:
-                            year = tv_season.year_of_release
-                        else:
-                            year = None
-                        media_dict = {
-                            'media_object': tv_season.get_absolute_url(),
-                            'year': year,
-                            'title': tv_season.tv_series.title_for_sorting,
-                            'display_title': str(tv_season),
-                            'type': 'TV Series',
-                            'image': img}
-                        media_objects_per_role.append(media_dict)
+                        media_objects_per_role.append(
+                            create_tv_season_dict(tv_season))
             if creators_tv_episode_roles:
                 for qs in creators_tv_episode_roles:
                     for tv_episode in qs:
-                        img = None
-                        if tv_episode.poster_thumbnail:
-                            img = tv_episode.poster_thumbnail
-                        elif tv_episode.poster:
-                            img = tv_episode.poster
-                        elif tv_episode.tv_season.poster_thumbnail:
-                            img = tv_episode.tv_season.poster_thumbnail
-                        elif tv_episode.tv_season.poster:
-                            img = tv_episode.tv_season.poster
-                        elif tv_episode.tv_season.tv_series.poster_thumbnail:
-                            img = tv_episode.tv_season.tv_series.\
-                                poster_thumbnail
-                        else:
-                            img = tv_episode.tv_season.tv_series.poster
-
-                        tv_episode_link = '#'
-                        if tv_episode.televisionepisodereview_set.all(). \
-                                exists():
-                            tv_episode_link = \
-                                tv_episode.televisionepisodereview_set.all()[
-                                    0].get_absolute_url()
-
-                        media_dict = {
-                            'media_object': tv_episode_link,
-                            'title':
-                                tv_episode.tv_season.tv_series.
-                                    title_for_sorting,
-                            'display_title': str(tv_episode),
-                            'year': tv_episode.tv_season.year_of_release,
-                            'type': 'TV Series', 'image': img}
-                        media_objects_per_role.append(media_dict)
+                        media_objects_per_role.append(
+                            create_tv_episode_dict(tv_episode))
             media_objects_per_role.sort(key=itemgetter('year', 'title'),
                                         reverse=True)
 
