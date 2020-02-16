@@ -58,7 +58,7 @@ class Keyword(MovieMetadescriptors):
         help_text='Enter the keyword (or a keyword phrase)')
 
     def get_absolute_url(self):
-        kw_split = self.name.split('/')
+        kw_split = self.name.split('/')[0]
         kw_formatted = str(kw_split).replace(' ', '-').lower()
 
         return reverse('keyword-detail', args=[
