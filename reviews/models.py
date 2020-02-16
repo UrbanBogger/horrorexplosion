@@ -57,6 +57,15 @@ class Keyword(MovieMetadescriptors):
         max_length=100, unique=True,
         help_text='Enter the keyword (or a keyword phrase)')
 
+    def get_absolute_url(self):
+        kw_split = self.name.split('/')
+        kw_formatted = str(kw_split).replace(' ', '-').lower()
+
+        return reverse('keyword-detail', args=[
+            str(self.id), str(''.join(character for character in
+                                      kw_formatted if character == '-'
+                                      or character.isalnum()))])
+
 
 class WebsiteMetadescriptor(models.Model):
     website_name = models.CharField(max_length=50)
