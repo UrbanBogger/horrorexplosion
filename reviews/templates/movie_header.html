@@ -28,6 +28,6 @@
 {% if movie.microgenre.all %}
 <p><strong>Microgenre(s)</strong>: {% for microgenre in movie.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
-<p><strong>Keyword(s)</strong>: {% for keyword in movie.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong>Keyword(s)</strong>: {% for keyword in movie.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
     </div>
     </div>

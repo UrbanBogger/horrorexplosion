@@ -35,9 +35,9 @@
       <p><strong>Microgenre(s)</strong>: {% for microgenre in televisionepisode.tv_season.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
       {% if televisionepisode.keyword.all %}
-<p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.keyword.all %}
-      <p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.tv_season.keyword.all %}{{ keyword }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.tv_season.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
     </div>
     </div>
