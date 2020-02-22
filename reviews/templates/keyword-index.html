@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Keyword Index</h1>
+{% if kw_dict %}
+<ul class="list-inline">
+    {% for letter, keywords in kw_dict.items %}
+        {% if keywords %}
+    <li class="mov_index"><a href="{% url 'keyword_index' %}{{ letter }}" class="btn btn-info" role="button">{{ letter }}</a></li>
+        {% else %}
+    <li><a href="#" class="btn disabled" role="button" tabindex="-1">{{ letter }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% else %}
+<p>No keywords found in the database.</p>
+{% endif %}
+
+{% if keywords_per_letter.items %}
+    {% for letter, keywords in keywords_per_letter.items %}
+        {% if keywords %}
+            <h2>Keywords starting with the letter "{{ letter }}":</h2>
+            <div class="list-group">
+                {% for kw in keywords %}<a href="{{ kw.get_absolute_url }}" class="list-group-item list-group-item-action"><strong>{{ kw }}</strong></a>{% endfor %}
+            </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <strong>No keywords starting with the letter "{{ letter }}".</strong>
+        </div>
+        {% endif %}
+   {% endfor %}
+{% endif %}
+{% endblock %}

@@ -18,7 +18,7 @@ urlpatterns = [
         views.MovieReviewDetailView.as_view(), name='moviereview-detail'),
     url(r'^creator/(?P<pk>\d+)$', views.MovieCreatorDetailView.as_view(),
         name='creator-detail'),
-    url(r'^movie_index/', include([
+    url(r'^movie-index/', include([
         url(r'^$', views.movie_index, name='movie_index'),
         url(r'^(?P<first_letter>[A-Z]{1})$', views.movie_index,
             name='movie_index_letter'),
@@ -28,6 +28,10 @@ urlpatterns = [
         url(r'^$', views.creator_index, name='creator-index'),
         url(r'^(?P<first_letter>[A-Z]{1})$', views.creator_index,
             name='creator-index-letter')])),
+    url(r'^keyword-index/', include([
+        url(r'^$', views.keyword_index, name='keyword_index'),
+        url(r'^(?P<first_letter>[A-Z]{1})$', views.keyword_index,
+            name='keyword_index_letter')])),
     url(r'^tv-series/', include([
         url(r'^$', views.TVSeriesListView.as_view(),name='tv_series'),
         url(r'^(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',

@@ -104,7 +104,8 @@ class ListViewSitemap(Sitemap):
 
     def items(self):
         return ['movies', 'movie_reviews', 'tv_series', 'mov_franchises',
-                'tv-series-review-list']
+                'tv-series-review-list', 'movie_index', 'creator-index',
+                'keyword_index']
 
     def location(self, item):
         return reverse(item)

@@ -435,6 +435,30 @@ def creator_index(request, first_letter=''):
                       'creators_per_letter': creators_per_letter})
 
 
+def keyword_index(request, first_letter=''):
+    kw_index_page_title = "Keyword Index | The Horror Explosion"
+    content_metadescription = 'An alphabetical list of the keywords in our ' \
+                              'database'
+    all_keywords = Keyword.objects.all()
+    keywords_per_letter = {}
+    letter_keyword_dict = {}
+
+    for letter in ENGLISH_ALPHABET:
+        letter_keyword_dict[letter] = all_keywords.filter(
+            name__istartswith=letter)
+
+    if first_letter:
+        keywords_per_letter[first_letter] = letter_keyword_dict.get(
+            first_letter)
+
+    return render(request, 'keyword-index.html',
+                  context={
+                      'page_title': kw_index_page_title,
+                      'meta_content_description': content_metadescription,
+                      'kw_dict': letter_keyword_dict,
+                      'keywords_per_letter': keywords_per_letter})
+
+
 def process_ordering_req(ordering_request, ordering_dict, ordering_categories):
     if not ordering_request:
         ordering_request = ['alphabetical', 'ascending']
