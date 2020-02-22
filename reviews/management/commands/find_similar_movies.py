@@ -38,12 +38,12 @@ def determine_similarity_level(similarity_exponent):
 
 def calculate_bonus_similarity_pts(similar_mov_list, movie):
     keywords_and_points = [
-        ('anthology film', 4), ('atmospheric', 2), ('bizarre', 2),
-        ('Camp Crystal Lake', 2), ('Charles Band related', 3),
+        ('anthology film', 4), ('atmospheric', 2), ('Billy the Puppet', 2),
+        ('bizarre', 2), ('Camp Crystal Lake', 2), ('Charles Band related', 3),
         ('Christmas season', 3), ('Creeper [the]', 3),
         ('found footage narrative', 3), ('Graboid(s)', 3),
         ('H. P. Lovecraft related', 3), ('Jason Voorhees', 3),
-        ('Krampus', 3), ('Leatherface', 3),
+        ('Jigsaw Killer', 3), ('Krampus', 3), ('Leatherface', 3),
         ('literary adaptation', 2), ('lovecraftian', 3),
         ('low budget (>$100,000 but <=$1,000,000)', 3),
         ('micro budget (<=$100,000)', 3), ('Netflix Original Film', 2),
