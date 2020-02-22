@@ -126,7 +126,12 @@ class MovieCreator(Person):
         help_text='Choose the movie creator\'s biological sex')
 
     def get_absolute_url(self):
-        return reverse('creator-detail', args=[str(self.id)])
+        name_formatted = str(self).replace(' ', '-').lower()
+
+        return reverse('creator-detail', args=[
+            str(self.id), str(''.join(character for character in
+                                      name_formatted if character == '-'
+                                      or character.isalnum()))])
 
 
 class Contributor(Person):
