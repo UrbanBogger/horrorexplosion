@@ -89,9 +89,9 @@ def substitute_links_in_text(text):
 
             if franchise_name:
                 if MovieFranchise.objects.filter(
-                        franchise_name__icontains=franchise_name).exists():
+                        franchise_name__contains=franchise_name).exists():
                     mov_franchise = MovieFranchise.objects.get(
-                        franchise_name__icontains=franchise_name)
+                        franchise_name__contains=franchise_name)
                     if mov_franchise.is_publishable:
                         mf_link['href'] = mov_franchise.get_absolute_url()
 
