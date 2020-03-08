@@ -32,12 +32,12 @@
 {% if televisionepisode.microgenre.all %}
 <p><strong>Microgenre(s)</strong>: {% for microgenre in televisionepisode.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.microgenre.all %}
-      <p><strong>Microgenre(s)</strong>: {% for microgenre in televisionepisode.tv_season.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'microgenres' %}">Microgenre(s)</a></strong>: {% for microgenre in televisionepisode.tv_season.microgenre.all %}<a href="{{ microgenre.get_absolute_url }}">{{ microgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
       {% if televisionepisode.keyword.all %}
-        <p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'keyword_index' %}">Keyword(s)</a></strong>: {% for keyword in televisionepisode.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.keyword.all %}
-        <p><strong>Keyword(s)</strong>: {% for keyword in televisionepisode.tv_season.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'keyword_index' %}">Keyword(s)</a></strong>: {% for keyword in televisionepisode.tv_season.keyword.all %}<a href="{{ keyword.get_absolute_url }}">{{ keyword }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
     </div>
     </div>
