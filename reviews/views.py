@@ -937,11 +937,18 @@ def create_mov_dict(film):
     else:
         image = film.poster_thumbnail
 
+    type = 'Full-length Film'
+    genres = [str(genre) for genre in film.genre.all()]
+    keywords = [str(keyword) for keyword in film.keyword.all()]
+
+    if 'Animation' in genres and 'short film' in keywords:
+        type = 'Animated Short'
+
     media_dict = {'media_object': film.get_absolute_url(),
                   'year': film.year_of_release,
                   'title': film.title_for_sorting,
                   'display_title': film.main_title,
-                  'type': 'Full-length Film',
+                  'type': type,
                   'image': image}
 
     return media_dict
