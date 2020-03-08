@@ -1153,6 +1153,7 @@ class MicrogenreDetailView(generic.DetailView):
                                            for tv_series_dict in
                                            items_from_tv_series_dict)
 
+        default_motion_pic_img = None
         if DefaultImage.objects.filter(
                 default_img_type='motion_pic').exists():
             default_motion_pic_img = DefaultImage.objects.get(
