@@ -30,7 +30,7 @@
       <p><strong>Subgenre(s)</strong>: {% for subgenre in televisionepisode.tv_season.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
 {% if televisionepisode.microgenre.all %}
-<p><strong>Microgenre(s)</strong>: {% for microgenre in televisionepisode.microgenre.all %}{{ microgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'microgenres' %}">Microgenre(s)</a></strong>: {% for microgenre in televisionepisode.microgenre.all %}<a href="{{ microgenre.get_absolute_url }}">{{ microgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.microgenre.all %}
         <p><strong><a href="{% url 'microgenres' %}">Microgenre(s)</a></strong>: {% for microgenre in televisionepisode.tv_season.microgenre.all %}<a href="{{ microgenre.get_absolute_url }}">{{ microgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
