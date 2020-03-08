@@ -24,7 +24,7 @@ from django.http import HttpResponse
 from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
     HomePageSitemap, StaticPagesSitemap, ListViewSitemap, TVSeriesSitemap, \
     TVSeasonSitemap, TVSeasonRevSitemap, TVEpisodeRevSitemap, \
-    MovFranchiseSitemap, MovCreatorSitemap, KeywordSitemap
+    MovFranchiseSitemap, MovCreatorSitemap, KeywordSitemap, MicrogenreSitemap
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -44,6 +44,7 @@ sitemaps = {
     'mov-franchise-detail': MovFranchiseSitemap,
     'creator-detail': MovCreatorSitemap,
     'keyword-detail': KeywordSitemap,
+    'microgenre-detail': MicrogenreSitemap,
     'landing_page': HomePageSitemap,
     'static': StaticPagesSitemap,
     'list_views': ListViewSitemap,

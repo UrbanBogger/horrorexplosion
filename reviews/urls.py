@@ -28,6 +28,8 @@ urlpatterns = [
         url(r'^$', views.creator_index, name='creator-index'),
         url(r'^(?P<first_letter>[A-Z]{1})$', views.creator_index,
             name='creator-index-letter')])),
+    url(r'^microgenres/$', views.MicrogenreListView.as_view(),
+        name='microgenres'),
     url(r'^keyword-index/', include([
         url(r'^$', views.keyword_index, name='keyword_index'),
         url(r'^(?P<first_letter>[A-Z]{1})$', views.keyword_index,
@@ -63,6 +65,8 @@ urlpatterns = [
         name='mov_franchises'),
     url(r'film-franchise-detail/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
         views.MovieFranchiseDetailView.as_view(), name='mov-franchise-detail'),
+    url(r'^microgenre/(?P<pk>\d+)/(?P<name>[-\w]+)$',
+        views.MicrogenreDetailView.as_view(), name='microgenre-detail'),
     url(r'^keyword/(?P<pk>\d+)/(?P<name>[-\w]+)$',
         views.KeywordDetailView.as_view(), name='keyword-detail')
 ]

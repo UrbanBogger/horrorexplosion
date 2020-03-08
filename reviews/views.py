@@ -16,8 +16,8 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionEpisode, TelevisionSeasonReview, TelevisionEpisodeReview, \
-    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Keyword, \
-    get_random_review, return_mov_participation_data
+    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Microgenre, \
+    Keyword, get_random_review, return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -928,6 +928,7 @@ class MovieFranchiseDetailView(generic.DetailView):
                                 if mov_series_entry.tv_series_entry]
         return context
 
+
 def create_mov_dict(film):
     image = None
 
@@ -1113,6 +1114,72 @@ class MovieCreatorDetailView(generic.DetailView):
         context['creator_img_styling'] = creator_img_styling
         context['default_motion_pic_img'] = default_motion_pic_img
         context['filmography'] = roles_with_media_objects
+        return context
+
+class MicrogenreDetailView(generic.DetailView):
+    model = Microgenre
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(MicrogenreDetailView, self).get_context_data(
+            **kwargs)
+        microgenre = Microgenre.objects.get(pk=self.kwargs.get(
+            self.pk_url_kwarg))
+        all_movs = Movie.objects.filter(microgenre=microgenre)
+        all_tv_seasons = TelevisionSeason.objects.filter(microgenre=microgenre)
+        all_tv_episodes = TelevisionEpisode.objects.filter(
+            microgenre=microgenre)
+        mov_dicts = []
+        for mov in all_movs:
+            mov_dicts.append(create_mov_dict(mov))
+        mov_dicts.sort(key=itemgetter('title'))
+
+        items_from_mov_dict = mov_dicts[:6]
+        mov_titles_sample = ','.join(str(film_dict['display_title']) for
+                                     film_dict in items_from_mov_dict)
+
+        tv_series_dict = []
+        for tv_season in all_tv_seasons:
+            tv_series_dict.append(create_tv_season_dict(tv_season))
+
+        for tv_episode in all_tv_episodes:
+            tv_series_dict.append(create_tv_episode_dict(tv_episode))
+
+        tv_series_dict.sort(key=itemgetter('title', 'season_number',
+                                           'tv_episode_number'))
+
+        items_from_tv_series_dict = tv_series_dict[:3]
+        tv_series_titles_sample = ','.join(str(tv_series_dict['display_title'])
+                                           for tv_series_dict in
+                                           items_from_tv_series_dict)
+
+        if DefaultImage.objects.filter(
+                default_img_type='motion_pic').exists():
+            default_motion_pic_img = DefaultImage.objects.get(
+                default_img_type='motion_pic').default_img
+        page_metadescriptor = \
+            'Page for microgenre: "{mg}".Films of microgenre:{mov_sample}.' \
+            'TV series of microgenre:{tv_series_sample}'.format(
+                mg=str(microgenre), mov_sample=mov_titles_sample,
+                tv_series_sample=tv_series_titles_sample)
+        context['page_title'] = \
+            'Microgenre: "{mg}" | The Horror Explosion'.format(mg=str(microgenre))
+        context['meta_content_description'] = page_metadescriptor
+        context['default_motion_pic_img'] = default_motion_pic_img
+        context['features'] = mov_dicts
+        context['tv_series'] = tv_series_dict
+        return context
+
+
+class MicrogenreListView (generic.ListView):
+    model = Microgenre
+    microgenres_page_title = "Microgenres | The Horror Explosion"
+    content_metadescription = "The list of microgenres in our database"
+
+    def get_context_data(self, **kwargs):
+        context = super(MicrogenreListView, self).get_context_data(**kwargs)
+        context['page_title'] = self.microgenres_page_title
+        context['meta_content_description'] = self.content_metadescription
         return context
 
 

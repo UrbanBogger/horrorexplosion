@@ -51,6 +51,14 @@ class Microgenre(MovieMetadescriptors):
     name = models.CharField(max_length=50, help_text='Enter the name of the '
                                                      'microgenre')
 
+    def get_absolute_url(self):
+        name_formatted = str(self).replace(' ', '-').lower()
+
+        return reverse('microgenre-detail', args=[
+            str(self.id), str(''.join(character for character in
+                                      name_formatted if character == '-'
+                                      or character.isalnum()))])
+
 
 class Keyword(MovieMetadescriptors):
     name = models.CharField(
