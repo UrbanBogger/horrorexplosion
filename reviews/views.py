@@ -1142,8 +1142,12 @@ class MicrogenreDetailView(generic.DetailView):
         mov_dicts.sort(key=itemgetter('title'))
 
         items_from_mov_dict = mov_dicts[:6]
-        mov_titles_sample = ','.join(str(film_dict['display_title']) for
-                                     film_dict in items_from_mov_dict)
+        if items_from_mov_dict:
+            mov_titles_sample = 'Films of the microgenre:{mov_sample}.'.format(
+                mov_sample=','.join(str(film_dict['display_title']) for
+                                    film_dict in items_from_mov_dict))
+        else:
+            mov_titles_sample = ''
 
         tv_series_dict = []
         for tv_season in all_tv_seasons:
@@ -1156,6 +1160,12 @@ class MicrogenreDetailView(generic.DetailView):
                                            'tv_episode_number'))
 
         items_from_tv_series_dict = tv_series_dict[:3]
+        tv_series_titles_sample = \
+            'TV series of the microgenre:{tv_series}'.format(
+                tv_series=','.join(
+                    str(tv_series_dict['display_title']) for
+                    tv_series_dict in items_from_tv_series_dict))
+
         tv_series_titles_sample = ','.join(str(tv_series_dict['display_title'])
                                            for tv_series_dict in
                                            items_from_tv_series_dict)
@@ -1165,11 +1175,12 @@ class MicrogenreDetailView(generic.DetailView):
                 default_img_type='motion_pic').exists():
             default_motion_pic_img = DefaultImage.objects.get(
                 default_img_type='motion_pic').default_img
+
         page_metadescriptor = \
-            'Page for microgenre: "{mg}".Films of microgenre:{mov_sample}.' \
-            'TV series of microgenre:{tv_series_sample}'.format(
-                mg=str(microgenre), mov_sample=mov_titles_sample,
-                tv_series_sample=tv_series_titles_sample)
+            'Page for microgenre: "{mg}".{mov_sample_str}' \
+            '{tv_series_sample_str}' \
+            ''.format(mg=str(microgenre), mov_sample_str=mov_titles_sample,
+                      tv_series_sample_str=tv_series_titles_sample)
         context['page_title'] = \
             'Microgenre: "{mg}" | The Horror Explosion'.format(mg=str(microgenre))
         context['meta_content_description'] = page_metadescriptor
@@ -1210,8 +1221,13 @@ class KeywordDetailView(generic.DetailView):
         mov_dicts.sort(key=itemgetter('title'))
 
         items_from_mov_dict = mov_dicts[:6]
-        mov_titles_sample = ','.join(str(film_dict['display_title']) for
-                                     film_dict in items_from_mov_dict)
+
+        if items_from_mov_dict:
+            mov_titles_sample = 'Films with the keyword:{mov_sample}.'.format(
+                mov_sample=','.join(str(film_dict['display_title']) for
+                                    film_dict in items_from_mov_dict))
+        else:
+            mov_titles_sample = ''
 
         tv_series_dict = []
         for tv_season in all_tv_seasons:
@@ -1224,9 +1240,15 @@ class KeywordDetailView(generic.DetailView):
                                            'tv_episode_number'))
 
         items_from_tv_series_dict = tv_series_dict[:3]
-        tv_series_titles_sample = ','.join(str(tv_series_dict['display_title'])
-                                           for tv_series_dict in
-                                           items_from_tv_series_dict)
+
+        if items_from_tv_series_dict:
+            tv_series_titles_sample = \
+                'TV series with the keyword:{tv_series}'.format(
+                    tv_series=','.join(
+                        str(tv_series_dict['display_title']) for
+                        tv_series_dict in items_from_tv_series_dict))
+        else:
+            tv_series_titles_sample = ''
 
         default_motion_pic_img = None
         if DefaultImage.objects.filter(
@@ -1234,10 +1256,9 @@ class KeywordDetailView(generic.DetailView):
             default_motion_pic_img = DefaultImage.objects.get(
                 default_img_type='motion_pic').default_img
         page_metadescriptor = \
-            'Page for keyword: "{kw}".Films with the keyword:{mov_sample}.' \
-            'TV series with the keyword:{tv_series_sample}'.format(
-                kw=str(keyword), mov_sample=mov_titles_sample,
-                tv_series_sample=tv_series_titles_sample)
+            'Page for keyword: "{kw}".{mov_sample_str}{tv_series_sample_str}' \
+            ''.format(kw=str(keyword), mov_sample_str=mov_titles_sample,
+                      tv_series_sample_str=tv_series_titles_sample)
         context['page_title'] = \
             'Keyword: "{kw}" | The Horror Explosion'.format(kw=str(keyword))
         context['meta_content_description'] = page_metadescriptor
