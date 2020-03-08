@@ -1123,6 +1123,7 @@ class MovieCreatorDetailView(generic.DetailView):
         context['filmography'] = roles_with_media_objects
         return context
 
+
 class MicrogenreDetailView(generic.DetailView):
     model = Microgenre
 
@@ -1160,15 +1161,15 @@ class MicrogenreDetailView(generic.DetailView):
                                            'tv_episode_number'))
 
         items_from_tv_series_dict = tv_series_dict[:3]
-        tv_series_titles_sample = \
-            'TV series of the microgenre:{tv_series}'.format(
-                tv_series=','.join(
-                    str(tv_series_dict['display_title']) for
-                    tv_series_dict in items_from_tv_series_dict))
+        if items_from_tv_series_dict:
+            tv_series_titles_sample = \
+                'TV series of the microgenre:{tv_series}'.format(
+                    tv_series=','.join(
+                        str(tv_series_dict['display_title']) for
+                        tv_series_dict in items_from_tv_series_dict))
+        else:
+            tv_series_titles_sample = ''
 
-        tv_series_titles_sample = ','.join(str(tv_series_dict['display_title'])
-                                           for tv_series_dict in
-                                           items_from_tv_series_dict)
 
         default_motion_pic_img = None
         if DefaultImage.objects.filter(
