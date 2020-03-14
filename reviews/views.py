@@ -1166,6 +1166,7 @@ def get_detailed_metadata(all_movs, all_tv_seasons, all_tv_episodes,
     else:
         tv_series_titles_sample = ''
 
+    default_motion_pic_img = None
     if DefaultImage.objects.filter(default_img_type='motion_pic').exists():
         default_motion_pic_img = DefaultImage.objects.get(
             default_img_type='motion_pic').default_img
