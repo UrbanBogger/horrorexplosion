@@ -1,11 +1,10 @@
 <ul class="list-group">
-    {% load static %}
 {% for metadata_obj in metadata_objects %}
     <li class="list-group-item">
             {% if metadata_obj.image %}
-                <img id="keyword-list-thumb" src="{% static '' %}{{ metadata_obj.image }}" alt="{{ metadata_obj.display_title }} poster" />
+                <img id="keyword-list-thumb" src="{{ metadata_obj.image.url }}" alt="{{ metadata_obj.display_title }} poster" />
             {% else %}
-                <img id="keyword-list-thumb" src="{% static '' %}{{ default_motion_pic_img }}" alt="generic motion picture poster" />
+                <img id="keyword-list-thumb" src="{{ default_motion_pic_img.url }}" alt="generic motion picture poster" />
             {% endif %}
         <a href="{{ metadata_obj.media_object }}">{{ metadata_obj.display_title }}</a>
         <br/>
