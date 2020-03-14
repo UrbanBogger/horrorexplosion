@@ -1124,6 +1124,56 @@ class MovieCreatorDetailView(generic.DetailView):
         return context
 
 
+def get_detailed_metadata(all_movs, all_tv_seasons, all_tv_episodes,
+                          description_string_template):
+
+    mov_dicts = []
+    for mov in all_movs:
+        mov_dicts.append(create_mov_dict(mov))
+    mov_dicts.sort(key=itemgetter('title'))
+
+    animated_shorts = None
+    animated_shorts = list(filter(
+        lambda film: film['type'] == 'Animated Short', mov_dicts))
+    if animated_shorts:
+        for animated_short in animated_shorts:
+            mov_dicts.remove(animated_short)
+
+    items_from_mov_dict = mov_dicts[:6]
+    if items_from_mov_dict:
+        mov_titles_sample = 'Films {description}{mov_sample}.'.format(
+            description=description_string_template,mov_sample=','.join(
+                str(film_dict['display_title']) for film_dict in
+                items_from_mov_dict))
+    else:
+        mov_titles_sample = ''
+
+    tv_series_dict = []
+    for tv_season in all_tv_seasons:
+        tv_series_dict.append(create_tv_season_dict(tv_season))
+
+    for tv_episode in all_tv_episodes:
+        tv_series_dict.append(create_tv_episode_dict(tv_episode))
+    tv_series_dict.sort(key=itemgetter(
+        'title', 'season_number', 'tv_episode_number'))
+
+    items_from_tv_series_dict = tv_series_dict[:3]
+    if items_from_tv_series_dict:
+        tv_series_titles_sample = 'TV series {description}{tv_series}'.format(
+            description=description_string_template, tv_series=','.join(
+                str(tv_series_dict['display_title']) for tv_series_dict in
+                items_from_tv_series_dict))
+    else:
+        tv_series_titles_sample = ''
+
+    if DefaultImage.objects.filter(default_img_type='motion_pic').exists():
+        default_motion_pic_img = DefaultImage.objects.get(
+            default_img_type='motion_pic').default_img
+
+    return mov_dicts, tv_series_dict, animated_shorts, mov_titles_sample, \
+           tv_series_titles_sample, default_motion_pic_img
+
+
 class MicrogenreDetailView(generic.DetailView):
     model = Microgenre
 
@@ -1137,46 +1187,12 @@ class MicrogenreDetailView(generic.DetailView):
         all_tv_seasons = TelevisionSeason.objects.filter(microgenre=microgenre)
         all_tv_episodes = TelevisionEpisode.objects.filter(
             microgenre=microgenre)
-        mov_dicts = []
-        for mov in all_movs:
-            mov_dicts.append(create_mov_dict(mov))
-        mov_dicts.sort(key=itemgetter('title'))
 
-        items_from_mov_dict = mov_dicts[:6]
-        if items_from_mov_dict:
-            mov_titles_sample = 'Films of the microgenre:{mov_sample}.'.format(
-                mov_sample=','.join(str(film_dict['display_title']) for
-                                    film_dict in items_from_mov_dict))
-        else:
-            mov_titles_sample = ''
-
-        tv_series_dict = []
-        for tv_season in all_tv_seasons:
-            tv_series_dict.append(create_tv_season_dict(tv_season))
-
-        for tv_episode in all_tv_episodes:
-            tv_series_dict.append(create_tv_episode_dict(tv_episode))
-
-        tv_series_dict.sort(key=itemgetter('title', 'season_number',
-                                           'tv_episode_number'))
-
-        items_from_tv_series_dict = tv_series_dict[:3]
-        if items_from_tv_series_dict:
-            tv_series_titles_sample = \
-                'TV series of the microgenre:{tv_series}'.format(
-                    tv_series=','.join(
-                        str(tv_series_dict['display_title']) for
-                        tv_series_dict in items_from_tv_series_dict))
-        else:
-            tv_series_titles_sample = ''
-
-
-        default_motion_pic_img = None
-        if DefaultImage.objects.filter(
-                default_img_type='motion_pic').exists():
-            default_motion_pic_img = DefaultImage.objects.get(
-                default_img_type='motion_pic').default_img
-
+        mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+        tv_series_titles_sample, default_motion_pic_img = \
+            get_detailed_metadata(
+                all_movs, all_tv_seasons, all_tv_episodes,
+                description_string_template='of the microgenre:')
         page_metadescriptor = \
             'Page for microgenre: "{mg}".{mov_sample_str}' \
             '{tv_series_sample_str}' \
@@ -1188,6 +1204,7 @@ class MicrogenreDetailView(generic.DetailView):
         context['default_motion_pic_img'] = default_motion_pic_img
         context['features'] = mov_dicts
         context['tv_series'] = tv_series_dict
+        context['animated_shorts'] = animated_shorts_dict
         return context
 
 
@@ -1216,46 +1233,11 @@ class KeywordDetailView(generic.DetailView):
         all_tv_seasons = TelevisionSeason.objects.filter(keyword=keyword)
         all_tv_episodes = TelevisionEpisode.objects.filter(keyword=keyword)
 
-        mov_dicts = []
-        for mov in all_movs:
-            mov_dicts.append(create_mov_dict(mov))
-        mov_dicts.sort(key=itemgetter('title'))
-
-        items_from_mov_dict = mov_dicts[:6]
-
-        if items_from_mov_dict:
-            mov_titles_sample = 'Films with the keyword:{mov_sample}.'.format(
-                mov_sample=','.join(str(film_dict['display_title']) for
-                                    film_dict in items_from_mov_dict))
-        else:
-            mov_titles_sample = ''
-
-        tv_series_dict = []
-        for tv_season in all_tv_seasons:
-            tv_series_dict.append(create_tv_season_dict(tv_season))
-
-        for tv_episode in all_tv_episodes:
-            tv_series_dict.append(create_tv_episode_dict(tv_episode))
-
-        tv_series_dict.sort(key=itemgetter('title', 'season_number',
-                                           'tv_episode_number'))
-
-        items_from_tv_series_dict = tv_series_dict[:3]
-
-        if items_from_tv_series_dict:
-            tv_series_titles_sample = \
-                'TV series with the keyword:{tv_series}'.format(
-                    tv_series=','.join(
-                        str(tv_series_dict['display_title']) for
-                        tv_series_dict in items_from_tv_series_dict))
-        else:
-            tv_series_titles_sample = ''
-
-        default_motion_pic_img = None
-        if DefaultImage.objects.filter(
-                default_img_type='motion_pic').exists():
-            default_motion_pic_img = DefaultImage.objects.get(
-                default_img_type='motion_pic').default_img
+        mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+        tv_series_titles_sample, default_motion_pic_img = \
+            get_detailed_metadata(
+                all_movs, all_tv_seasons, all_tv_episodes,
+                description_string_template='with the keyword:')
         page_metadescriptor = \
             'Page for keyword: "{kw}".{mov_sample_str}{tv_series_sample_str}' \
             ''.format(kw=str(keyword), mov_sample_str=mov_titles_sample,
@@ -1266,6 +1248,7 @@ class KeywordDetailView(generic.DetailView):
         context['default_motion_pic_img'] = default_motion_pic_img
         context['features'] = mov_dicts
         context['tv_series'] = tv_series_dict
+        context['animated_shorts'] = animated_shorts_dict
         return context
 
 

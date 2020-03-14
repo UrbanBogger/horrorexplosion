@@ -13,41 +13,20 @@
 
 {% if features %}
 <h2>Feature Films with the Keyword:</h2>
-<ul class="list-group">
-{% for feature in features %}
-    <li class="list-group-item">
-            {% if feature.image %}
-                <img id="keyword-list-thumb" src="{{ feature.image.url }}" alt="{{ feature.display_title }} poster" />
-            {% elif default_motion_pic_img %}
-                <img id="keyword-list-thumb" src="{{ default_motion_pic_img.url }}" alt="generic motion picture poster" />
-            {% endif %}
-        <a href="{{ feature.media_object }}">{{ feature.display_title }}</a>
-        <br/>
-        Release Year: <strong>{{ feature.year }}</strong>
-    </li>
-    {% endfor %}
-</ul>
+{% include 'metadata_list_template.html' with metadata_objects=features %}
 {% endif %}
 
 {% if tv_series %}
 <h2>TV Series with the Keyword:</h2>
-<ul class="list-group">
-{% for tv_ser in tv_series %}
-    <li class="list-group-item">
-            {% if tv_ser.image %}
-                <img id="keyword-list-thumb" src="{{ tv_ser.image.url }}" alt="{{ tv_ser.display_title }} poster" />
-            {% elif default_motion_pic_img %}
-                <img id="keyword-list-thumb" src="{{ default_motion_pic_img.url }}" alt="generic motion picture poster" />
-            {% endif %}
-        <a href="{{ tv_ser.media_object }}">{{ tv_ser.display_title }}</a>
-        <br/>
-        Release Year: <strong>{{ tv_ser.year }}</strong>
-    </li>
-    {% endfor %}
-</ul>
+{% include 'metadata_list_template.html' with metadata_objects=tv_series %}
 {% endif %}
 
-{% if not features and not tv_series %}
+{% if animated_shorts %}
+<h2>Animated Shorts with the Keyword:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=animated_shorts %}
+{% endif %}
+
+{% if not features and not tv_series and not animated_shorts %}
 <strong>No database entries for the keyword</strong>
 {% endif %}
 {% endblock %}
