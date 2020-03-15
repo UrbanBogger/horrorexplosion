@@ -26,7 +26,7 @@
 <p><strong>Genre(s)</strong>: {% for genre in televisionseason.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
 {% if televisionseason.subgenre.all %}
-<p><strong>Subgenre(s)</strong>: {% for subgenre in televisionseason.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in televisionseason.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
 {% if televisionseason.microgenre.all %}
         <p><strong><a href="{% url 'microgenres' %}">Microgenre(s)</a></strong>: {% for microgenre in televisionseason.microgenre.all %}<a href="{{ microgenre.get_absolute_url }}">{{ microgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>

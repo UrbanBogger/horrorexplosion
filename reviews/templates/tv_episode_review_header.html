@@ -25,9 +25,9 @@
       <p><strong>Genre(s)</strong>: {% for genre in televisionepisode.tv_season.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
 {% if televisionepisode.subgenre.all %}
-<p><strong>Subgenre(s)</strong>: {% for subgenre in televisionepisode.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in televisionepisode.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.subgenre.all %}
-      <p><strong>Subgenre(s)</strong>: {% for subgenre in televisionepisode.tv_season.subgenre.all %}{{ subgenre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in televisionepisode.tv_season.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
 {% if televisionepisode.microgenre.all %}
         <p><strong><a href="{% url 'microgenres' %}">Microgenre(s)</a></strong>: {% for microgenre in televisionepisode.microgenre.all %}<a href="{{ microgenre.get_absolute_url }}">{{ microgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
