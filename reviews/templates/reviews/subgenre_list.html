@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Subgenres</h1>
+
+{% if subgenre_list %}
+<ul class="list-group">
+    {% for subgenre in subgenre_list %}
+    {% load static %}
+    <li class="list-group-item clearfix">
+        <a href="{{ subgenre.get_absolute_url }}"><strong>{{ subgenre }}</strong></a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Could not find any subgenres</p>
+{% endif %}
+{% endblock %}

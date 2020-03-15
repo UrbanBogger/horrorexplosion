@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Subgenre: "{{ subgenre }}"</h1>
+
+{% if subgenre.description %}
+<h2>About</h2>
+<p>{{ subgenre.description }}</p>
+{% endif %}
+
+{% if features %}
+<h2>Feature Films Belonging to the Subgenre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=features %}
+{% endif %}
+
+{% if tv_series %}
+<h2>TV Series Belonging to the Subgenre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=tv_series %}
+{% endif %}
+
+{% if animated_shorts %}
+<h2>Animated Shorts Belonging to the Subgenre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=animated_shorts %}
+{% endif %}
+
+{% if not features and not tv_series and not animated_shorts %}
+<strong>No database entries for the keyword</strong>
+{% endif %}
+{% endblock %}

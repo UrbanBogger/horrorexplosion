@@ -16,8 +16,8 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionEpisode, TelevisionSeasonReview, TelevisionEpisodeReview, \
-    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Microgenre, \
-    Keyword, get_random_review, return_mov_participation_data
+    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Subgenre, \
+    Microgenre, Keyword, get_random_review, return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -1173,6 +1173,50 @@ def get_detailed_metadata(all_movs, all_tv_seasons, all_tv_episodes,
 
     return mov_dicts, tv_series_dict, animated_shorts, mov_titles_sample, \
            tv_series_titles_sample, default_motion_pic_img
+
+
+class SubgenreDetailView(generic.DetailView):
+    model = Subgenre
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(SubgenreDetailView, self).get_context_data(
+            **kwargs)
+        subgenre = Subgenre.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        all_movs = Movie.objects.filter(subgenre=subgenre)
+        all_tv_seasons = TelevisionSeason.objects.filter(subgenre=subgenre)
+        all_tv_episodes = TelevisionEpisode.objects.filter(subgenre=subgenre)
+
+        mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+        tv_series_titles_sample, default_motion_pic_img = \
+            get_detailed_metadata(
+                all_movs, all_tv_seasons, all_tv_episodes,
+                description_string_template='of the subgenre:')
+        page_metadescriptor = \
+            'Page for subgenre: "{mg}".{mov_sample_str}' \
+            '{tv_series_sample_str}' \
+            ''.format(mg=str(subgenre), mov_sample_str=mov_titles_sample,
+                      tv_series_sample_str=tv_series_titles_sample)
+        context['page_title'] = \
+            'Subgenre: "{sg}" | The Horror Explosion'.format(sg=str(subgenre))
+        context['meta_content_description'] = page_metadescriptor
+        context['default_motion_pic_img'] = default_motion_pic_img
+        context['features'] = mov_dicts
+        context['tv_series'] = tv_series_dict
+        context['animated_shorts'] = animated_shorts_dict
+        return context
+
+
+class SubgenreListView (generic.ListView):
+    model = Subgenre
+    subgenres_page_title = "Subgenres | The Horror Explosion"
+    content_metadescription = "The list of subgenres in our database"
+
+    def get_context_data(self, **kwargs):
+        context = super(SubgenreListView, self).get_context_data(**kwargs)
+        context['page_title'] = self.subgenres_page_title
+        context['meta_content_description'] = self.content_metadescription
+        return context
 
 
 class MicrogenreDetailView(generic.DetailView):
