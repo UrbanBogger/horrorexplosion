@@ -1175,6 +1175,37 @@ def get_detailed_metadata(all_movs, all_tv_seasons, all_tv_episodes,
            tv_series_titles_sample, default_motion_pic_img
 
 
+def subgenre_detail_view(request, **kwargs):
+    subgenre_pk = kwargs['pk']
+    subgenre = Subgenre.objects.get(pk=subgenre_pk)
+    all_movs = Movie.objects.filter(subgenre=subgenre)
+    all_tv_seasons = TelevisionSeason.objects.filter(subgenre=subgenre)
+    all_tv_episodes = TelevisionEpisode.objects.filter(subgenre=subgenre)
+
+    mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+    tv_series_titles_sample, default_motion_pic_img = get_detailed_metadata(
+        all_movs, all_tv_seasons, all_tv_episodes,
+        description_string_template='of the subgenre:')
+    all_media_objects = mov_dicts + tv_series_dict + animated_shorts_dict
+
+    page = request.GET.get('page', 1)
+    all_media_objects = paginate_qs(all_media_objects, page)
+
+    subgenre_detail_page_metadescriptor = \
+        'Page for subgenre: "{mg}".{mov_sample_str}{tv_series_sample_str}'\
+            .format(mg=str(subgenre), mov_sample_str=mov_titles_sample,
+                    tv_series_sample_str=tv_series_titles_sample)
+    subgenre_detail_page_title = \
+        'Subgenre: "{sg}" | The Horror Explosion'.format(sg=str(subgenre))
+
+    return render(request, 'subgenre_detail.html',
+                  {'page_title': subgenre_detail_page_title,
+                   'meta_content_description':
+                       subgenre_detail_page_metadescriptor,
+                   'all_media_objects': all_media_objects,
+                   'subgenre': subgenre})
+
+'''
 class SubgenreDetailView(generic.DetailView):
     model = Subgenre
 
@@ -1205,7 +1236,7 @@ class SubgenreDetailView(generic.DetailView):
         context['tv_series'] = tv_series_dict
         context['animated_shorts'] = animated_shorts_dict
         return context
-
+'''
 
 class SubgenreListView (generic.ListView):
     model = Subgenre

@@ -67,7 +67,7 @@ urlpatterns = [
     url(r'film-franchise-detail/(?P<pk>\d+)/(?P<human_readable_url>[-\w]+)$',
         views.MovieFranchiseDetailView.as_view(), name='mov-franchise-detail'),
     url(r'^subgenre/(?P<pk>\d+)/(?P<name>[-\w]+)$',
-        views.SubgenreDetailView.as_view(), name='subgenre-detail'),
+        views.subgenre_detail_view, name='subgenre-detail'),
     url(r'^microgenre/(?P<pk>\d+)/(?P<name>[-\w]+)$',
         views.MicrogenreDetailView.as_view(), name='microgenre-detail'),
     url(r'^keyword/(?P<pk>\d+)/(?P<name>[-\w]+)$',
