@@ -1217,7 +1217,7 @@ class SubgenreListView (generic.ListView):
         context['meta_content_description'] = self.content_metadescription
         return context
 
-
+'''
 class MicrogenreDetailView(generic.DetailView):
     model = Microgenre
 
@@ -1250,6 +1250,40 @@ class MicrogenreDetailView(generic.DetailView):
         context['tv_series'] = tv_series_dict
         context['animated_shorts'] = animated_shorts_dict
         return context
+'''
+
+
+def microgenre_detail_view(request, **kwargs):
+    microgenre_pk = kwargs['pk']
+    microgenre = Microgenre.objects.get(pk=microgenre_pk)
+    all_movs = Movie.objects.filter(microgenre=microgenre)
+    all_tv_seasons = TelevisionSeason.objects.filter(microgenre=microgenre)
+    all_tv_episodes = TelevisionEpisode.objects.filter(microgenre=microgenre)
+
+    mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+        tv_series_titles_sample, default_motion_pic_img = \
+            get_detailed_metadata(
+                all_movs, all_tv_seasons, all_tv_episodes,
+                description_string_template='of the microgenre:')
+    all_media_objects = mov_dicts + tv_series_dict + animated_shorts_dict
+
+    page = request.GET.get('page', 1)
+    all_media_objects = paginate_qs(all_media_objects, page)
+
+    microgenre_detail_page_metadescriptor = \
+        'Page for microgenre: "{mg}".{mov_sample_str}{tv_series_sample_str}'\
+        .format(mg=str(microgenre), mov_sample_str=mov_titles_sample,
+                tv_series_sample_str=tv_series_titles_sample)
+
+    microgenre_detail_page_title = \
+        'Microgenre: "{mg}" | The Horror Explosion'.format(mg=str(microgenre))
+
+    return render(request, 'microgenre_detail.html',
+                  {'page_title': microgenre_detail_page_title,
+                   'meta_content_description':
+                       microgenre_detail_page_metadescriptor,
+                   'all_media_objects': all_media_objects,
+                   'microgenre': microgenre})
 
 
 class MicrogenreListView (generic.ListView):

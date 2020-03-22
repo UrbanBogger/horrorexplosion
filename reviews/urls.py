@@ -69,7 +69,7 @@ urlpatterns = [
     url(r'^subgenre/(?P<pk>\d+)/(?P<name>[-\w]+)$',
         views.subgenre_detail_view, name='subgenre-detail'),
     url(r'^microgenre/(?P<pk>\d+)/(?P<name>[-\w]+)$',
-        views.MicrogenreDetailView.as_view(), name='microgenre-detail'),
+        views.microgenre_detail_view, name='microgenre-detail'),
     url(r'^keyword/(?P<pk>\d+)/(?P<name>[-\w]+)$',
         views.KeywordDetailView.as_view(), name='keyword-detail')
 ]
