@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Genres</h1>
+
+{% if genre_list %}
+<ul class="list-group">
+    {% for genre in genre_list %}
+    <li class="list-group-item clearfix">
+        <a href="{{ genre.get_absolute_url }}"><strong>{{ genre }}</strong></a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Could not find any genres</p>
+{% endif %}
+{% endblock %}
