@@ -16,8 +16,9 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     ReferencedMovie, Contributor, MovieRemake, MovieSeries, MovieInMovSeries, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionEpisode, TelevisionSeasonReview, TelevisionEpisodeReview, \
-    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Subgenre, \
-    Microgenre, Keyword, get_random_review, return_mov_participation_data
+    MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Genre, \
+    Subgenre, Microgenre, Keyword, get_random_review, \
+    return_mov_participation_data
 
 # Create your views here.
 HTTP_PROTOCOL = 'http://'
@@ -1173,6 +1174,50 @@ def get_detailed_metadata(all_movs, all_tv_seasons, all_tv_episodes,
 
     return mov_dicts, tv_series_dict, animated_shorts, mov_titles_sample, \
            tv_series_titles_sample, default_motion_pic_img
+
+
+def genre_detail_view(request, **kwargs):
+    genre_pk = kwargs['pk']
+    genre = Genre.objects.get(pk=genre_pk)
+    all_movs = Movie.objects.filter(genre=genre)
+    all_tv_seasons = TelevisionSeason.objects.filter(genre=genre)
+    all_tv_episodes = TelevisionEpisode.objects.filter(genre=genre)
+
+    mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
+    tv_series_titles_sample, default_motion_pic_img = get_detailed_metadata(
+        all_movs, all_tv_seasons, all_tv_episodes,
+        description_string_template='of the genre:')
+    all_media_objects = mov_dicts + tv_series_dict + animated_shorts_dict
+
+    page = request.GET.get('page', 1)
+    all_media_objects = paginate_qs(all_media_objects, page)
+
+    genre_detail_page_metadescriptor = \
+        'Page for genre: "{gr}".Films of genre:{mov_sample}.' \
+        'TV series of genre:{tv_series_sample}'.format(
+                gr=str(genre), mov_sample=mov_titles_sample,
+                tv_series_sample=tv_series_titles_sample)
+    genre_detail_page_title = \
+        'Genre: "{gr}" | The Horror Explosion'.format(gr=str(genre))
+
+    return render(request, 'genre_detail.html',
+                  {'page_title': genre_detail_page_title,
+                   'meta_content_description':
+                       genre_detail_page_metadescriptor,
+                   'all_media_objects': all_media_objects,
+                   'genre': genre})
+
+
+class GenreListView (generic.ListView):
+    model = Genre
+    subgenres_page_title = "Genres | The Horror Explosion"
+    content_metadescription = "The list of genres in our database"
+
+    def get_context_data(self, **kwargs):
+        context = super(GenreListView, self).get_context_data(**kwargs)
+        context['page_title'] = self.subgenres_page_title
+        context['meta_content_description'] = self.content_metadescription
+        return context
 
 
 def subgenre_detail_view(request, **kwargs):

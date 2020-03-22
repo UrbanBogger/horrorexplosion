@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="{{ meta_content_description }}">
+{% endblock %}
+
+{% block main_content %}
+<h1>Genre: "{{ genre }}"</h1>
+
+{% if genre.description %}
+<h2>About</h2>
+<p>{{ genre.description }}</p>
+{% endif %}
+
+{% load app_filters %}
+{% if all_media_objects|get_all_media_objects:"Full-length Film"|length > 0 %}
+<h2>Feature Films Belonging to the Genre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=all_media_objects|get_all_media_objects:"Full-length Film" %}
+{% endif %}
+
+{% if all_media_objects|get_all_media_objects:"TV Series"|length > 0 %}
+<h2>TV Series Belonging to the Genre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=all_media_objects|get_all_media_objects:"TV Series" %}
+{% endif %}
+
+{% if all_media_objects|get_all_media_objects:"Animated Short"|length > 0 %}
+<h2>Animated Shorts Belonging to the Genre:</h2>
+{% include 'metadata_list_template.html' with metadata_objects=all_media_objects|get_all_media_objects:"Animated Short" %}
+{% endif %}
+
+{% if not  all_media_objects %}
+<strong>No database entries for the genre</strong>
+{% endif %}
+{% endblock %}
+
+{% block pagination %}
+{% include 'list_pagination_basic.html' with all_media_objects=all_media_objects %}
+{% endblock %}

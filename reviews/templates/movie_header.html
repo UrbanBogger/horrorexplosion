@@ -21,7 +21,7 @@
 <em><strong>Cast</strong></em>: {% for movie_participation in movie_cast %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
     {% endif %}
 </h3>
-<p><strong>Genre(s)</strong>: {% for genre in movie.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'genres' %}">Genre(s)</a></strong>: {% for genre in movie.genre.all %}<a href="{{ genre.get_absolute_url }}">{{ genre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% if movie.subgenre.all %}
         <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in movie.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
 {% endif %}
