@@ -25,7 +25,7 @@ from reviews.sitemaps import MovReviewSitemap, MovieSitemap, \
     HomePageSitemap, StaticPagesSitemap, ListViewSitemap, TVSeriesSitemap, \
     TVSeasonSitemap, TVSeasonRevSitemap, TVEpisodeRevSitemap, \
     MovFranchiseSitemap, MovCreatorSitemap, KeywordSitemap, \
-    MicrogenreSitemap, SubgenreSitemap
+    MicrogenreSitemap, SubgenreSitemap, GenreSitemap
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -47,6 +47,7 @@ sitemaps = {
     'keyword-detail': KeywordSitemap,
     'microgenre-detail': MicrogenreSitemap,
     'subgenre-detail': SubgenreSitemap,
+    'genre-detail': GenreSitemap,
     'landing_page': HomePageSitemap,
     'static': StaticPagesSitemap,
     'list_views': ListViewSitemap,

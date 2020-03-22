@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from .models import MovieReview, Movie, TelevisionSeries, TelevisionSeason, \
     TelevisionSeasonReview, TelevisionEpisodeReview, MovieFranchise, \
-    MovieCreator, Keyword, Subgenre, Microgenre
+    MovieCreator, Keyword, Genre, Subgenre, Microgenre
 from django.core.urlresolvers import reverse
 
 
@@ -98,6 +98,14 @@ class KeywordSitemap(Sitemap):
         return Keyword.objects.all()
 
 
+class GenreSitemap(Sitemap):
+    changefreq = 'weekly'
+    priority = 0.7
+
+    def items(self):
+        return Genre.objects.all()
+
+
 class SubgenreSitemap(Sitemap):
     changefreq = 'weekly'
     priority = 0.7
@@ -121,7 +129,7 @@ class ListViewSitemap(Sitemap):
     def items(self):
         return ['movies', 'movie_reviews', 'tv_series', 'mov_franchises',
                 'tv-series-review-list', 'movie_index', 'creator-index',
-                'keyword_index', 'subgenres', 'microgenres']
+                'keyword_index', 'genres', 'subgenres', 'microgenres']
 
     def location(self, item):
         return reverse(item)
