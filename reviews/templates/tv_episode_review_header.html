@@ -20,9 +20,9 @@
 </h3>
       {% endif %}
       {% if televisionepisode.genre.all %}
-<p><strong>Genre(s)</strong>: {% for genre in televisionepisode.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'genres' %}">Genre(s)</a></strong>: {% for genre in televisionepisode.genre.all %}<a href="{{ genre.get_absolute_url }}">{{ genre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.genre.all %}
-      <p><strong>Genre(s)</strong>: {% for genre in televisionepisode.tv_season.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'genres' %}">Genre(s)</a></strong>: {% for genre in televisionepisode.tv_season.genre.all %}<a href="{{ genre.get_absolute_url }}">{{ genre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
 {% if televisionepisode.subgenre.all %}
         <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in televisionepisode.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>

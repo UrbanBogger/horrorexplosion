@@ -23,7 +23,7 @@
     {% endif %}
 </h3>
       {% if televisionseason.genre.all %}
-<p><strong>Genre(s)</strong>: {% for genre in televisionseason.genre.all %}{{ genre }}{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
+        <p><strong><a href="{% url 'genres' %}">Genre(s)</a></strong>: {% for genre in televisionseason.genre.all %}<a href="{{ genre.get_absolute_url }}">{{ genre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% endif %}
 {% if televisionseason.subgenre.all %}
         <p><strong><a href="{% url 'subgenres' %}">Subgenre(s)</a></strong>: {% for subgenre in televisionseason.subgenre.all %}<a href="{{ subgenre.get_absolute_url }}">{{ subgenre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
