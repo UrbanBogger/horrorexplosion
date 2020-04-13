@@ -1262,41 +1262,6 @@ class SubgenreListView (generic.ListView):
         context['meta_content_description'] = self.content_metadescription
         return context
 
-'''
-class MicrogenreDetailView(generic.DetailView):
-    model = Microgenre
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get the context
-        context = super(MicrogenreDetailView, self).get_context_data(
-            **kwargs)
-        microgenre = Microgenre.objects.get(pk=self.kwargs.get(
-            self.pk_url_kwarg))
-        all_movs = Movie.objects.filter(microgenre=microgenre)
-        all_tv_seasons = TelevisionSeason.objects.filter(microgenre=microgenre)
-        all_tv_episodes = TelevisionEpisode.objects.filter(
-            microgenre=microgenre)
-
-        mov_dicts, tv_series_dict, animated_shorts_dict, mov_titles_sample, \
-        tv_series_titles_sample, default_motion_pic_img = \
-            get_detailed_metadata(
-                all_movs, all_tv_seasons, all_tv_episodes,
-                description_string_template='of the microgenre:')
-        page_metadescriptor = \
-            'Page for microgenre: "{mg}".{mov_sample_str}' \
-            '{tv_series_sample_str}' \
-            ''.format(mg=str(microgenre), mov_sample_str=mov_titles_sample,
-                      tv_series_sample_str=tv_series_titles_sample)
-        context['page_title'] = \
-            'Microgenre: "{mg}" | The Horror Explosion'.format(mg=str(microgenre))
-        context['meta_content_description'] = page_metadescriptor
-        context['default_motion_pic_img'] = default_motion_pic_img
-        context['features'] = mov_dicts
-        context['tv_series'] = tv_series_dict
-        context['animated_shorts'] = animated_shorts_dict
-        return context
-'''
-
 
 def microgenre_detail_view(request, **kwargs):
     microgenre_pk = kwargs['pk']
