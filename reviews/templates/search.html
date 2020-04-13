@@ -1,0 +1,9 @@
+{% extends "base_generic.html" %}
+
+{% block main_content %}
+<h2>Search</h2>
+{% if search_query %}
+<h3>Results for: "{{ search_query }}"</h3>
+{% endif %}
+{% include 'search_results_partial.html' %}
+{% endblock %}

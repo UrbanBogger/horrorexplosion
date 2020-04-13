@@ -1,5 +1,9 @@
 {% extends "base_generic.html" %}
 
+{% block search_form %}
+{%include 'search_form.html' %}
+{% endblock %}
+
 {% block title %}
 <title>{{ page_title }}</title>
 {% endblock %}
@@ -10,4 +14,9 @@
 
 {% block main_content %}
 <div id="about">{{ mission_statement|safe }}</div>
+{% endblock %}
+
+{% block javascript %}
+{% load static %}
+<script type="text/javascript" src="{% static 'javascript/search_autocomplete.js' %}"></script>
 {% endblock %}

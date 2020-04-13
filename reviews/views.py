@@ -1,6 +1,7 @@
 import sys
 import re
 import random
+import bleach
 from bs4 import BeautifulSoup
 from operator import itemgetter
 from django.shortcuts import render, redirect
@@ -8,7 +9,9 @@ from django.views import generic
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import EmailMessage, BadHeaderError
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
 from django.contrib.sites.models import Site
 from .forms import ContactForm
 from .google_structured_data import mov_review_sd, tv_episode_rev_sd, mov_sd
@@ -1338,6 +1341,299 @@ class KeywordDetailView(generic.DetailView):
         context['tv_series'] = tv_series_dict
         context['animated_shorts'] = animated_shorts_dict
         return context
+
+
+class SearchObject(object):
+        main_title = None
+        og_title = None
+        alt_title = None
+        link = None
+        poster = None
+        type = None
+        tv_season = None
+
+
+def search_view(request):
+    url_parameter = request.GET.get('q')
+    search_category = request.GET.get('sc')
+
+    if not request.GET:
+        return render(request, 'search.html',
+                      context={'display_welcome_msg': True})
+
+    if url_parameter:
+        url_parameter = bleach.clean(url_parameter)
+
+    if not url_parameter or url_parameter == ' ':
+        return render(request, 'search.html', context={})
+
+    default_motion_pic_img = None
+    if DefaultImage.objects.filter(default_img_type='motion_pic').exists():
+        default_motion_pic_img = DefaultImage.objects.get(
+            default_img_type='motion_pic')
+
+    default_creator_male_img = None
+    if DefaultImage.objects.filter(default_img_type='male').exists():
+        default_creator_male_img = DefaultImage.objects.get(
+            default_img_type='male')
+
+    default_creator_female_img = None
+    if DefaultImage.objects.filter(default_img_type='female').exists():
+        default_creator_female_img = DefaultImage.objects.get(
+            default_img_type='female')
+
+    default_keyword_img = None
+    if DefaultImage.objects.filter(default_img_type='keyword').exists():
+        default_keyword_img = DefaultImage.objects.get(
+            default_img_type='keyword')
+
+    movies = None
+    tv_series = None
+    tv_seasons = None
+    tv_episodes = None
+    creators = None
+    keywords = None
+
+    if url_parameter:
+        if len(url_parameter) == 1:
+            pattern = r'\s{search}\b\.?|^{search}\.?$'.format(
+                search=url_parameter)
+
+            if search_category == 'movies' or search_category == 'all':
+
+                movies = set(Movie.objects.filter(
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern)))
+
+            if search_category == 'tv-series' or search_category == 'all':
+
+                tv_series = set(TelevisionSeries.objects.filter(
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern)))
+
+                tv_seasons = set(TelevisionSeason.objects.filter(
+                    Q(season_title__iregex=pattern) &
+                    ~Q(season_title__startswith='season')))
+
+                tv_episodes = set(TelevisionEpisode.objects.filter(
+                    Q(episode_title__iregex=pattern) &
+                    ~Q(episode_title__startswith='episode')))
+
+            if search_category == 'creators' or search_category == 'all':
+
+                creators = set(MovieCreator.objects.filter(
+                    Q(first_name__iregex=pattern) |
+                    Q(middle_name__iregex=pattern) |
+                    Q(last_name__iregex=pattern)))
+
+            if search_category == 'keywords' or search_category == 'all':
+
+                keywords = set(
+                    Keyword.objects.filter(name__iregex=pattern))
+
+        elif len(url_parameter) == 2:
+            pattern = r'\s{search}\b\.?|^{search}.*$'.format(
+                search=url_parameter)
+
+            if search_category == 'movies' or search_category == 'all':
+
+                movies = set(Movie.objects.filter(
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern)))
+
+            if search_category == 'tv-series' or search_category == 'all':
+
+                tv_series = set(TelevisionSeries.objects.filter(
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern)))
+
+                tv_seasons = set(TelevisionSeason.objects.filter(
+                    Q(season_title__iregex=pattern) &
+                    ~Q(season_title__startswith='season')))
+
+                tv_episodes = set(TelevisionEpisode.objects.filter(
+                    Q(episode_title__iregex=pattern) &
+                    ~Q(episode_title__startswith='episode')))
+
+            if search_category == 'creators' or search_category == 'all':
+
+                creators = set(MovieCreator.objects.filter(
+                    Q(first_name__iregex=pattern) |
+                    Q(middle_name__iregex=pattern) |
+                    Q(last_name__iregex=pattern)))
+
+            if search_category == 'keywords' or search_category == 'all':
+
+                keywords = set(
+                    Keyword.objects.filter(name__iregex=pattern))
+
+        else:
+
+            if search_category == 'movies' or search_category == 'all':
+
+                movies = set(Movie.objects.filter(
+                   Q(main_title__title__icontains=url_parameter) |
+                   Q(original_title__title__icontains=url_parameter) |
+                   Q(alternative_title__title__icontains=url_parameter) |
+                   Q(title_for_sorting__icontains=url_parameter)
+                   ))
+            if search_category == 'tv-series' or search_category == 'all':
+
+                tv_series = set(TelevisionSeries.objects.filter(
+                   Q(main_title__title__icontains=url_parameter) |
+                   Q(original_title__title__icontains=url_parameter) |
+                   Q(alternative_title__title__icontains=url_parameter) |
+                   Q(title_for_sorting__icontains=url_parameter)
+                   ))
+
+                tv_seasons = set(TelevisionSeason.objects.filter(
+                    Q(season_title__icontains=url_parameter) &
+                    ~Q(season_title__startswith='season')))
+
+                tv_episodes = set(TelevisionEpisode.objects.filter(
+                   Q(episode_title__icontains=url_parameter) &
+                   ~Q(episode_title__startswith='episode')))
+
+            if search_category == 'creators' or search_category == 'all':
+
+                creators = set(MovieCreator.objects.filter(
+                    Q(first_name__icontains=url_parameter) |
+                    Q(middle_name__icontains=url_parameter) |
+                    Q(last_name__icontains=url_parameter)))
+
+            if search_category == 'keywords' or search_category == 'all':
+
+                keywords = set(Keyword.objects.filter(
+                    name__icontains=url_parameter))
+
+    search_results = []
+
+    if movies:
+        for mov in movies:
+            search_obj = SearchObject()
+            search_obj.main_title = str(mov.main_title)
+            search_obj.link = str(mov.get_absolute_url())
+            search_obj.type = 'Movie'
+
+            if mov.original_title:
+                search_obj.og_title = str(mov.original_title)
+            if mov.alternative_title.all():
+                search_obj.alt_title = mov.alternative_title.all()
+            if mov.poster_thumbnail:
+                search_obj.poster = mov.poster_thumbnail
+            else:
+                search_obj.poster = default_motion_pic_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if tv_series:
+        for tv_ser in tv_series:
+            search_obj = SearchObject()
+            search_obj.main_title = str(tv_ser.main_title)
+            search_obj.link = str(tv_ser.get_absolute_url())
+            search_obj.type = 'TV Series'
+
+            if tv_ser.original_title:
+                search_obj.og_title = str(tv_ser.original_title)
+            if tv_ser.alternative_title.all():
+                search_obj.alt_title = tv_ser.alternative_title.all()
+            if tv_ser.poster_thumbnail:
+                search_obj.poster = tv_ser.poster_thumbnail
+            else:
+                search_obj.poster = default_motion_pic_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if tv_seasons:
+        for tv_season in tv_seasons:
+            search_obj = SearchObject()
+            search_obj.main_title = str(tv_season.season_title)
+            search_obj.link = str(tv_season.get_absolute_url())
+            search_obj.type = 'TV Season'
+            search_obj.tv_season = tv_season
+
+            if tv_season.poster_thumbnail:
+                search_obj.poster = tv_season.poster_thumbnail
+            elif tv_season.tv_series.poster_thumbnail:
+                search_obj.poster = tv_season.tv_series.poster_thumbnail
+            else:
+                search_obj.poster = default_motion_pic_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if tv_episodes:
+        for tv_ep in tv_episodes:
+            search_obj = SearchObject()
+            search_obj.main_title = str(tv_ep.episode_title)
+            search_obj.link = str(tv_ep.tv_season.get_absolute_url())
+            search_obj.type = 'TV Episode'
+            search_obj.tv_season = str(tv_ep.tv_season)
+
+            if tv_ep.poster_thumbnail:
+                search_obj.poster = tv_ep.poster_thumbnail
+            elif tv_ep.tv_season.poster_thumbnail:
+                search_obj.poster = tv_ep.tv_season.poster_thumbnail
+            elif tv_ep.tv_season.tv_series.poster_thumbnail:
+                search_obj.poster = tv_ep.tv_season.tv_series.poster_thumbnail
+            else:
+                search_obj.poster = default_motion_pic_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if creators:
+        for creator in creators:
+            search_obj = SearchObject()
+            search_obj.main_title = str(creator)
+            search_obj.link = str(creator.get_absolute_url())
+            search_obj.type = 'Movie Creator'
+
+            if creator.photo_thumb:
+                search_obj.poster = creator.photo_thumb
+            elif creator.creator_sex == 'female':
+                search_obj.poster = \
+                    default_creator_female_img.default_img_thumb
+            elif creator.creator_sex == 'male':
+                search_obj.poster = default_creator_male_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if keywords:
+        for kw in keywords:
+            search_obj = SearchObject()
+            search_obj.main_title = str(kw)
+            search_obj.link = str(kw.get_absolute_url())
+            search_obj.type = 'Keyword'
+            search_obj.poster = default_keyword_img.default_img_thumb
+
+            search_results.append(search_obj)
+
+    if request.is_ajax():
+        max_results = 4
+        create_all_results_link = False
+        if len(search_results) > max_results:
+            create_all_results_link = True
+
+        html = render_to_string(
+            template_name='search_results_partial.html',
+            context={
+                'search_query': url_parameter,
+                'search_category': search_category,
+                'search_results': search_results[:max_results],
+                'create_all_results_link': create_all_results_link})
+        data_dict = {'html_from_view': html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, 'search.html', context={
+                'search_query': url_parameter,
+                'search_results': search_results})
 
 
 def replace_links_in_franchise_entries(franchise_entries):

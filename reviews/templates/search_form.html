@@ -1,0 +1,25 @@
+<div class="col-sm-3 col-md-6">
+    <form class="navbar-form" role="search" action="{% url 'search' %}" id="search-form" method="GET">
+    <div class="input-group" id="search-form-input-group">
+     <div class="input-group-btn search-panel">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="all" id="search_concept">All</span> <span class="caret"></span>
+      </button>
+      <ul id="search-options" class="dropdown-menu scrollable-dropdown" role="menu">
+        <li id="movies"><a href="#">Movies</a></li>
+        <li id="tv-series"><a href="#">TV Series</a></li>
+        <li id="creators"><a href="#">Creators</a></li>
+        <li id="keywords"><a href="#">Keywords</a></li>
+          <li id="all"><a href="#">All</a></li>
+      </ul>
+     </div>
+     <input autocomplete="off" type="text" class="form-control" name="q" id="user-search" placeholder="Search" required>
+        <input type="hidden" id="search-category" name="sc" value="all">
+     <span class="input-group-btn">
+	     <button class="btn btn-primary" type="submit">
+	       <span class="glyphicon glyphicon-search"></span>
+	     </button>
+	 </span>
+    </div>
+   </form>
+</div>

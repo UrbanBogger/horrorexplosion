@@ -1,0 +1,51 @@
+{% load app_filters %}
+
+{% if search_results %}
+<ul id="search-list" class="list-group">
+{% for sr in search_results %}
+<li class="list-group-item w-25" style="padding: 1px;">
+  <a href="{{ sr.link }}" style="text-decoration:none;color:#181818;"><div class="media">
+    <div class="media-left media-middle">
+      <img id="search-list-img" src="{{ sr.poster.url }}" alt="{{ sr.main_title}} poster" class="media-object">
+    </div>
+    <div class="media-body">
+      {{ sr.main_title|highlight_search:search_query }}
+      {% if sr.og_title %}
+      <br>
+        <em><strong>Original Title</strong></em>: {{ sr.og_title|highlight_search:search_query }}
+      {% endif %}
+      {% if sr.alt_title %}
+      <br>
+        <em><strong>AKA</strong></em>: {% for alt_title in sr.alt_title %}{{ alt_title|highlight_search:search_query }}{% if not forloop.last %}; {% endif %}{% endfor %}
+      {% endif %}
+      {% if sr.tv_season %}
+      <br>
+      <em><strong>TV Season</strong></em>: {{ sr.tv_season }}
+      {% endif %}
+      <br>
+      {{ sr.type }}
+    </div>
+  </div></a>
+{% endfor %}
+  {% if create_all_results_link %}
+  <li class="list-group-item">
+  <form action="{% url 'search' %}" method="GET">
+    <input type="hidden" value="{{ search_query }}">
+   <input type="hidden" value="{{ search_category }}">
+  </form>
+  <button type="submit" class="btn btn-info btn-block"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size:18px;margin-right:10px;"> </span>All search results</button>
+  </li>
+  {% endif %}
+</ul>
+
+{% elif display_welcome_msg %}
+<div class="alert alert-success">
+  <strong>Welcome</strong> to the search result page!
+  Use the search bar to perform a search.
+</div>
+
+{% else %}
+<div class="alert alert-warning" style="width:220px;text-align:center;">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="font-size:20px;margin-right:10px;"></span><strong>No results found.</strong><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="font-size:20px;margin-left:10px;"></span>
+</div>
+{% endif %}
