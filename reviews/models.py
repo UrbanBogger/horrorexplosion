@@ -119,8 +119,8 @@ class Person(models.Model):
         upload_to='people/', null=True, blank=True,
         help_text='Upload the person\'s photo')
     photo_thumb = models.ImageField(
-        upload_to = 'people/', default=None, null=True, blank=True,
-        help_text = 'Upload the thumb of the person\'s photo')
+        upload_to='people/', default=None, null=True, blank=True,
+        help_text='Upload the thumb of the person\'s photo')
 
     class Meta:
         abstract = True
