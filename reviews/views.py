@@ -1616,7 +1616,7 @@ def search_view(request):
             search_results.append(search_obj)
 
     if request.is_ajax():
-        max_results = 4
+        max_results = 10
         create_all_results_link = False
         if len(search_results) > max_results:
             create_all_results_link = True
