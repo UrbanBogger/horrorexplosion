@@ -118,6 +118,9 @@ class Person(models.Model):
     photograph = models.ImageField(
         upload_to='people/', null=True, blank=True,
         help_text='Upload the person\'s photo')
+    photo_thumb = models.ImageField(
+        upload_to = 'people/', default=None, null=True, blank=True,
+        help_text = 'Upload the thumb of the person\'s photo')
 
     class Meta:
         abstract = True
@@ -1107,13 +1110,17 @@ class PickedReview(models.Model):
 
 class DefaultImage(models.Model):
     DEFAULT_IMG_TYPES = (('person', 'person'), ('male', 'male'),
-                         ('female', 'female'), ('motion_pic', 'motion_pic'))
+                         ('female', 'female'), ('motion_pic', 'motion_pic'),
+                         ('keyword', 'keyword'))
     default_img_type = models.CharField(
         choices=DEFAULT_IMG_TYPES, max_length=12, default=None,
         help_text='Choose the type of the default image')
     default_img = models.ImageField(
         upload_to='generic_images/', default=None,
         help_text='Upload the default photo')
+    default_img_thumb = models.ImageField(
+        upload_to='generic_images/', default=None, null=True, blank=True,
+        help_text='Upload the thumb of the default photo')
 
     def __str__(self):
         return 'Generic img for: {default_img_type}'.format(
