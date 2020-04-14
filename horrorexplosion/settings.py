@@ -97,9 +97,6 @@ DATABASES = {
     }
 }
 
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -144,12 +141,10 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-
 SECURE_BROWSER_XSS_FILTER = True
-
-SECURE_SSL_REDIRECT = False
-
 X_FRAME_OPTIONS = 'DENY'
 
 # Heroku: Update database configuration from $DATABASE_URL.
