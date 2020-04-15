@@ -1523,10 +1523,12 @@ def search_view(request):
             search_obj.link = str(mov.get_absolute_url())
             search_obj.type = 'Movie'
 
-            if mov.original_title:
+            if mov.original_title and url_parameter.lower() in str(
+                    mov.original_title).lower():
                 search_obj.og_title = str(mov.original_title)
             if mov.alternative_title.all():
-                search_obj.alt_title = mov.alternative_title.all()
+                search_obj.alt_title = mov.alternative_title.all().filter(
+                    title__icontains=url_parameter)
             if mov.poster_thumbnail:
                 search_obj.poster = mov.poster_thumbnail
             else:
@@ -1541,10 +1543,12 @@ def search_view(request):
             search_obj.link = str(tv_ser.get_absolute_url())
             search_obj.type = 'TV Series'
 
-            if tv_ser.original_title:
+            if tv_ser.original_title and url_parameter.lower() in str(
+                    tv_ser.original_title).lower():
                 search_obj.og_title = str(tv_ser.original_title)
             if tv_ser.alternative_title.all():
-                search_obj.alt_title = tv_ser.alternative_title.all()
+                search_obj.alt_title = tv_ser.alternative_title.all().filter(
+                    title__icontains=url_parameter)
             if tv_ser.poster_thumbnail:
                 search_obj.poster = tv_ser.poster_thumbnail
             else:

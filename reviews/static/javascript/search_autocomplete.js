@@ -67,7 +67,7 @@ function displaySearchResults(search_results) {
     // create the search result DIV
     var search_result_div = document.createElement("div");
     search_result_div.setAttribute("id", "container");
-    search_result_div.setAttribute("class", "col-xs-10 col-xs-offset-1");
+    search_result_div.setAttribute("class", "col-md-9 col-xs-10 col-xs-offset-1");
     search_result_div.setAttribute("style", "position: absolute; z-index: 99;");
     // add the search result DIV below the search input box
     var parent_div = document.getElementById("search-form-input-group").parentNode;

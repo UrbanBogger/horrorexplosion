@@ -3,37 +3,36 @@
 {% if search_results %}
 <ul id="search-list" class="list-group">
 {% for sr in search_results %}
-<li class="list-group-item w-25" style="padding: 1px;">
-  <a href="{{ sr.link }}" style="text-decoration:none;color:#181818;"><div class="media">
+<li class="list-group-item" style="padding: 1px;">
+  <a href="{{ sr.link }}" style="text-decoration:none;color:#181818;">
+    <div class="media">
     <div class="media-left media-middle">
       <img id="search-list-img" src="{{ sr.poster.url }}" alt="{{ sr.main_title}} poster" class="media-object">
     </div>
     <div class="media-body">
-      {{ sr.main_title|highlight_search:search_query }}
+      <div style="font-size:14px;">{{ sr.main_title|highlight_search:search_query }}</div>
       {% if sr.og_title %}
-      <br>
-        <em><strong>Original Title</strong></em>: {{ sr.og_title|highlight_search:search_query }}
+      <div style="font-size:12px;"><em><strong>Original Title</strong></em>: {{ sr.og_title|highlight_search:search_query }}</div>
       {% endif %}
       {% if sr.alt_title %}
-      <br>
-        <em><strong>AKA</strong></em>: {% for alt_title in sr.alt_title %}{{ alt_title|highlight_search:search_query }}{% if not forloop.last %}; {% endif %}{% endfor %}
+      <div style="font-size:12px;"><em><strong>AKA</strong></em>: {% for alt_title in sr.alt_title %}{{ alt_title|highlight_search:search_query }}{% if not forloop.last %}; {% endif %}{% endfor %}</div>
       {% endif %}
       {% if sr.tv_season %}
-      <br>
-      <em><strong>TV Season</strong></em>: {{ sr.tv_season }}
+      <div style="font-size:12px;"><em><strong>TV Season</strong></em>: {{ sr.tv_season }}</div>
       {% endif %}
-      <br>
-      {{ sr.type }}
+      <div style="font-size:14px;">{{ sr.type }}</div>
     </div>
   </div></a>
 {% endfor %}
   {% if create_all_results_link %}
-  <li class="list-group-item">
+  <li class="list-group-item" style="padding: 1px;">
+  <div style="background-color:#00FFFF;height:38px;text-align:center;margin:4px;border-radius:25px;">
   <form action="{% url 'search' %}" method="GET">
     <input type="hidden" value="{{ search_query }}">
    <input type="hidden" value="{{ search_category }}">
+    <button class="btn btn-link" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size:18px;margin-right:10px;"> </span>All search results</button>
   </form>
-  <button type="submit" class="btn btn-info btn-block"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size:18px;margin-right:10px;"> </span>All search results</button>
+  </div>
   </li>
   {% endif %}
 </ul>
