@@ -2,6 +2,7 @@ import sys
 import re
 import random
 import bleach
+import operator
 from bs4 import BeautifulSoup
 from operator import itemgetter
 from django.shortcuts import render, redirect
@@ -1344,13 +1345,17 @@ class KeywordDetailView(generic.DetailView):
 
 
 class SearchObject(object):
-        main_title = None
-        og_title = None
-        alt_title = None
-        link = None
-        poster = None
-        type = None
-        tv_season = None
+    def __init__(self):
+       main_title = None
+       og_title = None
+       alt_title = None
+       link = None
+       poster = None
+       type = None
+       tv_season = None
+
+    def __repr__(self):
+        return 'main title:' + self.main_title + ' type:' + self.type
 
 
 def search_view(request):
@@ -1517,6 +1522,7 @@ def search_view(request):
     search_results = []
 
     if movies:
+        mov_search_objects = []
         for mov in movies:
             search_obj = SearchObject()
             search_obj.main_title = str(mov.main_title)
@@ -1534,8 +1540,12 @@ def search_view(request):
             else:
                 search_obj.poster = default_motion_pic_img.default_img_thumb
 
-            search_results.append(search_obj)
+            mov_search_objects.append(search_obj)
 
+        search_results += sorted(mov_search_objects,
+                                 key=operator.attrgetter('main_title'))
+
+    tv_search_objects = []
     if tv_series:
         for tv_ser in tv_series:
             search_obj = SearchObject()
@@ -1554,7 +1564,7 @@ def search_view(request):
             else:
                 search_obj.poster = default_motion_pic_img.default_img_thumb
 
-            search_results.append(search_obj)
+    tv_search_objects.append(search_obj)
 
     if tv_seasons:
         for tv_season in tv_seasons:
@@ -1571,7 +1581,7 @@ def search_view(request):
             else:
                 search_obj.poster = default_motion_pic_img.default_img_thumb
 
-            search_results.append(search_obj)
+            tv_search_objects.append(search_obj)
 
     if tv_episodes:
         for tv_ep in tv_episodes:
@@ -1590,9 +1600,14 @@ def search_view(request):
             else:
                 search_obj.poster = default_motion_pic_img.default_img_thumb
 
-            search_results.append(search_obj)
+            tv_search_objects.append(search_obj)
+
+    if tv_search_objects:
+        search_results += sorted(tv_search_objects,
+                                 key=operator.attrgetter('main_title'))
 
     if creators:
+        creator_search_objects = []
         for creator in creators:
             search_obj = SearchObject()
             search_obj.main_title = str(creator)
@@ -1607,17 +1622,24 @@ def search_view(request):
             elif creator.creator_sex == 'male':
                 search_obj.poster = default_creator_male_img.default_img_thumb
 
-            search_results.append(search_obj)
+            creator_search_objects.append(search_obj)
+
+        search_results += sorted(creator_search_objects,
+                                 key=operator.attrgetter('main_title'))
 
     if keywords:
         for kw in keywords:
+            kw_search_objects = []
             search_obj = SearchObject()
             search_obj.main_title = str(kw)
             search_obj.link = str(kw.get_absolute_url())
             search_obj.type = 'Keyword'
             search_obj.poster = default_keyword_img.default_img_thumb
 
-            search_results.append(search_obj)
+            kw_search_objects.append(search_obj)
+
+        search_results += sorted(kw_search_objects,
+                                 key=operator.attrgetter('main_title'))
 
     if request.is_ajax():
         max_results = 7
