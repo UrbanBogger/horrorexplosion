@@ -1564,7 +1564,7 @@ def search_view(request):
             else:
                 search_obj.poster = default_motion_pic_img.default_img_thumb
 
-    tv_search_objects.append(search_obj)
+            tv_search_objects.append(search_obj)
 
     if tv_seasons:
         for tv_season in tv_seasons:
