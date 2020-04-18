@@ -1441,7 +1441,7 @@ def search_view(request):
                     Keyword.objects.filter(name__iregex=pattern))
 
         elif len(url_parameter) == 2:
-            pattern = r'\s{search}\b\.?|^{search}.*$'.format(
+            pattern = r'\s{search}\w?|^{search}.*$'.format(
                 search=url_parameter)
 
             if search_category == 'movies' or search_category == 'all':
