@@ -1,10 +1,10 @@
-<div class="col-md-5 col-xs-12">
-    <form class="navbar-form navbar-right" role="search" action="{% url 'search' %}" id="search-form" method="GET">
-    <div class="input-group" id="search-form-input-group">
-     <div class="input-group-btn search-panel">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        <span class="all" id="search_concept">All</span> <span class="caret"></span>
-      </button>
+<div class="col-md-7 col-md-offset-2 col-xs-13 col-xs-offset-1">
+    <form class="navbar-form" role="search" action="{% url 'search' %}" id="search-form" method="GET">
+    <div class="input-group" style="width:100%;" id="search-form-input-group">
+       <div class="input-group-btn search-panel">
+       <button type="button" class="btn btn-default dropdown-toggle" style="width:100%;background-color:#808080;color:white;" data-toggle="dropdown">
+           <span class="all" id="search_concept">All</span> <span class="caret"></span>
+       </button>
       <ul id="search-options" class="dropdown-menu scrollable-dropdown" role="menu">
         <li id="movies"><a href="#">Movies</a></li>
         <li id="tv-series"><a href="#">TV Series</a></li>
