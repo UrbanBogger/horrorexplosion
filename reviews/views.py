@@ -1641,6 +1641,9 @@ def search_view(request):
         search_results += sorted(kw_search_objects,
                                  key=operator.attrgetter('main_title'))
 
+    page_title = 'Search Result Page | The Horror Explosion'
+    meta_content_description = 'Page for displaying search results.'
+
     if request.is_ajax():
         max_results = 7
         create_all_results_link = False
@@ -1650,6 +1653,8 @@ def search_view(request):
         html = render_to_string(
             template_name='search_results_partial.html',
             context={
+                'page_title': page_title,
+                'meta_content_description': meta_content_description,
                 'search_query': url_parameter,
                 'search_category': search_category,
                 'search_results': search_results[:max_results],
@@ -1658,6 +1663,8 @@ def search_view(request):
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, 'search.html', context={
+                'page_title': page_title,
+                'meta_content_description': meta_content_description,
                 'search_query': url_parameter,
                 'search_results': search_results})
 
