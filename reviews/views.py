@@ -922,6 +922,11 @@ class MovieFranchiseDetailView(generic.DetailView):
             self.pk_url_kwarg))
         if not mov_franchise.is_publishable:
             raise PermissionDenied
+
+        if mov_franchise.overview:
+            context['overview'] = substitute_links_in_text(
+                mov_franchise.overview)
+
         all_entries = mov_franchise.movseriesentry_set.all()
         context['page_title'] = str(mov_franchise) + ' | The Horror Explosion'
         context['meta_content_description'] = \

@@ -30,9 +30,9 @@
     {% endif %}
     </div>
 </div>
-{% if moviefranchise.overview %}
+{% if overview %}
 <h3>Introduction</h3>
-<div id="review_body">{{ moviefranchise.overview|safe }}</div>
+<div id="review_body">{{ overview|safe }}</div>
 {% endif %}
 {% if  franchise_entries %}
 <h3>Franchise Entry Overview</h3>
