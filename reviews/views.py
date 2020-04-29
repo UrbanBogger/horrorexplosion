@@ -1410,7 +1410,6 @@ def search_view(request):
                 search=url_parameter)
 
             if search_category == 'movies' or search_category == 'all':
-
                 movies = set(Movie.objects.filter(
                     Q(main_title__title__iregex=pattern) |
                     Q(original_title__title__iregex=pattern) |
@@ -1418,7 +1417,6 @@ def search_view(request):
                     Q(title_for_sorting__iregex=pattern)))
 
             if search_category == 'tv-series' or search_category == 'all':
-
                 tv_series = set(TelevisionSeries.objects.filter(
                     Q(main_title__title__iregex=pattern) |
                     Q(original_title__title__iregex=pattern) |
@@ -1434,23 +1432,21 @@ def search_view(request):
                     ~Q(episode_title__startswith='episode')))
 
             if search_category == 'creators' or search_category == 'all':
-
+                creator_pattern = \
+                    r'\s{search}\b\.?|^{search}\.?$|\b{search}\b'.format(
+                        search=url_parameter)
                 creators = set(MovieCreator.objects.filter(
-                    Q(first_name__iregex=pattern) |
-                    Q(middle_name__iregex=pattern) |
-                    Q(last_name__iregex=pattern)))
+                    full_name__iregex=creator_pattern))
 
             if search_category == 'keywords' or search_category == 'all':
-
                 keywords = set(
                     Keyword.objects.filter(name__iregex=pattern))
 
         elif len(url_parameter) == 2:
-            pattern = r'\s{search}\w?|^{search}.*$'.format(
+            pattern = r'\s{search}\b\.?|^{search}.*$'.format(
                 search=url_parameter)
 
             if search_category == 'movies' or search_category == 'all':
-
                 movies = set(Movie.objects.filter(
                     Q(main_title__title__iregex=pattern) |
                     Q(original_title__title__iregex=pattern) |
@@ -1458,7 +1454,6 @@ def search_view(request):
                     Q(title_for_sorting__iregex=pattern)))
 
             if search_category == 'tv-series' or search_category == 'all':
-
                 tv_series = set(TelevisionSeries.objects.filter(
                     Q(main_title__title__iregex=pattern) |
                     Q(original_title__title__iregex=pattern) |
@@ -1474,53 +1469,47 @@ def search_view(request):
                     ~Q(episode_title__startswith='episode')))
 
             if search_category == 'creators' or search_category == 'all':
-
+                creator_pattern = \
+                    r'\s{search}\b\.?|^{search}\.?$|\b{search}\B'.format(
+                        search=url_parameter)
                 creators = set(MovieCreator.objects.filter(
-                    Q(first_name__iregex=pattern) |
-                    Q(middle_name__iregex=pattern) |
-                    Q(last_name__iregex=pattern)))
+                    full_name__iregex=creator_pattern))
 
             if search_category == 'keywords' or search_category == 'all':
-
                 keywords = set(
                     Keyword.objects.filter(name__iregex=pattern))
 
         else:
 
             if search_category == 'movies' or search_category == 'all':
-
                 movies = set(Movie.objects.filter(
-                   Q(main_title__title__icontains=url_parameter) |
-                   Q(original_title__title__icontains=url_parameter) |
-                   Q(alternative_title__title__icontains=url_parameter) |
-                   Q(title_for_sorting__icontains=url_parameter)
-                   ))
-            if search_category == 'tv-series' or search_category == 'all':
+                    Q(main_title__title__icontains=url_parameter) |
+                    Q(original_title__title__icontains=url_parameter) |
+                    Q(alternative_title__title__icontains=url_parameter) |
+                    Q(title_for_sorting__icontains=url_parameter)
+                ))
 
+            if search_category == 'tv-series' or search_category == 'all':
                 tv_series = set(TelevisionSeries.objects.filter(
-                   Q(main_title__title__icontains=url_parameter) |
-                   Q(original_title__title__icontains=url_parameter) |
-                   Q(alternative_title__title__icontains=url_parameter) |
-                   Q(title_for_sorting__icontains=url_parameter)
-                   ))
+                    Q(main_title__title__icontains=url_parameter) |
+                    Q(original_title__title__icontains=url_parameter) |
+                    Q(alternative_title__title__icontains=url_parameter) |
+                    Q(title_for_sorting__icontains=url_parameter)
+                ))
 
                 tv_seasons = set(TelevisionSeason.objects.filter(
                     Q(season_title__icontains=url_parameter) &
                     ~Q(season_title__startswith='season')))
 
                 tv_episodes = set(TelevisionEpisode.objects.filter(
-                   Q(episode_title__icontains=url_parameter) &
-                   ~Q(episode_title__startswith='episode')))
+                    Q(episode_title__icontains=url_parameter) &
+                    ~Q(episode_title__startswith='episode')))
 
             if search_category == 'creators' or search_category == 'all':
-
                 creators = set(MovieCreator.objects.filter(
-                    Q(first_name__icontains=url_parameter) |
-                    Q(middle_name__icontains=url_parameter) |
-                    Q(last_name__icontains=url_parameter)))
+                    full_name__icontains=url_parameter))
 
             if search_category == 'keywords' or search_category == 'all':
-
                 keywords = set(Keyword.objects.filter(
                     name__icontains=url_parameter))
 
