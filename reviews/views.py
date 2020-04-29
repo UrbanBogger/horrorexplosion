@@ -1622,14 +1622,14 @@ def search_view(request):
                                  key=operator.attrgetter('main_title'))
 
     if keywords:
+        kw_search_objects = []
+
         for kw in keywords:
-            kw_search_objects = []
             search_obj = SearchObject()
             search_obj.main_title = str(kw)
             search_obj.link = str(kw.get_absolute_url())
             search_obj.type = 'Keyword'
             search_obj.poster = default_keyword_img.default_img_thumb
-
             kw_search_objects.append(search_obj)
 
         search_results += sorted(kw_search_objects,
