@@ -27,6 +27,9 @@
     <button type="submit" class="btn btn-primary btn-lg">Sort</button>
 </form>
 </div>
+
+{% include "list_pagination_w_ordering.html" with list=movie_list %}
+
 {% if movie_list %}
 <ul class="list-group">
     {% for movie in movie_list %}
