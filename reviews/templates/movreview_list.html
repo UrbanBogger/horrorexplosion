@@ -30,9 +30,9 @@
 </form>
 </div>
 
-{% block pagination %}
-    {% include "list_pagination_w_ordering.html" with list=review_list %}
-{% endblock %}
+
+{% include "list_pagination_w_ordering.html" with list=review_list %}
+
 {% if review_list %}
 <ul class="list-group">
     {% for mov_review in review_list %}
