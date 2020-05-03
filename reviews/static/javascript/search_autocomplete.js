@@ -186,8 +186,12 @@ document.addEventListener("keydown", function(e) {
 
                 if (chosen_li){
                     elements = chosen_li.getElementsByTagName("A");
-                    link = elements[0].href;
-                    window.location.href = link;
+                    if (elements[0]) {
+                       link = elements[0].href;
+                       window.location.href = link;
+                    } else if (document.getElementById("all-results-btn")) {
+                       document.getElementById("all-results-btn").click();
+                    }
                 } else {
                     document.getElementById("search-submit").click();
                 }
