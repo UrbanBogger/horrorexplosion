@@ -100,8 +100,7 @@ document.getElementById("user-search").addEventListener("keyup",function(e) {
     user_input = document.getElementById("user-search").value;
     if (/^\s*$/.test(user_input)) {
         removeSearchResultDiv();
-    }
-    else {
+    } else {
         search_category = document.getElementById("search_concept").className;
         doSearch(user_input, search_category);
     }
