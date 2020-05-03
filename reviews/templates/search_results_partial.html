@@ -30,7 +30,7 @@
   <form action="{% url 'search' %}" method="GET">
     <input type="hidden" value="{{ search_query }}">
    <input type="hidden" value="{{ search_category }}">
-    <button class="btn btn-link" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size:18px;margin-right:10px;"> </span>All search results</button>
+    <button id="all-results-btn" class="btn btn-link" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size:18px;margin-right:10px;"> </span>All search results</button>
   </form>
   </div>
   </li>
