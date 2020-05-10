@@ -3,9 +3,9 @@
 <div class="row">
 {% for smr in similar_mov_revs %}
     <div class="col-sm-6 col-md-3" style="padding:2px;">
-        <div class="thumbnail" style="height:auto;max-width:230px;">
-        <a href="{{ smr.link }}"><img src="{{ smr.poster.url }}" alt="{{ smr.title }} poster" style="height:140px;"></a>
-            <div class="heading"><h4>{{ smr.title }}</h4></div>
+        <div class="thumbnail" style="height:auto;max-width:210px;">
+        <a href="{{ smr.link }}"><img src="{{ smr.poster.url }}" alt="{{ smr.title }} poster" style="height:140px;">
+            <div class="heading"><h4>{{ smr.title }}</h4></div></a>
             <img src="{{ smr.grade.grade_depiction.url }}" alt="{{ smr.grade.grade_numerical }} stars" style="height:10px;float:left;"/>
             <br/>
             <strong>Summary:</strong> {{ smr.summary }}
