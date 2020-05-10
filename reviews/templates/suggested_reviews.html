@@ -3,7 +3,7 @@
 <div class="row">
 {% for smr in similar_mov_revs %}
     <div class="col-sm-6 col-md-3" style="padding:2px;">
-        <div class="thumbnail" style="height:420px;">
+        <div class="thumbnail" style="height:500px;">
         <a href="{{ smr.link }}"><img src="{{ smr.poster.url }}" alt="{{ smr.title }} poster"></a>
             <div class="heading"><h4>{{ smr.title }}</h4></div>
             <img src="{{ smr.grade.grade_depiction.url }}" alt="{{ smr.grade.grade_numerical }} stars" style="height:10px;float:left;"/>
