@@ -1667,7 +1667,6 @@ def suggest_reviews(request):
     title = request.POST.get('title')
     release_year = request.POST.get('year')
     similar_mov_revs = []
-    sys.stdout.write('INSIDE THE SUGGEST VIEW!')
 
     if Movie.objects.filter(
             main_title__title=title, year_of_release=release_year).exists():
@@ -1682,7 +1681,6 @@ def suggest_reviews(request):
                                 sm.similar_mov.moviereview_set.all()]
 
     if similar_mov_revs:
-        print('FOUND SIMILAR MOV REVS: ' + str(similar_mov_revs))
         similar_mov_revs_dicts = []
         for similar_mov_rev in similar_mov_revs:
             poster_img = None
@@ -1708,7 +1706,6 @@ def suggest_reviews(request):
             context={'similar_mov_revs': similar_mov_revs_dicts})
         data_dict = {'html_from_view': html}
     else:
-        print('DID NOT FIND ANY SIMILAR MOV REVS!')
         data_dict = {'html_from_view': None}
 
     return JsonResponse(data=data_dict, safe=False)
