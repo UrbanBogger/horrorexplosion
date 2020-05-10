@@ -1667,6 +1667,7 @@ def suggest_reviews(request):
     title = request.POST.get('title')
     release_year = request.POST.get('year')
     similar_mov_revs = []
+    sys.stdout.write('INSIDE THE SUGGEST VIEW!')
 
     if Movie.objects.filter(
             main_title__title=title, year_of_release=release_year).exists():
