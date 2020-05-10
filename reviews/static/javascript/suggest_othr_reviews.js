@@ -5,7 +5,7 @@ window.addEventListener("scroll", function(e) {
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
 
     if (Math.round(window.innerHeight + document.documentElement.scrollTop) >= scroll_trigger) {
-        cosole.log('TRIGGERING THE REQUEST!!!');
+        console.log('TRIGGERING THE REQUEST!!!');
         if (!document.getElementById("suggestions")) {
             // create the suggestions DIV
             var suggestions_div = document.createElement("div");
