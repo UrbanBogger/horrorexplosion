@@ -1,5 +1,5 @@
 var url = "/reviews/film-rev-suggestions/";
-/*
+
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((17 / 100) * document.body.offsetHeight);
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
@@ -46,4 +46,3 @@ window.addEventListener("scroll", function(e) {
         }
     }
 }, false);
-*/
