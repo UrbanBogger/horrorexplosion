@@ -5,12 +5,11 @@ window.addEventListener("scroll", function(e) {
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
 
     if (Math.round(window.innerHeight + document.documentElement.scrollTop) >= scroll_trigger) {
-
+        cosole.log('TRIGGERING THE REQUEST!!!');
         if (!document.getElementById("suggestions")) {
             // create the suggestions DIV
             var suggestions_div = document.createElement("div");
             suggestions_div.setAttribute("id", "suggestions");
-            //suggestions_div.setAttribute("class", "col-md-20 col-xs-10 col-xs-offset-1");
             suggestions_div.setAttribute("class", "container");
             suggestions_div.setAttribute("style", "padding:0px;width:100%;");
             // add the search result DIV below the search input box
