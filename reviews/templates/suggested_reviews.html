@@ -1,18 +1,16 @@
-<span style="font-size:25px;"><strong>Further Reading - reviews of similar films:</strong></span>
+<span style="font-size:25px;">Further Reading - reviews of similar films:</span>
 {% if similar_mov_revs %}
-{% for smr in similar_mov_revs %}
 <div class="row">
-  <div class="col-sm-6 col-md-3">
-    <div class="thumbnail">
-      <a href="{{ smr.link }}"><img src="{{ smr.poster.url }}" alt="{{ smr.title }} poster"></a>
-      <div class="caption">
-          <h4>{{ smr.title }}</h4>
-          <strong>Our Rating: </strong><img src="{{ smr.grade.grade_depiction.url }}" alt="{{ smr.grade.grade_numerical }} stars" height="30" width="auto"/>
-          <br/>
-          <strong>Summary:</strong> {{ smr.summary }}
-      </div>
+{% for smr in similar_mov_revs %}
+    <div class="col-sm-6 col-md-3" style="padding:2px;">
+        <div class="thumbnail" style="height:420px;">
+        <a href="{{ smr.link }}"><img src="{% static '' %}{{ smr.poster }}" alt="{{ smr.title }} poster"></a>
+            <div class="heading"><h4>{{ smr.title }}</h4></div>
+            <img src="{% static '' %}{{ smr.grade.grade_depiction }}" alt="{{ smr.grade.grade_numerical }} stars" style="height:10px;float:left;"/>
+            <br/>
+            <strong>Summary:</strong> {{ smr.summary }}
+        </div>
     </div>
-  </div>
-</div>
 {% endfor %}
+</div>
 {% endif %}
