@@ -1,4 +1,4 @@
-var url = "/reviews/film-rev-suggestions/";
+var suggestion_url = "/reviews/film-rev-suggestions/";
 
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((17 / 100) * document.body.offsetHeight);
@@ -19,7 +19,7 @@ window.addEventListener("scroll", function(e) {
             release_year = document.getElementsByTagName("H2")[0].textContent.match(/(\d{4})/)[0].trim();
             // send the POST request
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", url, true);
+            xmlhttp.open("POST", suggestion_url, true);
             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xmlhttp.setRequestHeader("X-CSRFToken", window.CSRF_TOKEN);
 
