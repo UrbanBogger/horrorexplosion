@@ -1,0 +1,18 @@
+<span style="font-size:25px;"><strong>Further Reading - reviews of similar films:</strong></span>
+{% if similar_mov_revs %}
+{% for smr in similar_mov_revs %}
+<div class="row">
+  <div class="col-sm-6 col-md-3">
+    <div class="thumbnail">
+      <a href="{{ smr.link }}"><img src="{{ smr.poster.url }}" alt="{{ smr.title }} poster"></a>
+      <div class="caption">
+          <h4>{{ smr.title }}</h4>
+          <strong>Our Rating: </strong><img src="{{ smr.grade.grade_depiction.url }}" alt="{{ smr.grade.grade_numerical }} stars" height="30" width="auto"/>
+          <br/>
+          <strong>Summary:</strong> {{ smr.summary }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endif %}

@@ -75,5 +75,6 @@ urlpatterns = [
         views.microgenre_detail_view, name='microgenre-detail'),
     url(r'^keyword/(?P<pk>\d+)/(?P<name>[-\w]+)$',
         views.KeywordDetailView.as_view(), name='keyword-detail'),
-    url(r'^search/', views.search_view, name='search')
+    url(r'^search/', views.search_view, name='search'),
+    url(r'^film-rev-suggestions/', views.suggest_reviews)
 ]

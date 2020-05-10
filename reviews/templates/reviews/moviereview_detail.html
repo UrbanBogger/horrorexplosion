@@ -16,11 +16,13 @@
 {% endblock %}
 
 {% block main_content %}
+<div id="review-body">
 {% include "movie_header.html" %}
 <img id="star-rating-review" src="{{ moviereview.grade.grade_depiction.url }}" alt="{{ moviereview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ moviereview.grade.grade_description }}]</strong></span>
 <div id="review_body">{{ review_text|safe }}</div>
 <p><strong>Author: </strong>{{ moviereview.review_author }}</p>
 <p><strong>Written on: </strong>{{ moviereview.date_created }}; <strong>Added to the Database: </strong>{{ moviereview.first_created }}; <strong>Last Modified: </strong>{{ moviereview.last_modified }}</p>
+    </div>
 {% endblock %}
 
 {% block user_comments %}
@@ -47,4 +49,10 @@ s.setAttribute('data-timestamp', +new Date());
 })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+{% endblock %}
+
+{% block javascript %}
+{% load static %}
+<script type="text/javascript">window.CSRF_TOKEN = "{{ csrf_token }}";</script>
+<script type="text/javascript" src="{% static 'javascript/suggest_othr_reviews.js' %}"></script>
 {% endblock %}

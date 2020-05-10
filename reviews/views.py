@@ -1663,6 +1663,54 @@ def search_view(request):
                 'search_results': search_results})
 
 
+def suggest_reviews(request):
+    title = request.POST.get('title')
+    release_year = request.POST.get('year')
+    similar_mov_revs = []
+
+    if Movie.objects.filter(
+            main_title__title=title, year_of_release=release_year).exists():
+        movie = Movie.objects.get(
+            main_title__title=title, year_of_release=release_year)
+
+        if SimilarMovie.objects.filter(compared_mov=movie).exists():
+            similar_movs = SimilarMovie.objects.filter(
+                compared_mov=movie).order_by('-overall_similarity_percentage')
+            similar_mov_revs = [sm.similar_mov.moviereview_set.all()[0] for
+                                sm in similar_movs if
+                                sm.similar_mov.moviereview_set.all()]
+
+    if similar_mov_revs:
+        similar_mov_revs_dicts = []
+        for similar_mov_rev in similar_mov_revs:
+            poster_img = None
+
+            if similar_mov_rev.reviewed_movie.poster:
+                poster_img = similar_mov_rev.reviewed_movie.poster
+            elif DefaultImage.objects.filter(
+                    default_img_type='motion_pic')[0].default_img:
+                poster_img = DefaultImage.objects.get(
+                    default_img_type='motion_pic').default_img
+
+            similar_mov_dict = {
+                'title': str(similar_mov_rev),
+                'grade': similar_mov_rev.grade,
+                'summary': similar_mov_rev.mov_review_page_description,
+                'poster': poster_img,
+                'link': similar_mov_rev.get_absolute_url()
+                }
+            similar_mov_revs_dicts.append(similar_mov_dict)
+
+        html = render_to_string(
+            template_name='suggested_reviews.html',
+            context={'similar_mov_revs': similar_mov_revs_dicts})
+        data_dict = {'html_from_view': html}
+    else:
+        data_dict = {'html_from_view': None}
+
+    return JsonResponse(data=data_dict, safe=False)
+
+
 def replace_links_in_franchise_entries(franchise_entries):
     for franchise_entry in franchise_entries:
         if franchise_entry.short_review:
