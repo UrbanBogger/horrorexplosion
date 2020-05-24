@@ -3,7 +3,15 @@ var suggestions_url = "/reviews/film-rev-suggestions/";
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((25 / 100) * document.body.offsetHeight);
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
-    var bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop)
+    var bodyScrollTop = 0;
+
+    if (document.scrollingElement.scrollTop) {
+        bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop);
+    } else {
+        bodyScrollTop = document.documentElement.scrollTop;
+    }
+
+    var bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop);
     console.log('document.body.offsetHeight: ' + document.body.offsetHeight);
     console.log('window.innerHeight: ' + window.innerHeight);
     console.log('document scrollTop: ' + bodyScrollTop);
