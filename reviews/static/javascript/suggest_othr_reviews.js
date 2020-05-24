@@ -1,4 +1,4 @@
-var suggestion_url = "/reviews/film-rev-suggestions/";
+var suggestions_url = "/reviews/film-rev-suggestions/";
 
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((25 / 100) * document.body.offsetHeight);
@@ -19,9 +19,9 @@ window.addEventListener("scroll", function(e) {
             release_year = document.getElementsByTagName("H2")[0].textContent.match(/(\d{4})/)[0].trim();
             // send the POST request
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", suggestion_url, true);
+            var url_request = suggestions_url + "?title=" + film_title + "&year=" + release_year;
+            xmlhttp.open("GET", url_request, true);
             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xmlhttp.setRequestHeader("X-CSRFToken", window.CSRF_TOKEN);
 
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState === XMLHttpRequest.DONE) {
@@ -41,7 +41,7 @@ window.addEventListener("scroll", function(e) {
                     }
                 }
             };
-            xmlhttp.send("title=" + film_title + "&year=" + release_year);
+            xmlhttp.send();
         }
     }
 }, false);

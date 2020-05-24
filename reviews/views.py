@@ -1664,8 +1664,15 @@ def search_view(request):
 
 
 def suggest_reviews(request):
-    title = request.POST.get('title')
-    release_year = request.POST.get('year')
+    title = None
+    release_year = None
+
+    if request.GET['title']:
+        title = bleach.clean(request.GET['title'])
+
+    if request.GET['year']:
+        release_year = bleach.clean(request.GET['year'])
+
     similar_mov_revs = []
 
     if Movie.objects.filter(
@@ -1693,7 +1700,7 @@ def suggest_reviews(request):
                     default_img_type='motion_pic').default_img
 
             similar_mov_dict = {
-                'title': str(similar_mov_rev),
+                'title': str(similar_mov_rev.reviewed_movie),
                 'grade': similar_mov_rev.grade,
                 'summary': similar_mov_rev.mov_review_page_description,
                 'poster': poster_img,
