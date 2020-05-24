@@ -53,6 +53,5 @@ s.setAttribute('data-timestamp', +new Date());
 
 {% block javascript %}
 {% load static %}
-<script type="text/javascript">window.CSRF_TOKEN = "{{ csrf_token }}";</script>
 <script type="text/javascript" src="{% static 'javascript/suggest_othr_reviews.js' %}"></script>
 {% endblock %}
