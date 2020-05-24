@@ -10,8 +10,6 @@ window.addEventListener("scroll", function(e) {
     } else {
         bodyScrollTop = document.documentElement.scrollTop;
     }
-
-    var bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop);
     console.log('document.body.offsetHeight: ' + document.body.offsetHeight);
     console.log('window.innerHeight: ' + window.innerHeight);
     console.log('document scrollTop: ' + bodyScrollTop);
