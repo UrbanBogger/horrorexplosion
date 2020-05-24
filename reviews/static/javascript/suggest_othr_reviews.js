@@ -3,10 +3,12 @@ var suggestions_url = "/reviews/film-rev-suggestions/";
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((25 / 100) * document.body.offsetHeight);
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
+    var bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop)
     console.log('document.body.offsetHeight: ' + document.body.offsetHeight);
     console.log('window.innerHeight: ' + window.innerHeight);
-    console.log('document.documentElement.scrollTop: ' + document.documentElement.scrollTop);
-    if (Math.round(window.innerHeight + document.documentElement.scrollTop) >= scroll_trigger) {
+    console.log('document scrollTop: ' + bodyScrollTop);
+    if (Math.round(window.innerHeight + bodyScrollTop) >= scroll_trigger) {
+    //if (Math.round(window.innerHeight + document.documentElement.scrollTop) >= scroll_trigger) {
         console.log('TRIGGERING THE REQUEST!!!');
         if (!document.getElementById("suggestions")) {
             // create the suggestions DIV
@@ -19,7 +21,7 @@ window.addEventListener("scroll", function(e) {
             parent_div.appendChild(suggestions_div);
             film_title = document.getElementsByTagName("H1")[0].getElementsByTagName("A")[0].textContent.trim();
             release_year = document.getElementsByTagName("H2")[0].textContent.match(/(\d{4})/)[0].trim();
-            // send the POST request
+            // send the request
             var xmlhttp = new XMLHttpRequest();
             var url_request = suggestions_url + "?title=" + film_title + "&year=" + release_year;
             xmlhttp.open("GET", url_request, true);
