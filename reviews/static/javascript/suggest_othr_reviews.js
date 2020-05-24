@@ -5,7 +5,7 @@ window.addEventListener("scroll", function(e) {
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
     var bodyScrollTop = 0;
 
-    if (document.scrollingElement.scrollTop) {
+    if (document.scrollingElement) {
         bodyScrollTop = Math.max(document.scrollingElement.scrollTop, document.documentElement.scrollTop);
     } else {
         bodyScrollTop = document.documentElement.scrollTop;
