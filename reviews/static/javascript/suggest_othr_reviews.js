@@ -3,7 +3,9 @@ var suggestions_url = "/reviews/film-rev-suggestions/";
 window.addEventListener("scroll", function(e) {
     var percent_of_doc_body = Math.round((25 / 100) * document.body.offsetHeight);
     var scroll_trigger =  document.body.offsetHeight - percent_of_doc_body;
-
+    console.log('document.body.offsetHeight: ' + document.body.offsetHeight);
+    console.log('window.innerHeight: ' + window.innerHeight);
+    console.log('document.documentElement.scrollTop: ' + document.documentElement.scrollTop);
     if (Math.round(window.innerHeight + document.documentElement.scrollTop) >= scroll_trigger) {
         console.log('TRIGGERING THE REQUEST!!!');
         if (!document.getElementById("suggestions")) {
