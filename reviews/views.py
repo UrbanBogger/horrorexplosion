@@ -895,7 +895,6 @@ class TVEpisodeReviewDetailView(generic.DetailView):
         if tv_episode_review.reviewed_tv_episode.tv_season.tv_series \
                 .imdb_link and tv_episode_review.reviewed_tv_episode \
                 .imdb_link and tv_episode_review.review_snippet:
-            print('CREATING TV EP REV STRUCTURED DATA!!!')
             context['tv_ep_rev_sd'] = tv_episode_rev_sd(
                 tv_episode_review,
                 db_object_absolute_url=get_absolute_url(tv_episode_review))
@@ -1703,11 +1702,11 @@ def search_view(request):
 def suggest_reviews(request):
     title = None
     release_year = None
-    print('TITLE: ' + str(request.GET['title']))
+
     if request.GET['title']:
         title = bleach.clean(request.GET['title'])
-        print('CLEANED-UP TITLE: ' + str(title))
     title = title.replace('&amp;', '&')
+
     if request.GET['year']:
         release_year = bleach.clean(request.GET['year'])
 
@@ -1715,7 +1714,6 @@ def suggest_reviews(request):
 
     if Movie.objects.filter(
             main_title__title=title, year_of_release=release_year).exists():
-        print('FOUND A MATCHING MOVIE!!!')
         movie = Movie.objects.get(
             main_title__title=title,
             year_of_release=release_year)
