@@ -1003,6 +1003,9 @@ class TelevisionEpisodeReview(Review):
     mov_review_page_description = models.CharField(
         max_length=155, default='Click on the link to see what we have to '
                                 'say about this flick.')
+    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True,
+                              blank=True,
+                              help_text='Choose the TV episode\'s grade')
     human_readable_url = models.SlugField(
         null=True, help_text='Enter the "slug",i.e., the human-readable URL '
                              'for the TV episode review')
@@ -1049,6 +1052,91 @@ class TelevisionEpisodeReview(Review):
             return '{tv_episode}, by {reviewer}'.format(
                 tv_episode=self.reviewed_tv_episode,
                 reviewer=self.review_author)
+
+
+class TVEpisodeSegmentReview(models.Model):
+    reviewed_tv_episode = models.ForeignKey(
+        TelevisionEpisodeReview, null=True,
+        help_text='Enter the TV episode that you\'re reviewing')
+    segment_title = models.CharField(
+        max_length=50, help_text='Enter the title of the television episode '
+                                 'segment')
+    segment_number = models.IntegerField(
+        default=1, null=True, help_text='Enter the sequential position of the '
+                                        'segment in the TV Episode')
+    number_of_directors = models.IntegerField(
+        default=1, help_text='Enter the number of directors for this '
+                             'TV Episode segment')
+    number_of_actors = models.IntegerField(
+        default=4, help_text='Enter the number of actors for this TV Episode '
+                             'segment')
+    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True,
+                              blank=True,
+                              help_text='Choose the segment\'s grade')
+
+    def get_full_tv_ep_cast(self):
+        tv_episode_rev = self.reviewed_tv_episode
+        tv_episode = tv_episode_rev.reviewed_tv_episode
+        mov_participations = tv_episode.movie_participation.all()
+        return mov_participations
+
+    @property
+    def get_directors(self):
+        segment_directors = []
+        tv_episode_rev = self.reviewed_tv_episode
+        all_segments = tv_episode_rev.tvepisodesegmentreview_set.all()
+        movie_participations = self.get_full_tv_ep_cast()
+        directors = [mov_participation for mov_participation in
+                     movie_participations if
+                     str(mov_participation.creative_role) == 'Director']
+
+        current_dir_start_index = 0
+        for seg in all_segments:
+            if seg.segment_number == self.segment_number:
+                if current_dir_start_index + self.number_of_directors > len(
+                        directors):
+                    segment_directors = directors[
+                                        current_dir_start_index:len(directors)]
+                else:
+                    segment_directors = directors[current_dir_start_index:
+                                                  current_dir_start_index +
+                                                  self.number_of_directors]
+                break
+            current_dir_start_index += seg.number_of_directors
+
+        return segment_directors
+
+    @property
+    def get_actors(self):
+        segment_actors = []
+        tv_episode_rev = self.reviewed_tv_episode
+        all_segments = tv_episode_rev.tvepisodesegmentreview_set.all()
+        actors = [mov_participation for mov_participation in
+                  self.get_full_tv_ep_cast() if
+                  str(mov_participation.creative_role) == 'Actor']
+        current_actor_start_index = 0
+
+        for seg in all_segments:
+            if seg.segment_number == self.segment_number:
+                if current_actor_start_index + self.number_of_actors > len(
+                        actors):
+                    segment_actors = actors[
+                                        current_actor_start_index:len(actors)]
+                else:
+                    segment_actors = actors[current_actor_start_index:
+                                            current_actor_start_index +
+                                            self.number_of_actors]
+                break
+            current_actor_start_index += seg.number_of_actors
+
+        return segment_actors
+
+    class Meta:
+        ordering = ['reviewed_tv_episode', 'segment_number']
+
+    def __str__(self):
+            return 'Segment: {segment}; Review: {review}'.format(
+                segment=self.segment_title, review=self.reviewed_tv_episode)
 
 
 class MovSeriesEntry(models.Model):
