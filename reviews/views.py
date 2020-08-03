@@ -1703,7 +1703,7 @@ def search_view(request):
 def suggest_reviews(request):
     title = None
     release_year = None
-
+    print('TITLE: ' + str(request.GET['title']))
     if request.GET['title']:
         title = bleach.clean(request.GET['title'])
 
