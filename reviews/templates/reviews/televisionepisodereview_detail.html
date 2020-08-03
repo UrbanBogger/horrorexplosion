@@ -19,7 +19,7 @@
 {% include "tv_episode_review_header.html" with televisionepisode=televisionepisodereview.reviewed_tv_episode %}
 {% if televisionepisodereview.grade %}
 <img id="star-rating-review" src="{{ televisionepisodereview.grade.grade_depiction.url }}" alt="{{ televisionepisodereview.grade.grade_numerical }} stars" height="125" width="125"/><span style="font-size:30px"><strong>= [{{ televisionepisodereview.grade.grade_description }}]</strong></span>
-+{% endif %}
+{% endif %}
 <div id="review_body">{{ tvepisode_review|safe }}</div>
 <p><strong>Author: </strong>{{ televisionepisodereview.review_author }}</p>
 <p><strong>Written on: </strong>{{ televisionepisodereview.date_created }}; <strong>Added to the Database: </strong>{{ televisionepisodereview.first_created }}; <strong>Last Modified: </strong>{{ televisionepisodereview.last_modified }}</p>
