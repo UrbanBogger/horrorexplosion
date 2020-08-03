@@ -115,6 +115,9 @@ class Person(models.Model):
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     full_name = models.CharField(max_length=150, null=True, blank=True)
+    creator_iteration = models.IntegerField(
+        default=1, help_text='Enter a number greater than 1 if there exist '
+                             'other people with the same name in the DB')
     biography = RichTextField(max_length=1000, blank=True)
     photograph = models.ImageField(
         upload_to='people/', null=True, blank=True,
@@ -125,20 +128,28 @@ class Person(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['last_name', 'first_name']
-        unique_together = ('first_name', 'middle_name', 'last_name')
+        ordering = ['last_name', 'first_name', 'creator_iteration']
+        unique_together = ('first_name', 'middle_name', 'last_name',
+                           'creator_iteration')
 
     def __str__(self):
+        name_string = ''
+
         if self.middle_name:
-            return '{first_name} {middle_name} {last_name}'.format(
+            name_string = '{first_name} {middle_name} {last_name}'.format(
                 first_name=self.first_name, middle_name=self.middle_name,
                 last_name=self.last_name)
         elif not self.last_name:
-            return '{first_name}'.format(first_name=self.first_name)
+            name_string = '{first_name}'.format(first_name=self.first_name)
         else:
-            return '{first_name} {last_name}'.format(
+            name_string = '{first_name} {last_name}'.format(
                 first_name=self.first_name,
                 last_name=self.last_name)
+
+        if self.creator_iteration > 1:
+            name_string += ' ({num})'.format(num=self.creator_iteration)
+
+        return name_string
 
 
 class Reviewer(Person):
