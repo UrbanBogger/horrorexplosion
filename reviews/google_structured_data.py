@@ -126,6 +126,7 @@ def mov_sd(movie):
 
 
 def tv_episode_rev_sd(tv_episode_rev, db_object_absolute_url=''):
+    grade = None
     review_author = get_review_author(tv_episode_rev)
     print('MOV PARTICIPATIONS: ' + str(return_mov_participation_data(
         tv_episode_rev.reviewed_tv_episode, 'Director')))
@@ -153,6 +154,9 @@ def tv_episode_rev_sd(tv_episode_rev, db_object_absolute_url=''):
 
     if not (episode_cast and director and image and country_of_origin):
         return None
+
+    if tv_episode_rev.grade.exists():
+        grade = float(tv_episode_rev.grade.grade_numerical)
 
     structured_data = {
         CONTEXT_KEY: CONTEXT,
@@ -196,8 +200,7 @@ def tv_episode_rev_sd(tv_episode_rev, db_object_absolute_url=''):
         'reviewRating': {TYPE_KEY: 'Rating',
                          'worstRating': 0.5,
                          'bestRating': 4.0,
-                         'ratingValue': float(tv_episode_rev.
-                                              grade.grade_numerical)},
+                         'ratingValue': grade},
         'reviewBody': tv_episode_rev.review_snippet
     }
     return structured_data
