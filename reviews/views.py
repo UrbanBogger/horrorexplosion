@@ -892,6 +892,7 @@ class TVEpisodeReviewDetailView(generic.DetailView):
         if tv_episode_review.reviewed_tv_episode.tv_season.tv_series \
                 .imdb_link and tv_episode_review.reviewed_tv_episode \
                 .imdb_link and tv_episode_review.review_snippet:
+            print('CREATING TV EP REV STRUCTURED DATA!!!')
             context['tv_ep_rev_sd'] = tv_episode_rev_sd(
                 tv_episode_review,
                 db_object_absolute_url=get_absolute_url(tv_episode_review))
