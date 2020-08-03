@@ -399,6 +399,9 @@ def creator_index(request, first_letter=''):
             display_name = '{last_name}'.format(
                 last_name=primary_orderable_name)
 
+        if creator.creator_iteration > 1:
+            display_name += ' ({num})'.format(num=creator.creator_iteration)
+
         creator_dict = {'primary_orderable_name': primary_orderable_name,
                         'secondary_orderable_name': secondary_orderable_name,
                         'tertiary_orderable_name': tertiary_orderable_name,
