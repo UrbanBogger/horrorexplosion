@@ -157,6 +157,11 @@ def tv_episode_rev_sd(tv_episode_rev, db_object_absolute_url=''):
 
     if tv_episode_rev.grade:
         grade = float(tv_episode_rev.grade.grade_numerical)
+    elif tv_episode_rev.tvepisodesegmentreview_set.all().exists():
+        grades = [float(tv_ep_rev_seg.grade.grade_numerical)
+                  for tv_ep_rev_seg in
+                  tv_episode_rev.tvepisodesegmentreview_set.all()]
+        grade = round(sum(grades)/len(grades) * 2.0 / 2.0)
 
     structured_data = {
         CONTEXT_KEY: CONTEXT,
