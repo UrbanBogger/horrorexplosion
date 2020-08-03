@@ -29,7 +29,7 @@ window.addEventListener("scroll", function(e) {
             release_year = document.getElementsByTagName("H2")[0].textContent.match(/(\d{4})/)[0].trim();
             // send the request
             var xmlhttp = new XMLHttpRequest();
-            var url_request = suggestions_url + "?title=" + film_title + "&year=" + release_year;
+            var url_request = suggestions_url + "?title=" + encodeURIComponent(film_title) + "&year=" + release_year;
             xmlhttp.open("GET", url_request, true);
             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
