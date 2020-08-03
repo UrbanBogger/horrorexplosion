@@ -21,12 +21,12 @@
                     {% for tv_ep_rev_seg in televisionepisodereview.tvepisodesegmentreview_set.all %}
                        {% for movie_participation in tv_ep_rev_seg.get_actors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %} ("{{ tv_ep_rev_seg.segment_title }}");{% endif %}{% endfor %}
                    {% endfor %}
-        {% elif directors %}
+                </h3>
+        {% elif directors or cast %}
 <h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
-    {% elif cast %}
 <em><strong>Cast</strong></em>: {% for movie_participation in cast %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
-    {% endif %}
     </h3>
+    {% endif %}
       {% if televisionepisode.genre.all %}
         <p><strong><a href="{% url 'genres' %}">Genre(s)</a></strong>: {% for genre in televisionepisode.genre.all %}<a href="{{ genre.get_absolute_url }}">{{ genre }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}</p>
       {% elif televisionepisode.tv_season.genre.all %}
