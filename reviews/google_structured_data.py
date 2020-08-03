@@ -155,7 +155,7 @@ def tv_episode_rev_sd(tv_episode_rev, db_object_absolute_url=''):
     if not (episode_cast and director and image and country_of_origin):
         return None
 
-    if tv_episode_rev.grade.exists():
+    if tv_episode_rev.grade:
         grade = float(tv_episode_rev.grade.grade_numerical)
 
     structured_data = {
