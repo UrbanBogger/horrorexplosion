@@ -1706,6 +1706,7 @@ def suggest_reviews(request):
     print('TITLE: ' + str(request.GET['title']))
     if request.GET['title']:
         title = bleach.clean(request.GET['title'])
+        print('CLEANED-UP TITLE: ' + str(title))
 
     if request.GET['year']:
         release_year = bleach.clean(request.GET['year'])
