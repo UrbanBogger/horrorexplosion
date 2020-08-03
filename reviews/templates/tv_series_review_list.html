@@ -33,7 +33,7 @@
             <div class="media-body">
                 <a href="{{ tv_series_rev.rev_link }}"><h4 class="media-heading text-left">{{ tv_series_rev.rev_name }}</h4></a>
                 <p><strong>Summary:</strong> {{ tv_series_rev.rev_summary }}</p>
-                <p><strong>Our Rating:</strong> <img id="star-rating" src="{{ tv_series_rev.grade.grade_depiction.url }}" alt="{{ tv_series_rev.grade.grade_numerical }} stars" height="80" width="120"/></p>
+                <p><strong>Our Rating:</strong><span style="font-size:17px;font-weight:bold;">{% for grade in tv_series_rev.grade %}<img id="star-rating-tv-rev-list" src="{{ grade.grade_depiction.url }}" alt="{{ grade.grade_numerical }} stars" height="80" width="120"/>{% if not forloop.last %} / {% endif %}{% endfor %}</span></p>
   </div>
 </div>
     </li>

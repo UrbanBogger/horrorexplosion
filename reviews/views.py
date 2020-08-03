@@ -21,7 +21,7 @@ from .models import Movie, MovieReview, WebsiteMetadescriptor, \
     SimilarMovie, PickedReview, TelevisionSeries, TelevisionSeason, \
     TelevisionEpisode, TelevisionSeasonReview, TelevisionEpisodeReview, \
     MovieFranchise, MovSeriesEntry, MovieCreator, DefaultImage, Genre, \
-    Subgenre, Microgenre, Keyword, get_random_review, \
+    Subgenre, Microgenre, Keyword, TVEpisodeSegmentReview, get_random_review, \
     return_mov_participation_data
 
 # Create your views here.
@@ -573,6 +573,9 @@ def orderable_tvseriesreview_list(request):
         series_poster = None
         episode_thumb = None
         episode_poster = None
+        episode_grade = None
+        tv_ep_grades = None
+
         try:
             if tv_rev.reviewed_tv_season:
                 if tv_rev.reviewed_tv_season.poster_thumbnail:
@@ -602,6 +605,21 @@ def orderable_tvseriesreview_list(request):
         except AttributeError:
             pass
 
+        try:
+            if tv_rev.reviewed_tv_episode and \
+                    TVEpisodeSegmentReview.objects.filter(
+                        reviewed_tv_episode=tv_rev).exists():
+                tv_ep_grades = [segment.grade for segment in
+                                TVEpisodeSegmentReview.objects.filter(
+                                    reviewed_tv_episode=tv_rev)]
+        except AttributeError:
+            pass
+
+        if tv_ep_grades:
+            episode_grade = tv_ep_grades
+        else:
+            episode_grade = [tv_rev.grade]
+
         mov_rev_dict = {'rev_name': str(tv_rev),
                         'rev_link': tv_rev.get_absolute_url(),
                         'rev_summary': tv_rev.mov_review_page_description,
@@ -611,7 +629,7 @@ def orderable_tvseriesreview_list(request):
                         'episode_poster': episode_poster,
                         'series_thumb': series_thumb,
                         'series_poster': series_poster,
-                        'grade': tv_rev.grade}
+                        'grade': episode_grade}
         tv_series_revs.append(mov_rev_dict)
 
     page = request.GET.get('page', 1)
@@ -887,6 +905,21 @@ class TVEpisodeReviewDetailView(generic.DetailView):
             tv_episode_review.reviewed_tv_episode, 'Actor')
         context['tvepisode_review'] = substitute_links_in_text(
             tv_episode_review.review_text)
+
+        if tv_episode_review.tvepisodesegmentreview_set.all().exists():
+            tv_ep_rev_seg_list = []
+            for tv_ep_rev_seg in \
+                    tv_episode_review.tvepisodesegmentreview_set.all():
+                tv_ep_rev_seg_dict = {
+                    'seg_title': tv_ep_rev_seg.segment_title,
+                    'seg_num': tv_ep_rev_seg.segment_number,
+                    'num_of_dirs': tv_ep_rev_seg.number_of_directors,
+                    'num_of_actors': tv_ep_rev_seg.number_of_actors
+                }
+                tv_ep_rev_seg_list.append(tv_ep_rev_seg_dict)
+
+            context['tv_ep_rev_segments'] = tv_ep_rev_seg_list
+
         context['absolute_uri'] = get_absolute_url(tv_episode_review)
         return context
 

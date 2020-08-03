@@ -31,6 +31,10 @@
   <div class="media-body">
     <a href="{{ review.get_absolute_url }}"><h4 class="media-heading text-left">{{ review }}</h4></a>
     <p><strong>Summary:</strong> {{ review.mov_review_page_description }}</p>
-    <p><strong>Our Rating:</strong> <img id="star-rating" src="{{ review.grade.grade_depiction.url }}" alt="{{ review.grade.grade_numerical }} stars" height="80" width="120"/></p>
+      {% if review.tvepisodesegmentreview_set.all.exists %}
+      <p><strong>Our Rating</strong>:{% for segment in review.tvepisodesegmentreview_set.all %}<img id="star-rating-tv-rev-list" src="{% static '' %}{{ segment.grade.grade_depiction }}" alt="{{ segment.grade.grade_numerical }} stars" height="70" width="100"/>{% if not forloop.last %} <strong style="font-size:16px;">/</strong> {% endif %}{% endfor %}</p>
+      {% elif review.grade %}
+      <p><strong>Our Rating</strong>: <img id="star-rating-tv-rev-list" src="{% static '' %}{{ review.grade.grade_depiction }}" alt="{{ review.grade.grade_numerical }} stars" height="70" width="100"/></p>
+      {% endif %}
   </div>
 </div>
