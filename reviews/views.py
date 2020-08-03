@@ -1715,6 +1715,7 @@ def suggest_reviews(request):
 
     if Movie.objects.filter(
             main_title__title=title, year_of_release=release_year).exists():
+        print('FOUND A MATCHING MOVIE!!!')
         movie = Movie.objects.get(
             main_title__title=title, year_of_release=release_year)
 
