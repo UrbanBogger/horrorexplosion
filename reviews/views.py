@@ -1717,7 +1717,8 @@ def suggest_reviews(request):
             main_title__title=title, year_of_release=release_year).exists():
         print('FOUND A MATCHING MOVIE!!!')
         movie = Movie.objects.get(
-            main_title__title=title, year_of_release=release_year)
+            main_title__title=title.replace('&amp;', '&'),
+            year_of_release=release_year)
 
         if SimilarMovie.objects.filter(compared_mov=movie).exists():
             similar_movs = SimilarMovie.objects.filter(
