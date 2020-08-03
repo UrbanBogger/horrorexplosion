@@ -1707,7 +1707,7 @@ def suggest_reviews(request):
     if request.GET['title']:
         title = bleach.clean(request.GET['title'])
         print('CLEANED-UP TITLE: ' + str(title))
-
+    title = title.replace('&amp;', '&')
     if request.GET['year']:
         release_year = bleach.clean(request.GET['year'])
 
@@ -1717,7 +1717,7 @@ def suggest_reviews(request):
             main_title__title=title, year_of_release=release_year).exists():
         print('FOUND A MATCHING MOVIE!!!')
         movie = Movie.objects.get(
-            main_title__title=title.replace('&amp;', '&'),
+            main_title__title=title,
             year_of_release=release_year)
 
         if SimilarMovie.objects.filter(compared_mov=movie).exists():
