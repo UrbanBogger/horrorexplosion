@@ -15,12 +15,12 @@
       {% if televisionepisodereview.tvepisodesegmentreview_set.all.exists %}
                 <h3 class="media-heading"><em><strong>Dir.</strong></em>:
                 {% for tv_ep_rev_seg in televisionepisodereview.tvepisodesegmentreview_set.all %}
-                    {% for movie_participation in tv_ep_rev_seg.get_directors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %} ("{{ tv_ep_rev_seg.segment_title }}"); {% endif %}{% endfor %}
-                  {% endfor %}
+                    {% for movie_participation in tv_ep_rev_seg.get_directors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %} ("{{ tv_ep_rev_seg.segment_title }}"){% endif %}{% endfor %}{% if not forloop.last %};{% else %}.{% endif %}
+                   {% endfor %}
                     <em><strong>Cast</strong></em>:
                     {% for tv_ep_rev_seg in televisionepisodereview.tvepisodesegmentreview_set.all %}
-                       {% for movie_participation in tv_ep_rev_seg.get_actors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %} ("{{ tv_ep_rev_seg.segment_title }}");{% endif %}{% endfor %}
-                   {% endfor %}
+                       {% for movie_participation in tv_ep_rev_seg.get_actors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %} ("{{ tv_ep_rev_seg.segment_title }}"){% endif %}{% endfor %}{% if not forloop.last %};{% else %}.{% endif %}
+                    {% endfor %}
                 </h3>
         {% elif directors or cast %}
 <h3 class="media-heading"><em><strong>Dir.</strong></em>: {% for movie_participation in directors %}<a href="{{ movie_participation.person.get_absolute_url }}">{{ movie_participation.person }}</a>{% if not forloop.last %}, {% else %}.{% endif %}{% endfor %}
