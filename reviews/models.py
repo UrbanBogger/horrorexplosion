@@ -115,6 +115,8 @@ class Person(models.Model):
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     full_name = models.CharField(max_length=150, null=True, blank=True)
+    full_name_wo_special_chars = models.CharField(max_length=150, null=True,
+                                                  blank=True)
     creator_iteration = models.IntegerField(
         default=1, help_text='Enter a number greater than 1 if there exist '
                              'other people with the same name in the DB')
@@ -422,6 +424,8 @@ class MotionPicture(models.Model):
     main_title = models.ForeignKey(
         Title, on_delete=models.SET_NULL, null=True, related_name='titles',
         help_text='Enter the motion picture\'s main title')
+    main_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                   blank=True)
     title_for_sorting = models.CharField(
         max_length=250, null=True,
         help_text='Enter the title for sorting: Remove all stop words such '
@@ -429,10 +433,14 @@ class MotionPicture(models.Model):
     original_title = models.OneToOneField(
         Title, on_delete=models.SET_NULL, null=True, blank=True,
         help_text='Enter the motion picture\'s original title [OPTIONAL]')
+    og_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                 blank=True)
     alternative_title = models.ManyToManyField(
         Title, blank=True, related_name='alternative_titles',
         help_text='Enter the motion picture\'s alternative_title(s) ['
                   'OPTIONAL]')
+    alt_title_wo_special_chars = models.CharField(max_length=1000, null=True,
+                                                  blank=True)
     year_of_release = models.IntegerField(
         choices=create_release_year_range(),
         help_text='Choose the motion picture\'s release year')
@@ -680,6 +688,8 @@ class TelevisionSeries(models.Model):
                                    related_name='tv_series_main_title_set',
                                    null=True, help_text='Enter the TV '
                                                         'serie\'s main title')
+    main_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                   blank=True)
     title_for_sorting = models.CharField(
         max_length=250, null=True,
         help_text='Enter the title for sorting: Remove all stop words such '
@@ -687,10 +697,14 @@ class TelevisionSeries(models.Model):
     original_title = models.OneToOneField(
         Title, on_delete=models.SET_NULL, null=True, blank=True,
         help_text='Enter the TV serie\'s original title [OPTIONAL]')
+    og_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                 blank=True)
     alternative_title = models.ManyToManyField(
         Title, blank=True, related_name='tv_series_alternative_title_set',
         help_text='Enter the TV serie\'s alternative_title(s) ['
                   'OPTIONAL]')
+    alt_title_wo_special_chars = models.CharField(max_length=1000, null=True,
+                                                  blank=True)
     is_still_running = models.NullBooleanField(
         null=True, default=False, help_text='Is TV series still ongoing?')
     poster = models.ImageField(
@@ -787,6 +801,8 @@ class TelevisionSeason(models.Model):
     season_title = models.CharField(
         max_length=50, default='Season', help_text='Enter the title of the '
                                                    'television season')
+    season_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                     blank=True)
     season_number = models.IntegerField(
         default=1, help_text='Enter the TV season\'s chronological position '
                              'in the TV series'
@@ -913,6 +929,8 @@ class TelevisionEpisode(models.Model):
     episode_title = models.CharField(
         max_length=50, default='Episode', help_text='Enter the title of the '
                                                     'television episode')
+    ep_title_wo_special_chars = models.CharField(max_length=400, null=True,
+                                                 blank=True)
     episode_number = models.IntegerField(
         default=1, help_text='Enter the TV episode\'s chronological position '
                              'in the TV season'
