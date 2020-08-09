@@ -1136,6 +1136,17 @@ class TVEpisodeSegmentReview(models.Model):
         return segment_directors
 
     @property
+    def only_one_director(self):
+        directors = [mov_participation for mov_participation in
+                     self.get_full_tv_ep_cast() if
+                     str(mov_participation.creative_role) == 'Director']
+
+        if len(directors) == 1:
+            return True
+        else:
+            return False
+
+    @property
     def get_actors(self):
         segment_actors = []
         tv_episode_rev = self.reviewed_tv_episode
