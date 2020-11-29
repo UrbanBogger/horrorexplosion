@@ -234,12 +234,20 @@ def index(request):
     num_of_tv_season_reviews = TelevisionSeasonReview.objects.all().count()
     num_of_tv_episode_reviews = TelevisionEpisodeReview.objects.all().count()
     num_of_tv_reviews = num_of_tv_season_reviews + num_of_tv_episode_reviews
-    latest_mov_review = MovieReview.objects.latest('id')
+    if MovieReview.objects.exists():
+        latest_mov_review = MovieReview.objects.latest('id')
+    else:
+        latest_mov_review = None
+
     try:
         featured_review = PickedReview.objects.latest('id').picked_review
     except PickedReview.DoesNotExist:
         featured_review = None
-    random_review = get_random_review(latest_mov_review, featured_review)
+
+    random_review = None
+    if latest_mov_review:
+        random_review = get_random_review(latest_mov_review, featured_review)
+
     latest_tv_review = None
     try:
         latest_tvepisode_review = TelevisionEpisodeReview.objects.latest('id')
@@ -271,7 +279,8 @@ def index(request):
     latest_review = None
     second_latest_review = None
 
-    if latest_tv_review.first_created > latest_mov_review.first_created:
+    if latest_mov_review and latest_tv_review and \
+            latest_tv_review.first_created > latest_mov_review.first_created:
         latest_review = ("Latest TV Series Review", latest_tv_review)
         second_latest_review = ("Latest Film Review", latest_mov_review)
     else:
@@ -741,16 +750,20 @@ class MovieDetailView(generic.DetailView):
         context['associated_reviews'] = movie.moviereview_set.all()
         associated_franchises = None
         if MovSeriesEntry.objects.filter(movie_in_series=movie).exists():
-            series_entry = MovSeriesEntry.objects.filter(
-                movie_in_series=movie).get()
+            series_entries = MovSeriesEntry.objects.filter(
+                movie_in_series=movie).all()
+
             associated_franchises = [
-                franchise for franchise in
+                franchise for series_entry in series_entries  for franchise in
                 series_entry.franchise_association.all() if
                 franchise.is_publishable]
-            if associated_franchises and series_entry.short_review:
-                context['short_review'] = (
-                    ''.join(str(movie.main_title).split()),
-                    associated_franchises)
+
+            if associated_franchises:
+                for series_entry in series_entries:
+                    if series_entry.short_review:
+                        context['short_review'] = (
+                            ''.join(str(movie.main_title).split()),
+                            associated_franchises)
         referenced_in_reviews = ReferencedMovie.objects.filter(
             referenced_movie=movie)
         context['referenced_in_reviews'] = referenced_in_reviews
