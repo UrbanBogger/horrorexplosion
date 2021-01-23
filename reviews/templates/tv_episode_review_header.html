@@ -9,7 +9,12 @@
     <div class="media-body">
         <h1 class="media-heading"><a href="{{ televisionepisode.tv_season.tv_series.get_absolute_url }}">{{ televisionepisode.tv_season.tv_series.main_title }}</a></h1>
         <h2 class="media-heading"><em><strong>TV Series Type</strong></em>: {{ televisionepisode.tv_season.tv_series.tv_series_type }}</h2>
-        <h2 class="media-heading"><em><strong>Season</strong></em>: <a href="{{ televisionepisode.tv_season.get_absolute_url }}">{{ televisionepisode.tv_season.season_title }}</a> (S{{ televisionepisode.tv_season.season_number }})</h2>
+        <h2 class="media-heading"><em><strong>Season</strong></em>: <a href="{{ televisionepisode.tv_season.get_absolute_url }}">
+            {% if televisionepisode.tv_season.season_number <= 0 %}
+                Not part of any season</a>
+            {% else %}
+                {{ televisionepisode.tv_season.season_title }}</a> (S{{ televisionepisode.tv_season.season_number }})</h2>
+            {% endif %}
         <h2 class="media-heading"><em><strong>Episode</strong></em>: {{ televisionepisode.episode_title }} (E{{ televisionepisode.episode_number }})</h2>
         <h2 class="media-heading">({% for country in televisionepisode.tv_season.country_of_origin.all %}{{ country }}{% if not forloop.last %}/ {% endif %}{% endfor %}, {{ televisionepisode.tv_season.year_of_release }}{% if televisionepisode.duration %}, {{ televisionepisode.duration }} min.){% else %}){% endif %}</h2>
         {% if televisionepisodereview.tvepisodesegmentreview_set.all.exists %}
