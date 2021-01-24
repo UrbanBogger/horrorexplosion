@@ -1547,45 +1547,52 @@ def search_view(request):
                     Keyword.objects.filter(name__iregex=pattern))
 
         else:
+            url_parameter = url_parameter.strip()
+
+            if url_parameter:
+                if len(url_parameter) >= 3 and len(
+                       url_parameter.split(' ')) > 1:
+                    pattern = r'.*'.join(url_parameter.split(' '))
+                else:
+                    pattern = r'.*{search_term}.*'.format(
+                        search_term=url_parameter)
 
             if search_category == 'movies' or search_category == 'all':
                 movies = set(Movie.objects.filter(
-                    Q(main_title__title__icontains=url_parameter) |
-                    Q(original_title__title__icontains=url_parameter) |
-                    Q(alternative_title__title__icontains=url_parameter) |
-                    Q(title_for_sorting__icontains=url_parameter) |
-                    Q(main_title_wo_special_chars__iregex=url_parameter) |
-                    Q(og_title_wo_special_chars__iregex=url_parameter) |
-                    Q(alt_title_wo_special_chars__iregex=url_parameter)))
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern) |
+                    Q(main_title_wo_special_chars__iregex=pattern) |
+                    Q(og_title_wo_special_chars__iregex=pattern) |
+                    Q(alt_title_wo_special_chars__iregex=pattern)))
 
             if search_category == 'tv-series' or search_category == 'all':
                 tv_series = set(TelevisionSeries.objects.filter(
-                    Q(main_title__title__icontains=url_parameter) |
-                    Q(original_title__title__icontains=url_parameter) |
-                    Q(alternative_title__title__icontains=url_parameter) |
-                    Q(title_for_sorting__icontains=url_parameter) |
-                    Q(main_title_wo_special_chars__iregex=url_parameter) |
-                    Q(og_title_wo_special_chars__iregex=url_parameter) |
-                    Q(alt_title_wo_special_chars__iregex=url_parameter)))
-
+                    Q(main_title__title__iregex=pattern) |
+                    Q(original_title__title__iregex=pattern) |
+                    Q(alternative_title__title__iregex=pattern) |
+                    Q(title_for_sorting__iregex=pattern) |
+                    Q(main_title_wo_special_chars__iregex=pattern) |
+                    Q(og_title_wo_special_chars__iregex=pattern) |
+                    Q(alt_title_wo_special_chars__iregex=pattern)))
                 tv_seasons = set(TelevisionSeason.objects.filter(
-                    Q(season_title__icontains=url_parameter) |
-                    Q(season_title_wo_special_chars__iregex=url_parameter) &
+                    Q(season_title__iregex=pattern) |
+                    Q(season_title_wo_special_chars__iregex=pattern) &
                     ~Q(season_title__startswith='season')))
-
                 tv_episodes = set(TelevisionEpisode.objects.filter(
-                    Q(episode_title__icontains=url_parameter) |
-                    Q(ep_title_wo_special_chars__iregex=url_parameter) &
+                    Q(episode_title__iregex=pattern) |
+                    Q(ep_title_wo_special_chars__iregex=pattern) &
                     ~Q(episode_title__startswith='episode')))
 
             if search_category == 'creators' or search_category == 'all':
                 creators = set(MovieCreator.objects.filter(
-                    Q(full_name__icontains=url_parameter)|
-                    Q(full_name_wo_special_chars__iregex=url_parameter)))
+                    Q(full_name__iregex=pattern) |
+                    Q(full_name_wo_special_chars__iregex=pattern)))
 
             if search_category == 'keywords' or search_category == 'all':
                 keywords = set(Keyword.objects.filter(
-                    name__icontains=url_parameter))
+                    name__iregex=pattern))
 
     search_results = []
 
