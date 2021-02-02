@@ -4,7 +4,7 @@ APScheduler==3.5.3
 async-timeout==3.0.0
 attrs==18.1.0
 beautifulsoup4==4.6.0
-bleach==3.1.4
+bleach==3.3.0
 boto3==1.7.28
 botocore==1.10.28
 chardet==3.0.4
